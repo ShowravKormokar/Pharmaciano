@@ -1,6 +1,6 @@
 import { ShoppingCart, Users } from "lucide-react";
 
-export default function DashboardPage() {
+export default function Dashboard() {
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">

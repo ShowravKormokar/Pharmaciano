@@ -1,8 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import DashboardPage from './dashboard/pages'
+import { redirect, useRouter } from 'next/navigation'
+import DashboardPage from './dashboard/page'
 
 export default function HomePage() {
     const [isChecking, setIsChecking] = useState(true)
@@ -34,6 +34,7 @@ export default function HomePage() {
 
     // Dashboard content when logged in
     return (
-        <DashboardPage />
+        redirect('/dashboard')
+        // <DashboardPage />
     )
 }

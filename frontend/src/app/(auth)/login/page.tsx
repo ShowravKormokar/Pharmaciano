@@ -29,23 +29,21 @@ export default function LoginPage() {
         setTimeout(() => {
             const { email, password } = formData
 
-            // Demo authentication
             if ((email === 'admin@pharmacare.com' && password === 'admin123') ||
                 (email === 'salesman@pharmacare.com' && password === 'salesman123')) {
 
-                // Set demo login status
+                // This runs on client side only
                 localStorage.setItem('isLoggedIn', 'true')
                 localStorage.setItem('userEmail', email)
                 localStorage.setItem('userRole', email.includes('admin') ? 'admin' : 'salesman')
 
-                // Redirect to root which will show dashboard
-                window.location.href = '/'
+                window.location.href = '/dashboard'
             } else {
                 alert('Invalid credentials')
             }
             setIsLoading(false)
         }, 1500)
-    };
+    }
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target
