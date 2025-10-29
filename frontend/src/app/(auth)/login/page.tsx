@@ -21,31 +21,31 @@ export default function LoginPage() {
         password: '',
     })
 
+    // In your handleSubmit function, add:
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setIsLoading(true)
 
-        // Simulate API call
         setTimeout(() => {
             const { email, password } = formData
 
-            // Demo authentication logic
-            if (email === 'admin@pharmacare.com' && password === 'admin123') {
-                console.log('Admin login successful')
-                // Redirect to dashboard
-                window.location.href = '/'
-            } else if (email === 'salesman@pharmacare.com' && password === 'salesman123') {
-                console.log('Salesman login successful')
-                // Redirect to dashboard
+            // Demo authentication
+            if ((email === 'admin@pharmacare.com' && password === 'admin123') ||
+                (email === 'salesman@pharmacare.com' && password === 'salesman123')) {
+
+                // Set demo login status
+                localStorage.setItem('isLoggedIn', 'true')
+                localStorage.setItem('userEmail', email)
+                localStorage.setItem('userRole', email.includes('admin') ? 'admin' : 'salesman')
+
+                // Redirect to root which will show dashboard
                 window.location.href = '/'
             } else {
-                console.log('Login failed: Invalid credentials')
-                alert('Invalid email or password. Please try again.')
+                alert('Invalid credentials')
             }
-
             setIsLoading(false)
         }, 1500)
-    }
+    };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target
