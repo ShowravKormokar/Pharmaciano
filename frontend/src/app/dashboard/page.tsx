@@ -1,4 +1,5 @@
-import { ShoppingCart, Users } from "lucide-react";
+import { Separator } from '@/components/ui/separator';
+import { SeparatorHorizontal, ShoppingCart, Users } from "lucide-react";
 
 export default function Dashboard() {
     return (
@@ -60,6 +61,7 @@ export default function Dashboard() {
                         <p className="text-sm ">New user registered - John Doe</p>
                         <span className="text-xs  ml-auto">2 min ago</span>
                     </div>
+                    <Separator />
                     <div className="flex items-center space-x-3 p-3 rounded-lg">
                         <div className="w-2 h-2  rounded-full"></div>
                         <p className="text-sm ">Sale completed - TK. 2,050/-</p>
