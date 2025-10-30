@@ -38,7 +38,8 @@ export default function DashboardLayout({
     }
 
     const isActive = (href: string) => {
-        return pathname === href || pathname.startsWith(href + '/')
+        if (href === '/dashboard') return pathname === '/dashboard';
+        return pathname.startsWith(href);
     }
 
     return (
@@ -120,7 +121,7 @@ export default function DashboardLayout({
                             </Button>
                             <div className="ml-2 lg:ml-0">
                                 <h1 className="text-lg font-semibold text-foreground">
-                                    {navigation.find(item => isActive(item.href))?.name || 'Dashboard'}
+                                    {'Dashboard'}
                                 </h1>
                             </div>
                         </div>
