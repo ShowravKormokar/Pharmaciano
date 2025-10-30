@@ -8,9 +8,11 @@ export default function SalesPage() {
                         Manage sales, POS, and transactions
                     </p>
                 </div>
-                <button className=" px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                <button
+                    className="px-4 py-2 rounded-lg border transition-colors cursor-pointer border-border bg-background text-foreground hover:bg-primary hover:text-primary-foreground">
                     New Sale
                 </button>
+
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -20,7 +22,7 @@ export default function SalesPage() {
                     <div className="space-y-3">
                         <div className="flex justify-between items-center">
                             <span className="">Total Sales</span>
-                            <span className="font-semibold ">Tk. 12,450/-</span>
+                            <span className="font-semibold ">TK. 12,450/-</span>
                         </div>
                         <div className="flex justify-between items-center">
                             <span className="">Transactions</span>
@@ -28,7 +30,7 @@ export default function SalesPage() {
                         </div>
                         <div className="flex justify-between items-center">
                             <span className="">Returns</span>
-                            <span className="font-semibold text-red-600">2</span>
+                            <span className="font-semibold text-red-500">2</span>
                         </div>
                     </div>
                 </div>
@@ -55,9 +57,9 @@ export default function SalesPage() {
                 <h2 className="text-lg font-semibold mb-4">Recent Transactions</h2>
                 <div className="space-y-3">
                     {[
-                        { id: '#001', customer: 'Walk-in Customer', amount: '₹1,250', time: '10:30 AM' },
-                        { id: '#002', customer: 'Regular Customer', amount: '₹2,800', time: '09:15 AM' },
-                        { id: '#003', customer: 'Hospital Order', amount: '₹8,400', time: 'Yesterday' }
+                        { id: '#001', customer: 'Walk-in Customer', amount: 'TK. 1,250/-', time: '10:30 AM' },
+                        { id: '#002', customer: 'Regular Customer', amount: 'TK. 2,800/-', time: '09:15 AM' },
+                        { id: '#003', customer: 'Hospital Order', amount: 'TK. 8,400/-', time: 'Yesterday' }
                     ].map((sale, index) => (
                         <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
                             <div>
