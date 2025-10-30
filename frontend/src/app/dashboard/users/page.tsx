@@ -10,7 +10,7 @@ export default function UsersPage() {
                         Manage organization users and permissions
                     </p>
                 </div>
-                <button className="  px-4 py-2 rounded-lg transition-colors">
+                <button className="px-4 py-2 rounded-lg border transition-colors cursor-pointer border-border bg-background text-foreground hover:bg-primary hover:text-primary-foreground">
                     Add User
                 </button>
             </div>
@@ -35,14 +35,14 @@ export default function UsersPage() {
                                         <p className="text-sm ">{user.email}</p>
                                     </div>
                                 </div>
-                                <div className="flex items-center space-x-4">
+                                <div className="flex lg:flex-row flex-col items-center space-x-2">
                                     <span className={`px-3 py-1 rounded-full text-xs font-medium ${user.status === 'Active'
-                                            ? 'bg-green-100 text-green-800'
-                                            : 'bg-red-100 text-red-800'
+                                        ? 'bg-green-100 text-green-800'
+                                        : 'bg-red-100 text-red-800'
                                         }`}>
                                         {user.status}
                                     </span>
-                                    <span className="text-sm   px-3 py-1 rounded">
+                                    <span className="text-sm py-1 rounded">
                                         {user.role}
                                     </span>
                                 </div>
