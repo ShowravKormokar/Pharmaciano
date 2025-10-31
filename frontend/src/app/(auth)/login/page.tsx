@@ -3,12 +3,15 @@ import { DemoCredentials } from "@/components/auth/demo-credentials";
 // import { LoginForm } from "@/components/ui/auth/login-form";
 import { LoginHero } from "@/components/auth/login-hero";
 import { ModeToggle } from "@/components/ui/modeToggle";
+import { Spinner } from '@/components/ui/shadcn-io/spinner';
 
 
 const LoginForm = dynamic(() => import('@/components/auth/login-form'), {
     loading: () => (
         <div className="bg-card p-8 rounded-lg border shadow-sm text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4">
+                <Spinner variant={"bars"} />
+            </div>
             <p className="text-muted-foreground"> Loading...</p>
         </div>
     ),
