@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Eye, EyeOff, Mail, Lock } from 'lucide-react'
 
-export function LoginForm() {
+export default function LoginForm() {
     const [showPassword, setShowPassword] = useState(false)
     const [rememberMe, setRememberMe] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
@@ -87,7 +87,7 @@ export function LoginForm() {
                                 Password
                             </Label>
                             <Link
-                                href="/forgot-password"
+                                href="#"
                                 className="text-sm text-primary hover:text-primary/80 transition-colors"
                             >
                                 Forgot password?

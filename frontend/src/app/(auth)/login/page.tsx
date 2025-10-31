@@ -1,14 +1,25 @@
-import { DemoCredentials } from "@/components/ui/auth/demo-credentials";
-import { LoginForm } from "@/components/ui/auth/login-form";
-import { LoginHero } from "@/components/ui/auth/login-hero";
+import dynamic from 'next/dynamic'
+import { DemoCredentials } from "@/components/auth/demo-credentials";
+// import { LoginForm } from "@/components/ui/auth/login-form";
+import { LoginHero } from "@/components/auth/login-hero";
 import { ModeToggle } from "@/components/ui/modeToggle";
 
+
+const LoginForm = dynamic(() => import('@/components/auth/login-form'), {
+    loading: () => (
+        <div className="bg-card p-8 rounded-lg border shadow-sm text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-muted-foreground"> Loading...</p>
+        </div>
+    ),
+    // ssr: false
+});
 
 export default function LoginPage() {
     return (
         <div className="min-h-screen w-full flex relative">
             {/* Mode Toggle - Fixed Position */}
-            <div className="fixed top-4 left-4 z-50 ">
+            <div className="fixed top-4 right-4 z-50">
                 <ModeToggle />
             </div>
 
@@ -24,4 +35,4 @@ export default function LoginPage() {
             <LoginHero />
         </div>
     )
-}
+};
