@@ -8,7 +8,7 @@ export default function LoginPage() {
     return (
         <div className="min-h-screen w-full flex relative">
             {/* Mode Toggle - Fixed Position */}
-            <div className="fixed top-4 right-4 z-50 lg:border lg:border-black lg:rounded-md lg:text-black lg:hover:text-black">
+            <div className="fixed top-4 left-4 z-50 ">
                 <ModeToggle />
             </div>
 
