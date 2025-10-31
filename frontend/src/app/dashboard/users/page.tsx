@@ -25,9 +25,9 @@ export default function UsersPage() {
                             { name: 'Sales Manager', email: 'sales@pharmacare.com', role: 'Salesman', status: 'Active' },
                             { name: 'John Doe', email: 'john@pharmacare.com', role: 'Staff', status: 'Inactive' }
                         ].map((user, index) => (
-                            <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
+                            <div key={index} className="flex items-center justify-between lg:p-4 p-3 border rounded-lg">
                                 <div className="flex items-center space-x-4">
-                                    <div className="w-10 h-10 rounded-full flex items-center justify-center">
+                                    <div className="lg:w-10 w-8 h-10 rounded-full flex items-center justify-center">
                                         <Users className="h-5 w-5 " />
                                     </div>
                                     <div>
