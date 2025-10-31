@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import { Home, Users, ShoppingCart, LogOut } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { LogoutButton } from './logout-button'
 
 const navigation = [
