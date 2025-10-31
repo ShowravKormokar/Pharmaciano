@@ -69,7 +69,7 @@ export function DashboardHeader() {
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="lg:hidden"
+                        className="lg:hidden bg-transparent text-transparent"
                         onClick={() => {
                             const event = new CustomEvent('toggleSidebar')
                             window.dispatchEvent(event)
