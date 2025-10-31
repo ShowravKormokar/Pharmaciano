@@ -5,7 +5,7 @@ export default function UsersPage() {
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Users Management</h1>
+                    <h1 className="text-2xl sm:text-3xl font-bold ">Users Management</h1>
                     <p className=" mt-1">
                         Manage organization users and permissions
                     </p>
