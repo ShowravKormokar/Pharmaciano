@@ -1,4 +1,5 @@
 import { LoginForm } from "@/components/ui/auth/login-form";
+import { LoginHero } from "@/components/ui/auth/login-hero";
 
 export default function LoginPage() {
     return (
@@ -12,7 +13,7 @@ export default function LoginPage() {
             </div>
 
             {/* Right Side - Hero Section */}
-            {/* <LoginHero /> */}
+            <LoginHero />
         </div>
     )
 };
