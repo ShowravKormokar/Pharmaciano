@@ -1,6 +1,5 @@
 import dynamic from 'next/dynamic'
 import { DemoCredentials } from "@/components/auth/demo-credentials";
-// import { LoginForm } from "@/components/ui/auth/login-form";
 import { LoginHero } from "@/components/auth/login-hero";
 import { ModeToggle } from "@/components/ui/modeToggle";
 import { Spinner } from '@/components/ui/shadcn-io/spinner';

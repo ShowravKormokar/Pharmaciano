@@ -15,7 +15,7 @@ export function DemoCredentials() {
             {/* Footer */}
             <div className="text-center">
                 <p className="text-sm text-muted-foreground">
-                    © 2024 PharmaCare ERP. All rights reserved.
+                    © 2024 Pharmacino ERP. All rights reserved.
                 </p>
             </div>
         </div>
