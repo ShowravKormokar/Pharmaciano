@@ -2,15 +2,18 @@
 
 import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
+import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { Menu } from 'lucide-react'
+import {
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbPage,
+    BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb'
+import { Menu, Home, ChevronRight } from 'lucide-react'
 import { ModeToggle } from '../ui/modeToggle'
-
-const navigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: '📊' },
-    { name: 'Users', href: '/dashboard/users', icon: '👥' },
-    { name: 'Sales', href: '/dashboard/sales', icon: '💰' },
-]
 
 export function DashboardHeader() {
     const [userEmail, setUserEmail] = useState('User')
@@ -23,36 +26,89 @@ export function DashboardHeader() {
         }
     }, [])
 
-    const getCurrentPageTitle = () => {
-        const currentNav = navigation.find(item => {
-            if (item.href === '/dashboard') return pathname === '/dashboard'
-            return pathname.startsWith(item.href)
+    // Simple breadcrumb generation
+    const getBreadcrumbItems = () => {
+        if (pathname === '/dashboard') {
+            return [
+                { label: 'Dashboard', href: '/dashboard', isCurrent: true }
+            ]
+        }
+
+        const paths = pathname.split('/').filter(path => path)
+        const items = [
+            { label: 'Dashboard', href: '/dashboard', isCurrent: false }
+        ]
+
+        let currentPath = ''
+        paths.forEach((path, index) => {
+            currentPath += `/${path}`
+            const isLast = index === paths.length - 1
+
+            // Format label: "users-list" -> "Users List"
+            const label = path
+                .split('-')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' ')
+
+            items.push({
+                label,
+                href: currentPath,
+                isCurrent: isLast
+            })
         })
-        return currentNav?.name || 'Dashboard'
+
+        return items
     }
+
+    const breadcrumbItems = getBreadcrumbItems()
 
     return (
         <header className="bg-card border-b">
             <div className="flex items-center justify-between px-4 py-3 sm:px-6">
-                <div className="flex items-center">
+                <div className="flex items-center space-x-4">
                     <Button
                         variant="ghost"
                         size="icon"
                         className="lg:hidden"
                         onClick={() => {
-                            // This would need to be handled via context or state management
-                            // For now, we'll use a simple approach
                             const event = new CustomEvent('toggleSidebar')
                             window.dispatchEvent(event)
                         }}
                     >
                         <Menu className="h-5 w-5" />
                     </Button>
-                    <div className="ml-2 lg:ml-0">
-                        <h1 className="text-lg font-semibold text-foreground">
-                            {getCurrentPageTitle()}
-                        </h1>
-                    </div>
+
+                    {/* Breadcrumb */}
+                    <Breadcrumb>
+                        <BreadcrumbList>
+                            {breadcrumbItems.map((item, index) => (
+                                <div key={index} className="flex items-center">
+                                    <BreadcrumbItem>
+                                        {item.isCurrent ? (
+                                            <BreadcrumbPage className="text-sm font-medium">
+                                                {item.label}
+                                            </BreadcrumbPage>
+                                        ) : (
+                                            <BreadcrumbLink
+                                                asChild
+                                                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                                            >
+                                                <Link href={item.href}>
+                                                    {index === 0 ? <Home className="h-4 w-4" /> : item.label}
+                                                </Link>
+                                            </BreadcrumbLink>
+                                        )}
+                                    </BreadcrumbItem>
+
+                                    {index < breadcrumbItems.length - 1 && (
+                                        <BreadcrumbSeparator>
+                                            <ChevronRight className="h-4 w-4" />
+                                        </BreadcrumbSeparator>
+                                    )}
+                                </div>
+                            ))}
+                        </BreadcrumbList>
+                    </Breadcrumb>
                 </div>
 
                 <div className="flex items-center space-x-4">
@@ -64,4 +120,4 @@ export function DashboardHeader() {
             </div>
         </header>
     )
-};
+}
