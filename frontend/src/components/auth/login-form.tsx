@@ -19,26 +19,36 @@ export default function LoginForm() {
     })
 
     const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault()
-        setIsLoading(true)
+        e.preventDefault();
+        setIsLoading(true);
 
         setTimeout(() => {
-            const { email, password } = formData
+            const { email, password } = formData;
 
-            if ((email === 'admin@pharmacare.com' && password === 'admin123') ||
-                (email === 'salesman@pharmacare.com' && password === 'salesman123')) {
+            const isAdmin = email === "admin@pharmacare.com" && password === "admin123";
+            const isSalesman = email === "salesman@pharmacare.com" && password === "salesman123";
 
-                localStorage.setItem('isLoggedIn', 'true')
-                localStorage.setItem('userEmail', email)
-                localStorage.setItem('userRole', email.includes('admin') ? 'admin' : 'salesman')
+            if (isAdmin || isSalesman) {
+                const fakeToken = btoa(`${email}:${Date.now()}`);
 
-                window.location.href = '/dashboard'
+                localStorage.setItem("isLoggedIn", "true");
+                localStorage.setItem("userEmail", email);
+                localStorage.setItem("userRole", isAdmin ? "admin" : "salesman");
+
+                // ✅ Use more consistent cookie (visible in middleware)
+                document.cookie = `auth-token=${fakeToken}; path=/; max-age=86400; SameSite=Lax`;
+
+                // Navigate after a tiny delay to ensure cookie sets
+                setTimeout(() => {
+                    window.location.href = "/dashboard";
+                }, 200);
             } else {
-                alert('Invalid credentials')
+                alert("Invalid credentials");
             }
-            setIsLoading(false)
-        }, 1500)
-    }
+
+            setIsLoading(false);
+        }, 1500);
+    };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target
