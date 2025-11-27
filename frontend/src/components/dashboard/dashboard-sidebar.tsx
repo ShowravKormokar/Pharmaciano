@@ -15,6 +15,7 @@ import {
     SidebarMenuItem,
     SidebarMenuButton,
 } from "@/components/ui/sidebar";
+import { LogoutButton } from "./logout-button";
 
 type IconComponent = React.ElementType;
 
@@ -117,6 +118,9 @@ export function DashboardSidebar() {
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
+            <div className="p-2">
+                <LogoutButton />
+            </div>
         </Sidebar>
     );
 }
