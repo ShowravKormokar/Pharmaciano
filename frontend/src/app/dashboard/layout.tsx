@@ -1,23 +1,16 @@
-import { DashboardSidebar } from '@/components/dashboard/sidebar'
-import { DashboardHeader } from '@/components/dashboard/header'
-import { Navigation } from '@/components/dashboard/navigation'
+import { DashboardSidebar } from "@/components/dashboard/sidebar";
+import { DashboardHeader } from "@/components/dashboard/header";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
-export default function DashboardLayout({
-    children,
-}: {
-    children: React.ReactNode
-}) {
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
     return (
-        <div className="flex h-screen bg-background">
-            <DashboardSidebar navigation={<Navigation />} />
+        <SidebarProvider>
+            <DashboardSidebar />
 
-            {/* Main content */}
-            <div className="flex-1 flex flex-col min-w-0">
+            <SidebarInset>
                 <DashboardHeader />
-                <main className="flex-1 overflow-auto p-4 sm:p-6">
-                    {children}
-                </main>
-            </div>
-        </div>
-    )
+                <main className="p-4 sm:p-6">{children}</main>
+            </SidebarInset>
+        </SidebarProvider>
+    );
 }
