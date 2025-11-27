@@ -43,10 +43,16 @@ function SidebarNavItem({
                 aria-expanded={hasChildren ? isOpen : undefined}
                 aria-controls={hasChildren ? `submenu-${item.id || item.label}` : undefined}
                 className="flex items-center justify-between w-full"
-                isActive={pathname.startsWith(item.href ?? item.children?.[0]?.href ?? "")}
+                isActive={
+                    item.href
+                        ? pathname === item.href
+                        : hasChildren
+                            ? item.children!.some((c) => pathname === c.href)
+                            : false
+                }
             >
                 {hasChildren ? (
-                    <button className="flex items-center gap-3 w-full text-left">
+                    <button type="button" className="flex items-center gap-3 w-full text-left">
                         {Icon && <Icon className="h-4 w-4" />}
                         <span>{item.label}</span>
                         <span className="ml-auto text-xs opacity-60">{isOpen ? "-" : "+"}</span>
