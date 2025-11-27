@@ -60,7 +60,7 @@ function SidebarNavItem({
 
             {/* Children */}
             {hasChildren && isOpen && (
-                <nav id={`submenu-${item.id || item.label}`} className="ml-6 mt-2 flex flex-col space-y-2" role="menu">
+                <nav id={`submenu-${item.id || item.label}`} className="ml-6 mt-2 flex flex-col space-y-2">
                     {item.children!.map((child) => {
                         const ChildIcon = child.icon as IconComponent | undefined;
                         const childActive = pathname === child.href;
