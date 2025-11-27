@@ -1,85 +1,122 @@
-// DashboardSidebar.tsx
-"use client"
+// src/components/dashboard/dashboard-sidebar.tsx
+"use client";
 
-import { useState } from "react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { navigation } from "./navigation"
-
+import React, { useMemo, useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { navigation, NavItem } from "@/constants/navigation";
 import {
     Sidebar,
     SidebarContent,
-    SidebarMenu,
-    SidebarMenuItem,
-    SidebarMenuButton,
     SidebarGroup,
     SidebarGroupLabel,
     SidebarGroupContent,
-} from "@/components/ui/sidebar"
+    SidebarMenu,
+    SidebarMenuItem,
+    SidebarMenuButton,
+} from "@/components/ui/sidebar";
+
+type IconComponent = React.ElementType;
+
+function SidebarNavItem({
+    item,
+    isOpen,
+    toggleOpen,
+    pathname,
+}: {
+    item: NavItem;
+    isOpen: boolean;
+    toggleOpen: (id: string) => void;
+    pathname: string;
+}) {
+    const Icon = item.icon as IconComponent | undefined;
+    const active = item.href ? pathname === item.href : false;
+    const hasChildren = Array.isArray(item.children) && item.children.length > 0;
+
+    return (
+        <SidebarMenuItem>
+            {/* Parent */}
+            <SidebarMenuButton
+                asChild={hasChildren}
+                onClick={() => hasChildren && toggleOpen(item.id || item.label)}
+                aria-expanded={hasChildren ? isOpen : undefined}
+                aria-controls={hasChildren ? `submenu-${item.id || item.label}` : undefined}
+                className="flex items-center justify-between w-full"
+                isActive={pathname.startsWith(item.href ?? item.children?.[0]?.href ?? "")}
+            >
+                {hasChildren ? (
+                    <button className="flex items-center gap-3 w-full text-left">
+                        {Icon && <Icon className="h-4 w-4" />}
+                        <span>{item.label}</span>
+                        <span className="ml-auto text-xs opacity-60">{isOpen ? "-" : "+"}</span>
+                    </button>
+                ) : (
+                    <Link href={item.href ?? "#"} className="flex items-center gap-3 w-full">
+                        {Icon && <Icon className="h-4 w-4" />}
+                        <span>{item.label}</span>
+                    </Link>
+                )}
+            </SidebarMenuButton>
+
+            {/* Children */}
+            {hasChildren && isOpen && (
+                <nav id={`submenu-${item.id || item.label}`} className="ml-6 mt-2 flex flex-col space-y-2" role="menu">
+                    {item.children!.map((child) => {
+                        const ChildIcon = child.icon as IconComponent | undefined;
+                        const childActive = pathname === child.href;
+                        return (
+                            <SidebarMenuItem key={child.href}>
+                                <SidebarMenuButton asChild isActive={childActive}>
+                                    <Link href={child.href} className="flex items-center gap-3">
+                                        {ChildIcon && <ChildIcon className="h-4 w-4" />}
+                                        <span>{child.label}</span>
+                                    </Link>
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                        );
+                    })}
+                </nav>
+            )}
+        </SidebarMenuItem>
+    );
+}
 
 export function DashboardSidebar() {
-    const pathname = usePathname()
-    const [open, setOpen] = useState<string | null>(null)
+    const pathname = usePathname();
 
-    const toggle = (key: string) =>
-        setOpen(open === key ? null : key)
+    // open default groups that contain the current pathname
+    const defaultOpenId = useMemo(() => {
+        const found = navigation.find((n) =>
+            n.children?.some((c) => pathname.startsWith(c.href))
+        );
+        return found?.id ?? null;
+    }, [pathname]);
+
+    const [open, setOpen] = useState<string | null>(defaultOpenId);
+
+    const toggleOpen = (id: string) => setOpen((prev) => (prev === id ? null : id));
 
     return (
         <Sidebar>
             <SidebarContent>
-
                 <SidebarGroup>
                     <SidebarGroupLabel>Navigation</SidebarGroupLabel>
-
                     <SidebarGroupContent>
                         <SidebarMenu>
-
                             {navigation.map((item) => (
-                                <SidebarMenuItem key={item.label}>
-
-                                    {/* Parent Button */}
-                                    <SidebarMenuButton
-                                        asChild={!item.children}
-                                        onClick={() => item.children && toggle(item.label)}
-                                        isActive={pathname.startsWith(item.href || "")}
-                                    >
-                                        {item.children ? (
-                                            <button className="flex items-center gap-2">
-                                                <item.icon className="h-4 w-4" /> {item.label}
-                                            </button>
-                                        ) : (
-                                            <Link href={item.href!}>
-                                                <item.icon className="h-4 w-4" /> {item.label}
-                                            </Link>
-                                        )}
-                                    </SidebarMenuButton>
-
-                                    {/* Child Menu */}
-                                    {item.children && open === item.label && (
-                                        <SidebarMenu className="ml-6 mt-2 space-y-2">
-                                            {item.children.map((child) => (
-                                                <SidebarMenuItem key={child.href}>
-                                                    <SidebarMenuButton
-                                                        asChild
-                                                        isActive={pathname.startsWith(child.href)}
-                                                    >
-                                                        <Link href={child.href}>
-                                                            <child.icon className="h-4 w-4" /> {child.label}
-                                                        </Link>
-                                                    </SidebarMenuButton>
-                                                </SidebarMenuItem>
-                                            ))}
-                                        </SidebarMenu>
-                                    )}
-
-                                </SidebarMenuItem>
+                                <React.Fragment key={item.id ?? item.label}>
+                                    <SidebarNavItem
+                                        item={item}
+                                        isOpen={open === (item.id ?? item.label)}
+                                        toggleOpen={toggleOpen}
+                                        pathname={pathname}
+                                    />
+                                </React.Fragment>
                             ))}
-
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
-
             </SidebarContent>
         </Sidebar>
-    )
+    );
 }
