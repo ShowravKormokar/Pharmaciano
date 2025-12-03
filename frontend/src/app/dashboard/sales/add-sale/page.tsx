@@ -3,8 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Separator } from '@radix-ui/react-separator'
-import { PlusCircle, Trash2 } from 'lucide-react'
+import { PlusCircle, Trash2, RotateCcw } from 'lucide-react'
 
 export default function AddSalePage() {
     return (
@@ -63,31 +62,53 @@ export default function AddSalePage() {
                         <CardContent>
                             <div className="space-y-4">
                                 {/* Product Row */}
-                                <div className="flex items-center gap-4 p-3 border rounded-lg">
-                                    <div>
-                                        <div className="flex-1 mb-2">
-                                            <Label className="text-xs mb-1">Product Name</Label>
+                                <div className="flex-col lg:flex items-start gap-4 p-4 border rounded-lg">
+                                    {/* Left section - Product details */}
+                                    <div className="flex-1 space-y-2">
+                                        <div>
+                                            <Label className="text-xs mb-2">Product Name</Label>
                                             <Input placeholder="Enter product name" />
                                         </div>
-                                        <div className="flex-1">
-                                            <Label className="text-xs mb-1">Price</Label>
+                                        <div>
+                                            <Label className="text-xs mb-2">Price</Label>
                                             <Input type="number" placeholder="Price" />
                                         </div>
                                     </div>
-                                    <div>
-                                        <div className="w-32 mb-2">
-                                            <Label className="text-xs mb-1">Quantity</Label>
+
+                                    {/* Middle section - Quantity & Total */}
+                                    <div className="w-full lg:w-32 space-y-2 mt-2 lg:mt-0">
+                                        <div>
+                                            <Label className="text-xs mb-2">Quantity</Label>
                                             <Input type="number" placeholder="Qty" defaultValue="1" />
                                         </div>
-                                        <div className="w-32">
-                                            <Label className="text-xs mb-1">Total</Label>
+                                        <div>
+                                            <Label className="text-xs mb-2">Total</Label>
                                             <Input value="0" readOnly />
                                         </div>
                                     </div>
-                                    <Separator orientation="vertical" className='w-2 bg-red-100' />
-                                    <Button variant="ghost" size="icon" className="text-red-500">
-                                        <Trash2 className="h-4 w-4" />
-                                    </Button>
+
+                                    {/* Vertical Separator */}
+                                    <div className="self-stretch w-px bg-border mx-2 lg:block hidden"></div>
+
+                                    {/* Right section - Delete and Reset buttons */}
+                                    <div className="flex lg:flex-col py-4 gap-6 w-full justify-around">
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="text-muted-foreground hover:text-foreground hover:bg-accent"
+                                            title="Reset"
+                                        >
+                                            <RotateCcw className="h-4 w-4" />
+                                        </Button>
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                                            title="Delete"
+                                        >
+                                            <Trash2 className="h-4 w-4" />
+                                        </Button>
+                                    </div>
                                 </div>
 
                                 <div className="border border-dashed rounded-lg p-4 text-center">
