@@ -62,7 +62,7 @@ export default function AddSalePage() {
                         <CardContent>
                             <div className="space-y-4">
                                 {/* Product Row */}
-                                <div className="flex-col lg:flex items-start gap-4 p-4 border rounded-lg">
+                                <div className="flex flex-col lg:flex-row items-start gap-4 p-4 border rounded-lg">
                                     {/* Left section - Product details */}
                                     <div className="flex-1 space-y-2">
                                         <div>
@@ -76,7 +76,7 @@ export default function AddSalePage() {
                                     </div>
 
                                     {/* Middle section - Quantity & Total */}
-                                    <div className="w-full lg:w-32 space-y-2 mt-2 lg:mt-0">
+                                    <div className="w-full lg:w-32 space-y-2">
                                         <div>
                                             <Label className="text-xs mb-2">Quantity</Label>
                                             <Input type="number" placeholder="Qty" defaultValue="1" />
@@ -91,7 +91,7 @@ export default function AddSalePage() {
                                     <div className="self-stretch w-px bg-border mx-2 lg:block hidden"></div>
 
                                     {/* Right section - Delete and Reset buttons */}
-                                    <div className="flex lg:flex-col py-4 gap-6 w-full justify-around">
+                                    <div className="flex lg:flex-col py-4 gap-6 w-full lg:w-auto justify-around">
                                         <Button
                                             variant="ghost"
                                             size="icon"
