@@ -107,7 +107,7 @@ export function DashboardSidebar() {
         <Sidebar>
             <SidebarContent>
                 <SidebarGroup>
-                    <SidebarGroupLabel className="text-lg font-bold p-6 border-2"><span className="mr-2 text-xl">💊</span>Pharmaciano</SidebarGroupLabel>
+                    <SidebarGroupLabel className="text-lg font-bold p-6 border-2 mb-2"><span className="mr-2 text-xl">💊</span>Pharmaciano</SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
                             {navigation.map((item) => (
