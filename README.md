@@ -19,38 +19,34 @@ The Figma design for the frontend can be viewed here: [Figma Design](https://www
 - **Inventory & Sales**: Real-time stock management and POS operations.
 - **Analytics Dashboard**: Visualize sales trends with charts, graphs, and PI charts.
 - **Responsive UI**: Fully optimized for desktop, tablet, and mobile.
-- **Modern Frontend Stack**: Next.js + TypeScript + Tailwind CSS + MUI + Shadcn UI.
+- **Modern Frontend Stack**: Next.js + TypeScript + Tailwind CSS + Shadcn UI.
 
 ## 🛠️ Tech Stack
 - **Frontend Framework**:
-- Next.js — 16.0.0
-- React — 19.2.0
-- React DOM — 19.2.0
-- UI Libraries
-- shadcn/ui — 0.0.4
-- Lucide React Icons — 0.548.0
-- React Transition Group — 4.4.5
+     Next.js — 16.0.0
+     React — 19.2.0
+     React DOM — 19.2.0
+     UI Libraries
+     shadcn/ui — 0.0.4
+     Lucide React Icons — 0.548.0
+     React Transition Group — 4.4.5
 
 - **Styling**:
-- Tailwind CSS — ^4
-- tailwind-merge — 3.3.1
-- next-themes — 0.4.6
-- clsx — 2.1.1
-- class-variance-authority — 0.7.1
-- tw-animate-css — 1.4.0
+     Tailwind CSS — ^4
+     tailwind-merge — 3.3.1
+     next-themes — 0.4.6
+     clsx — 2.1.1
+     class-variance-authority — 0.7.1
+     tw-animate-css — 1.4.0
 
 - **Build & Development Tools**:
-- TypeScript — ^5
-- ESLint — ^9
-- eslint-config-next — 16.0.0
-- PostCSS (Tailwind) — @tailwindcss/postcss (^4)
-- Babel React Compiler Plugin — 1.0.0
-- baseline-browser-mapping — 2.9.0
+     TypeScript — ^5
+     ESLint — ^9
+     eslint-config-next — 16.0.0
+     PostCSS (Tailwind) — @tailwindcss/postcss (^4)
+     Babel React Compiler Plugin — 1.0.0
+     baseline-browser-mapping — 2.9.0
 
-- **Type Definitions**:
-- @types/node — ^20
-- @types/react — ^19
-- @types/react-dom — ^19
 
 ## 📸 Screenshot / Preview
 <img width="1200" height="720" alt="Macbook-Air-pharmaciano vercel app (1)" src="https://github.com/user-attachments/assets/90064426-6132-449e-935a-aea4de45daf4" />
