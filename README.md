@@ -56,4 +56,4 @@ The Figma design for the frontend can be viewed here: [Figma Design](https://www
 > Built with ❤️ by team-
 - Frontend: [**Showrav Kormokar**](https://github.com/ShowravKormokar/Pharmaciano)
 - Backend: [**Md. Sohel Rana**](https://github.com/sohelrana2002/Pharmaciano) and
-- Mobile App: [**Md. Sohel Rana**](https://github.com/rafiz001)
+- Mobile App: [**Md. Rafiz Uddin**](https://github.com/rafiz001)
