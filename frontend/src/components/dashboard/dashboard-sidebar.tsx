@@ -105,7 +105,7 @@ export function DashboardSidebar() {
 
     return (
         <Sidebar>
-            <SidebarContent>
+            <SidebarContent className="hide-scrollbar">
                 <SidebarGroup>
                     <SidebarGroupLabel className="text-lg font-bold p-6 border-2 mb-2"><span className="mr-2 text-xl">💊</span>Pharmaciano</SidebarGroupLabel>
                     <SidebarGroupContent>
