@@ -32,14 +32,8 @@ export function NotFound() {
                     {/* Actions */}
                     <div className="flex flex-col sm:flex-row gap-3 justify-center">
                         <Button variant="outline" asChild>
-                            <Link href="/">
-                                <Home className="h-4 w-4 mr-2" />
-                                Go Home
-                            </Link>
-                        </Button>
-                        <Button variant="outline" asChild>
                             <Link href="/dashboard">
-                                <ArrowLeft className="h-4 w-4 mr-2" />
+                                <Home className="h-4 w-4 mr-2" />
                                 Back to Dashboard
                             </Link>
                         </Button>
@@ -53,4 +47,4 @@ export function NotFound() {
             </Card>
         </div>
     )
-}
+};
