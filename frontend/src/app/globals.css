@@ -24,7 +24,7 @@
 * {
   scrollbar-width: thin;
   /* makes scrollbar thinner */
-  scrollbar-color: #000 #aaa;
+  scrollbar-color: #aaa transparent;
   /* thumb and track colors */
 }
 
