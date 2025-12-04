@@ -1,6 +1,7 @@
 # Pharmachiano ERP - Frontend
 
-![Pharmachiano Preview](./assets/preview.png)
+<img width="1656" height="951" alt="Macbook-Air-pharmaciano vercel app" src="https://github.com/user-attachments/assets/05615928-fb8b-48c2-8320-bc850e0b3e34" />
+
 
 **Pharmachiano ERP** is a comprehensive retail pharmacy management system designed for multi-branch organizations. This frontend is built using **Next.js**, **Tailwind CSS v4**, **MUI**, and **Shadcn UI**, ensuring a modern, responsive, and fast user interface. It handles real-time sales, inventory management, role-based access, and analytics dashboards, providing a seamless experience for branch managers, sales personnel, and super admins.
 
@@ -22,7 +23,9 @@ The Figma design for the frontend can be viewed here: [Figma Design](https://www
 
 ## 📸 Screenshot / Preview
 ![Dashboard Preview](./assets/dashboard.png)
-![POS Preview](./assets/pos.png)
+<img width="1656" height="951" alt="Macbook-Air-pharmaciano vercel app (1)" src="https://github.com/user-attachments/assets/90064426-6132-449e-935a-aea4de45daf4" />
+<img width="1656" height="951" alt="Macbook-Air-pharmaciano vercel app (2)" src="https://github.com/user-attachments/assets/7e19c0b3-b532-43f2-91bf-d9b37b02e9b7" />
+
 
 ---
 
