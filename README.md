@@ -1,9 +1,9 @@
 # Pharmachiano ERP - Frontend
 
-<img width="1280" height="720" alt="Macbook-Air-pharmaciano vercel app" src="https://github.com/user-attachments/assets/05615928-fb8b-48c2-8320-bc850e0b3e34" />
+<img width="1200" height="720" alt="Macbook-Air-10 112 72 224" src="https://github.com/user-attachments/assets/eda99e11-e44c-4da4-8683-55e9a52267bd" />
 
 
-**Pharmachiano ERP** is a comprehensive retail pharmacy management system designed for multi-branch organizations. This frontend is built using **Next.js 16**, **Tailwind CSS v4**, and **Shadcn UI**, ensuring a modern, responsive, and fast user interface. It handles real-time sales, inventory management, role-based access, and analytics dashboards, providing a seamless experience for branch managers, sales personnel, and super admins.
+**Pharmachiano ERP** is a comprehensive retail pharmacy management system designed for multi-branch organisations. This frontend is built using **Next.js 16**, **Tailwind CSS v4**, and **Shadcn UI**, ensuring a modern, responsive, and fast user interface. It handles real-time sales, inventory management, role-based access, and analytics dashboards, providing a seamless experience for branch managers, sales personnel, and super admins.
 
 This project is part of our **university final year project**, developed by a team of three. I was responsible for implementing the frontend and integrating APIs for real-time operations across multiple branches.
 
