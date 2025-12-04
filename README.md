@@ -22,30 +22,7 @@ The Figma design for the frontend can be viewed here: [Figma Design](https://www
 - **Modern Frontend Stack**: Next.js + TypeScript + Tailwind CSS + Shadcn UI.
 
 ## 🛠️ Tech Stack
-- **Frontend Framework**:
-     Next.js — 16.0.0
-     React — 19.2.0
-     React DOM — 19.2.0
-     UI Libraries
-     shadcn/ui — 0.0.4
-     Lucide React Icons — 0.548.0
-     React Transition Group — 4.4.5
-
-- **Styling**:
-     Tailwind CSS — ^4
-     tailwind-merge — 3.3.1
-     next-themes — 0.4.6
-     clsx — 2.1.1
-     class-variance-authority — 0.7.1
-     tw-animate-css — 1.4.0
-
-- **Build & Development Tools**:
-     TypeScript — ^5
-     ESLint — ^9
-     eslint-config-next — 16.0.0
-     PostCSS (Tailwind) — @tailwindcss/postcss (^4)
-     Babel React Compiler Plugin — 1.0.0
-     baseline-browser-mapping — 2.9.0
+<p align="left"> <!-- Next.js --> <img src="https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white" /> <!-- React --> <img src="https://img.shields.io/badge/React-18.0.0-61DAFB?style=for-the-badge&logo=react&logoColor=black" /> <!-- Tailwind --> <img src="https://img.shields.io/badge/TailwindCSS-4.x-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" /> <!-- TypeScript --> <img src="https://img.shields.io/badge/TypeScript-5.x-3178C6?style=for-the-badge&logo=typescript&logoColor=white" /> <!-- shadcn/ui --> <img src="https://img.shields.io/badge/shadcn%2Fui-000000?style=for-the-badge&logo=shadcnui&logoColor=white" /> <!-- Radix UI --> <img src="https://img.shields.io/badge/Radix%20UI-161618?style=for-the-badge&logo=radixui&logoColor=white" /> <!-- Lucide --> <img src="https://img.shields.io/badge/Lucide%20React-000000?style=for-the-badge&logo=lucide&logoColor=white" /> <!-- ESLint --> <img src="https://img.shields.io/badge/ESLint-9.x-4B32C3?style=for-the-badge&logo=eslint&logoColor=white" /> <!-- PostCSS --> <img src="https://img.shields.io/badge/PostCSS-4.x-DD3A0A?style=for-the-badge&logo=postcss&logoColor=white" /> </p>
 
 
 ## 📸 Screenshot / Preview
