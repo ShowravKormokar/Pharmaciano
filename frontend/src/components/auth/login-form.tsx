@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Eye, EyeOff, Mail, Lock } from 'lucide-react'
+import { loginService, LoginResponse } from "@/services/auth.service";
 
 export default function LoginForm() {
     const [showPassword, setShowPassword] = useState(false)
@@ -18,36 +19,89 @@ export default function LoginForm() {
         password: '',
     })
 
+    // const handleSubmit = async (e: React.FormEvent) => {
+    //     e.preventDefault();
+    //     setIsLoading(true);
+
+    //     try {
+    //         console.table(formData);
+    //         const res: any = await loginService(formData);
+
+    //         const { accessToken, user } = res.data;
+    //         console.log("Token:", accessToken);
+    //         // Store token
+    //         if (rememberMe) {
+    //             localStorage.setItem("accessToken", accessToken);
+    //         } else {
+    //             sessionStorage.setItem("accessToken", accessToken);
+    //         }
+
+    //         // Store user info
+    //         localStorage.setItem("user", JSON.stringify(user));
+
+    //         // Optional cookie for middleware (recommended)
+    //         document.cookie = `auth-token=${accessToken}; path=/; max-age=86400; SameSite=Lax`;
+
+    //         window.location.href = "/dashboard";
+
+    //     } catch (error: any) {
+    //         alert(error?.response?.data?.message || "Login failed");
+    //     } finally {
+    //         setIsLoading(false);
+    //     }
+    // };
+
+    //For Go backend
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
 
-        setTimeout(() => {
-            const { email, password } = formData;
+        try {
+            console.log("Form data:", formData);
 
-            const isAdmin = email === "admin@pharmacare.com" && password === "admin123";
-            const isSalesman = email === "salesman@pharmacare.com" && password === "salesman123";
+            // Call login service
+            const response: LoginResponse = await loginService(formData);
 
-            if (isAdmin || isSalesman) {
-                const fakeToken = btoa(`${email}:${Date.now()}`);
+            console.log("Login response:", response);
 
-                localStorage.setItem("isLoggedIn", "true");
-                localStorage.setItem("userEmail", email);
-                localStorage.setItem("userRole", isAdmin ? "admin" : "salesman");
+            // Extract tokens (note: it's access_token, not accessToken)
+            const { access_token: accessToken, refresh_token: refreshToken } = response;
 
-                // ✅ Use more consistent cookie (visible in middleware)
-                document.cookie = `auth-token=${fakeToken}; path=/; max-age=86400; SameSite=Lax`;
+            console.log("Access token:", accessToken);
 
-                // Navigate after a tiny delay to ensure cookie sets
-                setTimeout(() => {
-                    window.location.href = "/dashboard";
-                }, 200);
+            // Store token
+            if (rememberMe) {
+                localStorage.setItem("accessToken", accessToken);
+                localStorage.setItem("refreshToken", refreshToken);
             } else {
-                alert("Invalid credentials");
+                sessionStorage.setItem("accessToken", accessToken);
+                sessionStorage.setItem("refreshToken", refreshToken);
             }
 
+            // Optional cookie for middleware
+            document.cookie = `auth-token=${accessToken}; path=/; max-age=86400; SameSite=Lax`;
+
+            // Redirect
+            window.location.href = "/dashboard";
+
+        } catch (error: any) {
+            console.error("Login error:", error);
+
+            // Better error logging
+            if (error.response) {
+                console.error("Response error:", error.response.data);
+                console.error("Status:", error.response.status);
+                alert(error.response.data?.error || "Login failed");
+            } else if (error.request) {
+                console.error("No response:", error.request);
+                alert("Network error. Please check your connection.");
+            } else {
+                console.error("Request error:", error.message);
+                alert("Login failed. Please try again.");
+            }
+        } finally {
             setIsLoading(false);
-        }, 1500);
+        }
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

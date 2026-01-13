@@ -17,9 +17,9 @@ export function ModeToggle() {
 
     const { theme, setTheme } = useTheme()
 
-    React.useEffect(() => {
-        console.log("Current theme:", theme)
-    }, [theme])
+    // React.useEffect(() => {
+    //     console.log("Current theme:", theme)
+    // }, [theme])
 
     return (
         <DropdownMenu>

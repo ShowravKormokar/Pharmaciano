@@ -1,26 +1,21 @@
-// The proxy or middleware setup for handling API requests in the frontend application.
-
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
 export function proxy(req: NextRequest) {
-    const token = req.cookies.get("auth-token")?.value;
-    const { pathname } = req.nextUrl;
+    const token = req.cookies.get("auth-token");
 
-    // If token not found → block access to /dashboard
-    if (!token && pathname.startsWith("/dashboard")) {
-        const loginUrl = new URL("/login", req.url);
-        loginUrl.searchParams.set("redirect", pathname);
-        return NextResponse.redirect(loginUrl);
-    }
-
-    // If token found → block access to /login and /register
-    if (token && (pathname === "/login" || pathname === "/register")) {
-        return NextResponse.redirect(new URL("/dashboard", req.url));
+    if (!token && req.nextUrl.pathname.startsWith("/dashboard")) {
+        return NextResponse.redirect(new URL("/login", req.url));
     }
 
     return NextResponse.next();
 }
 
 export const config = {
-    matcher: ["/dashboard/:path*", "/login"],
+    matcher: ["/dashboard/:path*"],
 };
+
+
+// export const config = {
+//     matcher: ["/dashboard/:path*", "/login"],
+// };
