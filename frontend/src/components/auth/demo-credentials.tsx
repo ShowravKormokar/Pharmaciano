@@ -7,8 +7,7 @@ export function DemoCredentials() {
                     Demo Credentials
                 </h4>
                 <div className="text-xs text-primary space-y-1">
-                    <p><strong>Admin:</strong> admin@pharmacare.com / admin123</p>
-                    <p><strong>Salesman:</strong> salesman@pharmacare.com / salesman123</p>
+                    <p><strong>Admin:</strong> superadmin@pharmaciano.com / superadmin123</p>
                 </div>
             </div>
 
