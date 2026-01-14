@@ -21,9 +21,10 @@ export function LogoutButton() {
             }
 
             // Clear client-side data for extra safety
-            localStorage.removeItem('isLoggedIn')
-            localStorage.removeItem('userEmail')
-            localStorage.removeItem('userRole')
+            localStorage.removeItem("user");
+            sessionStorage.removeItem("accessToken");
+            cookieStore.delete("auth-token");
+            document.cookie = "auth-token=; Max-Age=0; path=/";
 
             // Redirect to login
             window.location.href = '/login'
@@ -39,7 +40,7 @@ export function LogoutButton() {
         <Button
             variant="outline"
             disabled={isLoading}
-            className="w-full justify-start space-x-3 text-red-600 hover:text-red-700 hover:bg-red-50 transition-colors"
+            className="w-full justify-start space-x-3 text-foreground hover:text-red-700 hover:bg-red-50 transition-colors cursor-pointer"
             onClick={handleLogout}
         >
             <LogOut className="h-4 w-4" />
