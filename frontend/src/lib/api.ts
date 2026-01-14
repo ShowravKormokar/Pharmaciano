@@ -7,12 +7,16 @@ export const api = axios.create({
     },
 });
 
-// Attach token automatically
+// Attach token automatically (local OR session)
 api.interceptors.request.use((config) => {
-    const token = localStorage.getItem("accessToken");
-    config.headers = config.headers ?? {};
+    const token =
+        localStorage.getItem("accessToken") ||
+        sessionStorage.getItem("accessToken");
+
     if (token) {
-        (config.headers as Record<string, string>).Authorization = `Bearer ${token}`;
+        config.headers = config.headers ?? {};
+        config.headers.Authorization = `Bearer ${token}`;
     }
+
     return config;
 });
