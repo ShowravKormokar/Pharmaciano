@@ -5,6 +5,7 @@ import React, { useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { navigation, NavItem } from "@/constants/navigation";
+import { useAuthStore } from "@/store/auth.store";
 import {
     Sidebar,
     SidebarContent,
@@ -90,6 +91,7 @@ function SidebarNavItem({
 
 export function DashboardSidebar() {
     const pathname = usePathname();
+    const { user, isAuthenticated } = useAuthStore();
 
     // open default groups that contain the current pathname
     const defaultOpenId = useMemo(() => {
@@ -124,8 +126,28 @@ export function DashboardSidebar() {
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
-            <div className="p-2">
-                <LogoutButton />
+            <div className="mt-auto border-t px-4 py-2">
+                <div className="flex items-center justify-between gap-2">
+
+                    {/* User Info */}
+                    <div className="flex flex-col leading-tight">
+                        <span className="text-xs font-medium text-muted-foreground">
+                            Logged in as
+                        </span>
+
+                        <span className="text-xs font-semibold text-foreground hover:text-primary" title={user?.name || user?.email}>
+                            {(user?.name || user?.email)?.length > 15
+                                ? (user?.name || user?.email).slice(0, 15) + '...'
+                                : (user?.name || user?.email)}
+                        </span>
+                    </div>
+
+                    {/* Logout */}
+                    <div className="shrink-0">
+                        <LogoutButton />
+                    </div>
+
+                </div>
             </div>
         </Sidebar>
     );

@@ -4,9 +4,12 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { ModeToggle } from "@/components/ui/modeToggle";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useAuthStore } from "@/store/auth.store";
 
 export function DashboardHeader() {
     const pathname = usePathname();
+    const { user, isAuthenticated } = useAuthStore();
+
 
     // Generate breadcrumb items from pathname
     const pathSegments = pathname.split("/").filter(Boolean);
@@ -39,6 +42,11 @@ export function DashboardHeader() {
             </div>
 
             <div className="flex items-center gap-4">
+                <div>
+                    <span className="mt-0.5 inline-flex w-fit rounded-md bg-primary/10 px-2 py-0.5 text-[8px] lg:text-[11px] font-semibold text-primary">
+                        {user?.role?.toUpperCase()}
+                    </span> 
+                </div>
                 <ModeToggle />
             </div>
         </header>
