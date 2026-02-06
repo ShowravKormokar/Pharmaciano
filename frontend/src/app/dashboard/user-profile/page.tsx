@@ -71,7 +71,7 @@ export default function ProfileDetails() {
                                 </div>
                                 <div>
                                     <label className="text-sm font-medium text-gray-500">User ID</label>
-                                    <p className="text-sm font-mono text-gray-600">{user.id}</p>
+                                    <p className="text-sm font-mono text-gray-600">{user._id}</p>
                                 </div>
                                 <div>
                                     <label className="text-sm font-medium text-gray-500">Account Status</label>
