@@ -115,7 +115,7 @@ export default function ProfileDetails() {
                                     {user.role.permissions?.map((permission: string, index: number) => (
                                         <div
                                             key={index}
-                                            className="flex items-center gap-2 p-2 bg-gray-50 rounded-md"
+                                            className="flex items-center gap-2 p-2 border-2 rounded-md"
                                         >
                                             <Key className="h-3 w-3 text-gray-400" />
                                             <span className="text-sm font-medium">{permission}</span>
