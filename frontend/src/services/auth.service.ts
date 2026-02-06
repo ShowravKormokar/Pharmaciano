@@ -1,4 +1,5 @@
 import { api } from "../lib/api";
+import { ProfileApiResponse } from "@/types/auth";
 
 export interface LoginPayload {
     email: string;
@@ -11,7 +12,7 @@ export const loginService = async (payload: LoginPayload) => {
     return response.data;
 };
 
-export const fetchProfileService = async () => {
-    const res = await api.get("/v1/users/profile");
+export const fetchProfileService = async (): Promise<ProfileApiResponse> => {
+    const res = await api.get<ProfileApiResponse>("/v1/users/profile");
     return res.data;
 };
