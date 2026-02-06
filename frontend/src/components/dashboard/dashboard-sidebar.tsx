@@ -1,4 +1,3 @@
-// src/components/dashboard/dashboard-sidebar.tsx
 "use client";
 
 import React, { useMemo, useState } from "react";
@@ -136,8 +135,8 @@ export function DashboardSidebar() {
                         </span>
 
                         <a href="/dashboard/user-profile" className="text-xs font-semibold text-foreground hover:text-primary" title={user?.name || user?.email}>
-                            {(user?.name || user?.email)?.length > 15
-                                ? (user?.name || user?.email).slice(0, 15) + '...'
+                            {((user?.name || user?.email) ?? '')?.length > 15
+                                ? ((user?.name || user?.email) ?? '').slice(0, 15) + '...'
                                 : (user?.name || user?.email)}
                         </a>
                     </div>
