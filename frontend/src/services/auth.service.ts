@@ -10,3 +10,8 @@ export const loginService = async (payload: LoginPayload) => {
     // console.log("LOGIN SERVICE RESPONSE:", response);
     return response.data;
 };
+
+export const fetchProfileService = async () => {
+    const res = await api.get("/v1/users/profile");
+    return res.data;
+};

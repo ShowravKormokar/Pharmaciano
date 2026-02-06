@@ -25,22 +25,17 @@ export default function LoginForm() {
 
         try {
             const res: any = await loginService(formData);
+            const { token } = res.data;
 
-            const { token, user } = res.data;
-
-            if (!token || !user) {
+            if (!token) {
                 throw new Error("Invalid login response");
             }
 
-            // Store token
             if (rememberMe) {
                 localStorage.setItem("accessToken", token);
             } else {
                 sessionStorage.setItem("accessToken", token);
             }
-
-            // Store user info
-            localStorage.setItem("user", JSON.stringify(user));
 
             // Cookie setup
             document.cookie = `auth-token=${token}; path=/; max-age=86400; SameSite=Lax`;
