@@ -24,27 +24,28 @@ export default function LoginForm() {
         setIsLoading(true);
 
         try {
-            const res: any = await loginService(formData);
+            const res = await loginService(formData);
+
             const { token } = res.data;
 
             if (!token) {
                 throw new Error("Invalid login response");
             }
 
+            // Store token for API usage (For dummy now)
             if (rememberMe) {
                 localStorage.setItem("accessToken", token);
             } else {
                 sessionStorage.setItem("accessToken", token);
             }
 
-            // Cookie setup
+            // Store token in cookie for middleware (NOT HttpOnly)
             document.cookie = `auth-token=${token}; path=/; max-age=86400; SameSite=Lax`;
 
             window.location.href = "/dashboard";
-
         } catch (error: any) {
             console.error("LOGIN ERROR:", error);
-            alert(error?.response?.data?.message || error.message || "Login failed");
+            alert(error?.response?.data?.message || "Login failed");
         } finally {
             setIsLoading(false);
         }

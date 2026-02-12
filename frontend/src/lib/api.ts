@@ -7,15 +7,15 @@ export const api = axios.create({
     },
 });
 
-// Attach token automatically (local OR session)
+// Attach token automatically (RAW token, not Bearer)
 api.interceptors.request.use((config) => {
     const token =
-        localStorage.getItem("accessToken") ||
-        sessionStorage.getItem("accessToken");
+        sessionStorage.getItem("accessToken") ||
+        localStorage.getItem("accessToken");
 
     if (token) {
         config.headers = config.headers ?? {};
-        config.headers.Authorization = `Bearer ${token}`;
+        config.headers.Authorization = token; // ✅ backend expects raw token
     }
 
     return config;

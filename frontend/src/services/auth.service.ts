@@ -7,9 +7,8 @@ export interface LoginPayload {
 }
 
 export const loginService = async (payload: LoginPayload) => {
-    const response = await api.post("/v1/auth/login", payload);
-    // console.log("LOGIN SERVICE RESPONSE:", response);
-    return response.data;
+    const res = await api.post("/v1/auth/login", payload);
+    return res.data; // { success, message, data: { token, user } }
 };
 
 export const fetchProfileService = async (): Promise<ProfileApiResponse> => {

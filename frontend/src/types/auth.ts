@@ -32,3 +32,11 @@ export interface ProfileApiResponse {
         profile: UserProfile;
     };
 }
+
+export interface LoginUser {
+    id: string;
+    email: string;
+    name: string;
+    role: string;
+    lastLogin: string;
+}
