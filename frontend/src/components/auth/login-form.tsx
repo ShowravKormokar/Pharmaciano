@@ -35,9 +35,14 @@ export default function LoginForm() {
             // Store token for API usage (For dummy now)
             if (rememberMe) {
                 localStorage.setItem("accessToken", token);
+                // persistent cookie (1 day)
+                document.cookie = `auth-token=${token}; path=/; max-age=86400; SameSite=Lax`;
             } else {
                 sessionStorage.setItem("accessToken", token);
+                // session cookie (removed when tab closes)
+                document.cookie = `auth-token=${token}; path=/; SameSite=Lax`;
             }
+
 
             // Store token in cookie for middleware (NOT HttpOnly)
             document.cookie = `auth-token=${token}; path=/; max-age=86400; SameSite=Lax`;

@@ -55,6 +55,7 @@ export const useAuthStore = create<AuthState>((set) => ({
         sessionStorage.removeItem("accessToken");
         localStorage.removeItem("accessToken");
 
+        // clear cookie (both session & persistent)
         document.cookie = "auth-token=; Max-Age=0; path=/";
 
         set({ user: null, isAuthenticated: false, loading: false });
