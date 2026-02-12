@@ -73,13 +73,13 @@ export const navigation: NavItem[] = [
         icon: ShoppingBasket,
         id: "inventory",
         children: [
-            { label: "Items", icon: List, href: "/dashboard/items/item-list" },
-            { label: "Categories", icon: Tags, href: "/dashboard/items/category-list" },
-            { label: "Brands", icon: PackageSearch, href: "/dashboard/items/brand-list" },
-            { label: "Variants / Batches", icon: Layers, href: "/dashboard/items/variant-list" },
+            { label: "Items", icon: List, href: "/dashboard/inventory/item-list" },
+            { label: "Categories", icon: Tags, href: "/dashboard/inventory/category-list" },
+            { label: "Brands", icon: PackageSearch, href: "/dashboard/inventory/brand-list" },
+            { label: "Variants / Batches", icon: Layers, href: "/dashboard/inventory/variant-list" },
             { label: "Stock Adjustment", icon: Activity, href: "/dashboard/inventory/adjustment" },
             { label: "Expiry Alerts", icon: AlertTriangle, href: "/dashboard/inventory/expiry-alerts" },
-            { label: "Import Items", icon: FileInput, href: "/dashboard/items/import-items" },
+            { label: "Import Items", icon: FileInput, href: "/dashboard/inventory/import-items" },
         ],
     },
 
@@ -101,8 +101,8 @@ export const navigation: NavItem[] = [
         icon: Warehouse,
         id: "warehouses",
         children: [
-            { label: "Warehouse List", icon: List, href: "/dashboard/warehouse/warehouse-list" },
-            { label: "Add Warehouse", icon: PlusCircle, href: "/dashboard/warehouse/add-warehouse" },
+            { label: "Warehouse List", icon: List, href: "/dashboard/warehouses/warehouse-list" },
+            { label: "Add Warehouse", icon: PlusCircle, href: "/dashboard/warehouses/add-warehouse" },
         ],
     },
 
