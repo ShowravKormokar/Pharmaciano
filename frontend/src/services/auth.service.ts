@@ -1,14 +1,9 @@
 import { api } from "../lib/api";
-import { ProfileApiResponse } from "@/types/auth";
+import type { ProfileApiResponse, LoginPayload, LoginApiResponse } from "@/types/auth";
 
-export interface LoginPayload {
-    email: string;
-    password: string;
-}
-
-export const loginService = async (payload: LoginPayload) => {
-    const res = await api.post("/v1/auth/login", payload);
-    return res.data; // { success, message, data: { token, user } }
+export const loginService = async (payload: LoginPayload): Promise<LoginApiResponse> => {
+    const res = await api.post<LoginApiResponse>("/v1/auth/login", payload);
+    return res.data; // type-safe now
 };
 
 export const fetchProfileService = async (): Promise<ProfileApiResponse> => {

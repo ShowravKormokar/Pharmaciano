@@ -1,3 +1,8 @@
+export interface LoginPayload {
+    email: string;
+    password: string;
+}
+
 export interface Role {
     name: string;
     description: string;
@@ -39,4 +44,15 @@ export interface LoginUser {
     name: string;
     role: string;
     lastLogin: string;
+}
+
+export interface LoginResponseData {
+    token: string;
+    user: UserProfile;
+}
+
+export interface LoginApiResponse {
+    success: boolean;
+    message: string;
+    data: LoginResponseData;
 }
