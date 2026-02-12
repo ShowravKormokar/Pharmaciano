@@ -14,6 +14,7 @@ export type NavChild = {
     label: string;
     href: string;
     icon?: LucideIcon;
+    permission?: string;
 };
 
 export type NavItem = {
@@ -22,6 +23,7 @@ export type NavItem = {
     icon?: LucideIcon;
     children?: NavChild[];
     id?: string;
+    permission?: string;
 };
 
 export const navigation: NavItem[] = [

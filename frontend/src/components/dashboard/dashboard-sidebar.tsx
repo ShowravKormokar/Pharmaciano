@@ -4,6 +4,7 @@ import React, { useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { navigation, NavItem } from "@/constants/navigation";
+import { filterNavigationByPermission } from "@/hooks/engine/navigation.engine";
 import { useAuthStore } from "@/store/auth.store";
 import {
     Sidebar,
@@ -92,6 +93,10 @@ export function DashboardSidebar() {
     const pathname = usePathname();
     const { user, isAuthenticated } = useAuthStore();
 
+    const filteredNavigation = useMemo(() => {
+        return filterNavigationByPermission(navigation);
+    }, [user]);
+
     // open default groups that contain the current pathname
     const defaultOpenId = useMemo(() => {
         const found = navigation.find((n) =>
@@ -111,16 +116,18 @@ export function DashboardSidebar() {
                     <SidebarGroupLabel className="text-lg font-bold p-6 border-2 mb-2"><span className="mr-2 text-xl">💊</span>Pharmaciano</SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
-                            {navigation.map((item) => (
-                                <React.Fragment key={item.id ?? item.label}>
-                                    <SidebarNavItem
-                                        item={item}
-                                        isOpen={open === (item.id ?? item.label)}
-                                        toggleOpen={toggleOpen}
-                                        pathname={pathname}
-                                    />
-                                </React.Fragment>
-                            ))}
+                            {
+                                filteredNavigation.map((item) => (
+                                    <React.Fragment key={item.id ?? item.label}>
+                                        <SidebarNavItem
+                                            item={item}
+                                            isOpen={open === (item.id ?? item.label)}
+                                            toggleOpen={toggleOpen}
+                                            pathname={pathname}
+                                        />
+                                    </React.Fragment>
+                                ))
+                            }
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
