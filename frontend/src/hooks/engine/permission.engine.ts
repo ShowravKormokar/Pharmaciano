@@ -7,12 +7,12 @@ class PermissionEngine {
 
     private getPermissions(): string[] {
         const user = this.getUser();
-        return user?.role?.permissions || [];
+        return user?.roleId?.permissions || [];
     }
 
     private getRole(): string | null {
         const user = this.getUser();
-        return user?.role?.name || null;
+        return user?.roleId?.name || null;
     }
 
     hasRole(roles: string | string[]): boolean {

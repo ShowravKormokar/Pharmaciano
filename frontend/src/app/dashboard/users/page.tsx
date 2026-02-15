@@ -1,4 +1,5 @@
 'use client';
+import { PermissionGuard } from "@/hooks/guards/PermissionGuard";
 import { RouteGuard } from "@/hooks/guards/RouteGuard";
 import { Users } from "lucide-react";
 
@@ -12,11 +13,16 @@ export default function UsersPage() {
                         Manage organization users and permissions
                     </p>
                 </div>
-                <RouteGuard permission="user:create">
+                <PermissionGuard permission="user:create">
                     <button onClick={() => console.log("Add user")} className="px-4 py-2 rounded-lg border transition-colors cursor-pointer border-border bg-background text-foreground hover:bg-primary hover:text-primary-foreground">
                         Add User
                     </button>
-                </RouteGuard>
+                </PermissionGuard>
+                {/* <RouteGuard permission="user:create">
+                    <button onClick={() => console.log("Add user")} className="px-4 py-2 rounded-lg border transition-colors cursor-pointer border-border bg-background text-foreground hover:bg-primary hover:text-primary-foreground">
+                        Add User
+                    </button>
+                </RouteGuard> */}
             </div>
 
             <div className="rounded-xl border shadow-sm overflow-hidden">
