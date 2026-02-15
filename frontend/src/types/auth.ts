@@ -20,7 +20,7 @@ export interface UserProfile {
     name: string;
     orgName: string | null;
     branchName: string | null;
-    role: Role;
+    roleId: Role;
     organization: any | null;
     branch: any | null;
     isActive: boolean;

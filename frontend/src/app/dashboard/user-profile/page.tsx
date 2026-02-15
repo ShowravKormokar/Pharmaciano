@@ -94,7 +94,7 @@ export default function ProfileDetails() {
                                 Role & Permissions
                             </CardTitle>
                             <CardDescription>
-                                {user.role.description}
+                                {user.roleId.description}
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
@@ -102,7 +102,7 @@ export default function ProfileDetails() {
                                 <label className="text-sm font-medium text-gray-500">Role</label>
                                 <div className="mt-1">
                                     <Badge variant="secondary" className="text-lg px-3 py-1">
-                                        {user.role.name}
+                                        {user.roleId.name}
                                     </Badge>
                                 </div>
                             </div>
@@ -112,7 +112,7 @@ export default function ProfileDetails() {
                             <div>
                                 <label className="text-sm font-medium text-gray-500 mb-2 block">Permissions</label>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                                    {user.role.permissions?.map((permission: string, index: number) => (
+                                    {user.roleId.permissions?.map((permission: string, index: number) => (
                                         <div
                                             key={index}
                                             className="flex items-center gap-2 p-2 border-2 rounded-md"
@@ -123,7 +123,7 @@ export default function ProfileDetails() {
                                     ))}
                                 </div>
                                 <p className="text-xs text-gray-500 mt-2">
-                                    Total: {user.role.permissions?.length || 0} permissions
+                                    Total: {user.roleId.permissions?.length || 0} permissions
                                 </p>
                             </div>
                         </CardContent>
@@ -232,7 +232,7 @@ export default function ProfileDetails() {
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="text-center p-3 bg-blue-50 rounded-lg">
                                     <p className="text-2xl font-bold text-blue-600">
-                                        {user.role.permissions?.length || 0}
+                                        {user.roleId.permissions?.length || 0}
                                     </p>
                                     <p className="text-sm text-blue-500">Permissions</p>
                                 </div>

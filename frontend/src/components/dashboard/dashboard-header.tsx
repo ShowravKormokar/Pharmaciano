@@ -44,7 +44,7 @@ export function DashboardHeader() {
             <div className="flex items-center gap-4">
                 <div>
                     <span className="mt-0.5 inline-flex w-fit rounded-md bg-primary/10 px-2 py-0.5 text-[8px] lg:text-[11px] font-semibold text-primary">
-                        <a href="/dashboard/user-profile">{user?.role?.name?.toUpperCase()}</a>
+                        <a href="/dashboard/user-profile">{user?.roleId?.name?.toUpperCase()}</a>
                     </span>
                 </div>
                 <ModeToggle />
