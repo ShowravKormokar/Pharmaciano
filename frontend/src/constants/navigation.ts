@@ -1,5 +1,4 @@
 import type { LucideIcon } from "lucide-react";
-import { UserRoleEnum } from "@/types/roles";
 import {
     Home, Users, ShoppingCart, PlusCircle, List, Terminal,
     DollarSignIcon, Warehouse, Settings, ShoppingBasket,
@@ -17,7 +16,6 @@ export type NavChild = {
     href: string;
     icon?: LucideIcon;
     permission?: string;   // page-level control
-    roles?: UserRoleEnum[];      // optional override
 };
 
 export type NavItem = {
@@ -25,9 +23,8 @@ export type NavItem = {
     href?: string;
     icon?: LucideIcon;
     children?: NavChild[];
-    id?: string;
+    id?: string;           // module name
     permission?: string;   // module-level control
-    roles?: UserRoleEnum[];      // module visibility
 };
 
 export const navigation: NavItem[] = [
@@ -36,7 +33,6 @@ export const navigation: NavItem[] = [
         icon: Home,
         href: "/dashboard",
         id: "dashboard",
-        roles: [UserRoleEnum.SUPER_ADMIN, UserRoleEnum.MANAGER, UserRoleEnum.STAFF, UserRoleEnum.CASHIER, UserRoleEnum.PROCUREMENT, UserRoleEnum.ACCOUNTANT, UserRoleEnum.PHARMACIST, UserRoleEnum.WAREHOUSE_STAFF], // visible to all roles
     },
 
     /* USERS & ACCESS */
@@ -44,11 +40,10 @@ export const navigation: NavItem[] = [
         label: "Users",
         icon: Users,
         id: "users",
-        roles: [UserRoleEnum.SUPER_ADMIN, UserRoleEnum.MANAGER],   // module visible only to these roles
         children: [
             { label: "Overview", icon: Terminal, href: "/dashboard/users", permission: "user:read" },
             { label: "User List", icon: List, href: "/dashboard/users/user-list", permission: "user:read" },
-            { label: "Role List", icon: ShieldCheck, href: "/dashboard/users/role-list", permission: "role:read", roles: [UserRoleEnum.SUPER_ADMIN] },
+            { label: "Role List", icon: ShieldCheck, href: "/dashboard/users/role-list", permission: "role:read" },
         ],
     },
 
@@ -57,10 +52,9 @@ export const navigation: NavItem[] = [
         label: "Sales",
         icon: DollarSignIcon,
         id: "sales",
-        roles: [UserRoleEnum.SUPER_ADMIN, UserRoleEnum.MANAGER, UserRoleEnum.CASHIER],
         children: [
             { label: "Overview", icon: Terminal, href: "/dashboard/sales", permission: "sales:read" },
-            { label: "POS", icon: PlusCircle, href: "/dashboard/sales/pos", permission: "sales:process", roles: [UserRoleEnum.CASHIER, UserRoleEnum.MANAGER] },
+            { label: "POS", icon: PlusCircle, href: "/dashboard/sales/pos", permission: "sales:process" },
             { label: "Sales List", icon: List, href: "/dashboard/sales/sales-list", permission: "sales:read" },
             { label: "Sales Return", icon: RotateCcw, href: "/dashboard/sales/sales-return", permission: "sales:return" },
         ],
@@ -71,12 +65,11 @@ export const navigation: NavItem[] = [
         label: "Purchase",
         icon: ShoppingCart,
         id: "purchase",
-        roles: [UserRoleEnum.SUPER_ADMIN, UserRoleEnum.MANAGER, UserRoleEnum.PROCUREMENT],
         children: [
             { label: "New Purchase", icon: PlusCircle, href: "/dashboard/purchase/new-purchase", permission: "purchase:create" },
             { label: "Purchase List", icon: ListOrdered, href: "/dashboard/purchase/purchase-list", permission: "purchase:read" },
             { label: "Purchase Return", icon: RotateCcw, href: "/dashboard/purchase/purchase-return-list", permission: "purchase:return" },
-            { label: "Approvals", icon: CheckCircle, href: "/dashboard/purchase/approvals", permission: "purchase:approve", roles: [UserRoleEnum.MANAGER] },
+            { label: "Approvals", icon: CheckCircle, href: "/dashboard/purchase/approvals", permission: "purchase:approve" },
         ],
     },
 
@@ -85,7 +78,6 @@ export const navigation: NavItem[] = [
         label: "Inventory",
         icon: ShoppingBasket,
         id: "inventory",
-        roles: [UserRoleEnum.SUPER_ADMIN, UserRoleEnum.MANAGER, UserRoleEnum.WAREHOUSE_STAFF],
         children: [
             { label: "Items", icon: List, href: "/dashboard/inventory/item-list", permission: "inventory:read" },
             { label: "Categories", icon: Tags, href: "/dashboard/inventory/category-list", permission: "inventory:manage" },
@@ -102,7 +94,6 @@ export const navigation: NavItem[] = [
         label: "Contacts",
         icon: Users,
         id: "contacts",
-        roles: [UserRoleEnum.SUPER_ADMIN, UserRoleEnum.MANAGER, UserRoleEnum.STAFF],
         children: [
             { label: "Customers", icon: UserCheck, href: "/dashboard/contacts/customer-list", permission: "contacts:read" },
             { label: "Suppliers", icon: Truck, href: "/dashboard/contacts/supplier-list", permission: "contacts:read" },
@@ -115,10 +106,9 @@ export const navigation: NavItem[] = [
         label: "Warehouses",
         icon: Warehouse,
         id: "warehouses",
-        roles: [UserRoleEnum.SUPER_ADMIN, UserRoleEnum.MANAGER, UserRoleEnum.WAREHOUSE_STAFF],
         children: [
             { label: "Warehouse List", icon: List, href: "/dashboard/warehouses/warehouse-list", permission: "warehouse:read" },
-            { label: "Add Warehouse", icon: PlusCircle, href: "/dashboard/warehouses/add-warehouse", permission: "warehouse:create", roles: [UserRoleEnum.MANAGER] },
+            { label: "Add Warehouse", icon: PlusCircle, href: "/dashboard/warehouses/add-warehouse", permission: "warehouse:create" },
         ],
     },
 
@@ -127,7 +117,6 @@ export const navigation: NavItem[] = [
         label: "Accounting",
         icon: Wallet,
         id: "accounting",
-        roles: [UserRoleEnum.SUPER_ADMIN, UserRoleEnum.MANAGER, UserRoleEnum.ACCOUNTANT],
         children: [
             { label: "Chart of Accounts", icon: List, href: "/dashboard/accounting/chart-of-accounts", permission: "accounting:read" },
             { label: "Journal Entries", icon: Scroll, href: "/dashboard/accounting/journal", permission: "accounting:manage" },
@@ -142,7 +131,6 @@ export const navigation: NavItem[] = [
         label: "Reports",
         icon: FileText,
         id: "reports",
-        roles: [UserRoleEnum.SUPER_ADMIN, UserRoleEnum.MANAGER],
         children: [
             { label: "Sales Report", href: "/dashboard/reports/sales", permission: "reports:view" },
             { label: "Purchase Report", href: "/dashboard/reports/purchase", permission: "reports:view" },
@@ -157,7 +145,6 @@ export const navigation: NavItem[] = [
         label: "AI Insights",
         icon: Brain,
         id: "ai",
-        roles: [UserRoleEnum.SUPER_ADMIN, UserRoleEnum.MANAGER],
         children: [
             { label: "Demand Prediction", icon: TrendingUp, href: "/dashboard/ai/demand-prediction", permission: "ai:predict" },
             { label: "Stock Recommendations", icon: Activity, href: "/dashboard/ai/stock-recommendation", permission: "ai:recommend" },
@@ -171,7 +158,6 @@ export const navigation: NavItem[] = [
         label: "Settings",
         icon: Settings,
         id: "settings",
-        roles: [UserRoleEnum.SUPER_ADMIN], // Only Super Admin can see the Settings module
         children: [
             {
                 label: "Roles & Permissions",

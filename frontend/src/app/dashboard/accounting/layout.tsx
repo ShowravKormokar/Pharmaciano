@@ -1,3 +1,13 @@
-export default function AccountingLayout({ children }: { children: React.ReactNode }) {
-    return <div className="space-y-4">{children}</div>
+import { PermissionGuard } from "@/hooks/guards/PermissionGuard";
+
+export default function AccountingLayout({
+    children,
+}: {
+    children: React.ReactNode;
+}) {
+    return (
+        <PermissionGuard module="accounting">
+            {children}
+        </PermissionGuard>
+    );
 }

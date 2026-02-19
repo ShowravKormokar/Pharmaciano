@@ -110,14 +110,10 @@ export function DashboardSidebar() {
 
     // Filter navigation based on user role
     const filteredNavigation = useMemo(() => {
-        const filtered = filterNavigationByPermission(navigation, user);
-        // console.log("Navigation loaded:", {
-        //     isSuperAdmin,
-        //     totalItems: filtered.length,
-        //     items: filtered.map(n => n.label)
-        // });
-        return filtered;
-    }, [user, isSuperAdmin]);
+        if (!user) return [];
+        return filterNavigationByPermission(navigation);
+    }, [user]);
+
 
     // Open default group
     const defaultOpenId = useMemo(() => {
