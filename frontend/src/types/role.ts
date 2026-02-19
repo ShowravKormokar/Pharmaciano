@@ -1,0 +1,22 @@
+export interface RoleItem {
+    _id: string;
+    name: string;
+    description?: string;
+    permissions: string[];
+    isActive: boolean;
+    createdAt: string;
+    updatedAt: string;
+    createdBy?: {
+        _id: string;
+        email: string;
+        name: string;
+    };
+}
+
+export interface RolesApiResponse {
+    success: boolean;
+    message: string;
+    data: {
+        roles: RoleItem[];
+    };
+}

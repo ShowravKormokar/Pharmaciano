@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation";
 import { navigation, NavItem } from "@/constants/navigation";
 import { filterNavigationByPermission } from "@/hooks/engine/navigation.engine";
 import { useAuthStore } from "@/store/auth.store";
-import { UserRoleEnum } from "@/types/roles";
 import {
     Sidebar,
     SidebarContent,
@@ -26,22 +25,19 @@ function SidebarNavItem({
     isOpen,
     toggleOpen,
     pathname,
-    isSuperAdmin,
 }: {
     item: NavItem;
     isOpen: boolean;
     toggleOpen: (id: string) => void;
     pathname: string;
-    isSuperAdmin: boolean;
 }) {
     const Icon = item.icon as IconComponent | undefined;
     const hasChildren = Array.isArray(item.children) && item.children.length > 0;
 
     const visibleChildren = useMemo(() => {
         if (!hasChildren) return [];
-        if (isSuperAdmin) return item.children!; // Super admin show all children without filtering
         return item.children!; // Also showing others, but navigation.engine.ts already filtered
-    }, [item.children, hasChildren, isSuperAdmin]);
+    }, [item.children, hasChildren]);
 
     if (hasChildren && visibleChildren.length === 0) {
         return null;
@@ -103,11 +99,6 @@ export function DashboardSidebar() {
     const pathname = usePathname();
     const { user } = useAuthStore();
 
-    // Check if user is Super Admin
-    const isSuperAdmin = useMemo(() => {
-        return user?.roleId?.name === UserRoleEnum.SUPER_ADMIN;
-    }, [user]);
-
     // Filter navigation based on user role
     const filteredNavigation = useMemo(() => {
         if (!user) return [];
@@ -142,7 +133,6 @@ export function DashboardSidebar() {
                                     isOpen={open === (item.id ?? item.label)}
                                     toggleOpen={toggleOpen}
                                     pathname={pathname}
-                                    isSuperAdmin={isSuperAdmin}
                                 />
                             ))}
                         </SidebarMenu>

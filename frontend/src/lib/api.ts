@@ -7,16 +7,18 @@ export const api = axios.create({
     },
 });
 
-// Attach token automatically (RAW token, not Bearer)
-api.interceptors.request.use((config) => {
-    const token =
-        sessionStorage.getItem("accessToken") ||
-        localStorage.getItem("accessToken");
+// Safe token usage
+// Only attach token on client side
+if (typeof window !== "undefined") {
+    api.interceptors.request.use((config) => {
+        const token =
+            sessionStorage.getItem("accessToken") || localStorage.getItem("accessToken");
 
-    if (token) {
-        config.headers = config.headers ?? {};
-        config.headers.Authorization = token; // ✅ backend expects raw token
-    }
+        if (token) {
+            config.headers = config.headers ?? {};
+            config.headers.Authorization = token; // backend expects raw token
+        }
 
-    return config;
-});
+        return config;
+    });
+}
