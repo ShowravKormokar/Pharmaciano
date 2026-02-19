@@ -21,8 +21,8 @@ export interface UserProfile {
     orgName: string | null;
     branchName: string | null;
     roleId: Role;
-    organization: any | null;
-    branch: any | null;
+    organizationId: any | null;
+    branchId: any | null;
     isActive: boolean;
     lastLogin: string;
     createdAt: string;

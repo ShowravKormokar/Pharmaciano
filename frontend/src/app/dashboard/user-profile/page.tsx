@@ -144,10 +144,10 @@ export default function ProfileDetails() {
                             <div>
                                 <label className="text-sm font-medium text-gray-500">Organization</label>
                                 <p className="text-lg font-semibold">
-                                    {user.organization?.name || "Not Assigned"}
+                                    {user.organizationId?.name || "Not Assigned"}
                                 </p>
-                                {user.organization?.address && (
-                                    <p className="text-sm text-gray-600">{user.organization.address}</p>
+                                {user.organizationId?.address && (
+                                    <p className="text-sm text-gray-600">{user.organizationId.address}</p>
                                 )}
                             </div>
 
@@ -159,10 +159,10 @@ export default function ProfileDetails() {
                                     Branch
                                 </label>
                                 <p className="text-lg font-semibold">
-                                    {user.branch?.name || "Not Assigned"}
+                                    {user.branchId?.name || "Not Assigned"}
                                 </p>
-                                {user.branch?.address && (
-                                    <p className="text-sm text-gray-600">{user.branch.address}</p>
+                                {user.branchId?.address && (
+                                    <p className="text-sm text-gray-600">{user.branchId.address}</p>
                                 )}
                             </div>
                         </CardContent>
@@ -249,7 +249,7 @@ export default function ProfileDetails() {
             </div>
 
             {/* Additional Info Section */}
-            <Card className="mt-6">
+            {/* <Card className="mt-6">
                 <CardHeader>
                     <CardTitle>Additional Information</CardTitle>
                 </CardHeader>
@@ -269,7 +269,7 @@ export default function ProfileDetails() {
                         </div>
                     </div>
                 </CardContent>
-            </Card>
+            </Card> */}
 
             {/* Raw JSON Data (for debugging) */}
             <details className="mt-8">
