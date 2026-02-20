@@ -17,7 +17,6 @@ export default function RoleEditPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    // In your page.tsx
     useEffect(() => {
         const fetchRole = async () => {
             if (!id || Array.isArray(id)) {
@@ -33,9 +32,14 @@ export default function RoleEditPage() {
                 console.log("API Response:", response); // Debug log
                 console.log("Response data:", response.data); // Debug log
 
-                // Based on your OpenAPI schema, the response structure is:
-                // { success: true, message: "string", data: RoleItem }
-                const roleData = response.data?.data;
+                // Type assertion to tell TypeScript the shape of response.data
+                const responseData = response.data as {
+                    success: boolean;
+                    message: string;
+                    data: RoleItem;
+                };
+
+                const roleData = responseData?.data;
 
                 if (!roleData || !roleData._id) {
                     setError("Role not found or invalid response structure");
