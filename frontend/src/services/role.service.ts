@@ -19,11 +19,12 @@ export const fetchRolesService = async (): Promise<RoleItem[]> => {
 /* =========================
    Get Role by ID
 ========================= */
-export const fetchRoleByIdService = async (
-    id: string
-): Promise<AxiosResponse<GetRoleResponse>> => {
-    return await api.get(`/v1/roles/${id}`);
-};
+export const fetchRoleByIdService = async (id: string) => { return await api.get(`/v1/roles/${id}`); };
+// export const fetchRoleByIdService = async (
+//     id: string
+// ): Promise<AxiosResponse<GetRoleResponse>> => {
+//     return await api.get(`/v1/roles/${id}`);
+// };
 
 /* =========================
    Create Role
