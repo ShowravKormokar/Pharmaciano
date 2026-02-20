@@ -67,24 +67,59 @@ export const useRoleStore = create<RoleState>()(
 
             createRole: async () => {
                 try {
-                    await createRoleService(get().form);
+                    const { name, description, permissions } = get().form;
+
+                    if (!name || permissions.length === 0) {
+                        set({ error: "Role name and at least one permission are required." });
+                        return false;
+                    }
+
+                    // Ensure uppercase
+                    const payload = {
+                        name: name.toUpperCase(),
+                        description,
+                        // Only include unique permissions
+                        permissions: Array.from(new Set(permissions)),
+                    };
+
+                    const res = await createRoleService(payload);
+
+                    // Optional: can show backend message
+                    set({ error: null });
                     await get().fetchRoles();
                     get().resetForm();
+
                     return true;
                 } catch (err: any) {
-                    set({ error: err?.response?.data?.message });
+                    set({ error: err?.response?.data?.message || "Server error" });
                     return false;
                 }
             },
 
-            updateRole: async (id) => {
+            updateRole: async (id: string) => {
                 try {
-                    await updateRoleService(id, get().form);
+                    const { name, description, permissions } = get().form;
+
+                    if (!name || permissions.length === 0) {
+                        set({ error: "Role name and at least one permission are required." });
+                        return false;
+                    }
+
+                    const payload = {
+                        name: name.toUpperCase(),
+                        description,
+                        permissions: Array.from(new Set(permissions)),
+                    };
+
+                    const res = await updateRoleService(id, payload);
+
+                    set({ error: null });
                     await get().fetchRoles();
                     get().resetForm();
+
                     return true;
                 } catch (err: any) {
-                    set({ error: err?.response?.data?.message });
+                    set({ error: err?.response?.data?.message || "Server error" });
                     return false;
                 }
             },

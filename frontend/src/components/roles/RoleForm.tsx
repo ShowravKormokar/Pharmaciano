@@ -12,9 +12,6 @@ interface Props {
     roleId?: string;
 }
 
-/**
- * All possible granular actions
- */
 const ACTIONS = [
     "read",
     "create",
@@ -41,40 +38,69 @@ export default function RoleForm({ roleId }: Props) {
         updateRole,
         features,
         fetchFeatures,
+        resetForm,
     } = useRoleStore();
 
     const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+    const [loading, setLoading] = useState(false);
+    const [message, setMessage] = useState<string | null>(null);
+    const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
     useEffect(() => {
         fetchFeatures();
     }, []);
 
-    /**
-     * Group features by category (only active)
-     */
     const groupedFeatures = useMemo(() => {
         return features.reduce((acc: any, feature: any) => {
             if (!feature.isActive) return acc;
-
-            if (!acc[feature.category]) {
-                acc[feature.category] = [];
-            }
-
+            if (!acc[feature.category]) acc[feature.category] = [];
             acc[feature.category].push(feature);
             return acc;
         }, {});
     }, [features]);
 
     const handleSubmit = async () => {
-        if (roleId) {
-            await updateRole(roleId);
-        } else {
-            await createRole();
+        setLoading(true);
+        setMessage(null);
+        setErrorMsg(null);
+
+        // Backend requires uppercase
+        setForm({ name: form.name.toUpperCase() });
+
+        // console.log("Submitting form with permissions:", form);// Debug log
+
+        try {
+            const success = roleId
+                ? await updateRole(roleId)
+                : await createRole();
+
+            if (success) {
+                setMessage(roleId ? "Role updated successfully." : "Role created successfully.");
+                if (!roleId) resetForm();
+            } else {
+                setErrorMsg("Something went wrong.");
+            }
+        } catch (err: any) {
+            setErrorMsg(err?.response?.data?.message || "Server error");
         }
+
+        setLoading(false);
     };
 
     return (
         <div className="space-y-6">
+            {/* ===== ALERT MESSAGE ===== */}
+            {message && (
+                <div className="p-3 rounded-lg bg-green-100 text-green-700 text-sm">
+                    {message}
+                </div>
+            )}
+            {errorMsg && (
+                <div className="p-3 rounded-lg bg-red-100 text-red-600 text-sm">
+                    {errorMsg}
+                </div>
+            )}
+
             {/* ================= BASIC INFO ================= */}
             <Card className="rounded-2xl shadow-sm">
                 <CardHeader>
@@ -82,15 +108,19 @@ export default function RoleForm({ roleId }: Props) {
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <Input
-                        placeholder="Role Name"
+                        placeholder="Role Name (UPPERCASE)"
                         value={form.name}
-                        onChange={(e) => setForm({ name: e.target.value })}
+                        onChange={(e) =>
+                            setForm({ name: e.target.value.toUpperCase() })
+                        }
                     />
 
                     <Textarea
                         placeholder="Role Description"
                         value={form.description}
-                        onChange={(e) => setForm({ description: e.target.value })}
+                        onChange={(e) =>
+                            setForm({ description: e.target.value })
+                        }
                     />
                 </CardContent>
             </Card>
@@ -104,12 +134,8 @@ export default function RoleForm({ roleId }: Props) {
                 <CardContent className="space-y-6">
                     {Object.entries(groupedFeatures).map(
                         ([category, features]: any) => {
-                            const base = features[0].name.split(":")[0]; // accounting
+                            const base = features[0].name.split(":")[0];
                             const managePermission = `${base}:manage`;
-                            const allPermissions = ACTIONS.map(
-                                (a) => `${base}:${a}`
-                            );
-
                             const isExpanded = expanded[category] || false;
                             const hasManage =
                                 form.permissions.includes(managePermission);
@@ -119,7 +145,6 @@ export default function RoleForm({ roleId }: Props) {
                                     key={category}
                                     className="border rounded-xl p-4 bg-muted/20"
                                 >
-                                    {/* ===== CATEGORY HEADER ===== */}
                                     <button
                                         type="button"
                                         onClick={() =>
@@ -138,41 +163,35 @@ export default function RoleForm({ roleId }: Props) {
                                         )}
                                     </button>
 
-                                    {/* ===== EXPANDABLE CONTENT ===== */}
                                     {isExpanded && (
                                         <div className="mt-4 space-y-4">
-                                            {/* ===== MANAGE (FULL ACCESS) ===== */}
+                                            {/* ===== MANAGE ===== */}
                                             <label className="flex items-center gap-2 font-semibold text-primary">
                                                 <input
                                                     type="checkbox"
                                                     checked={hasManage}
                                                     onChange={(e) => {
                                                         if (e.target.checked) {
+                                                            // remove granular permissions of this base
+                                                            const filtered = form.permissions.filter(
+                                                                (p) => !p.startsWith(`${base}:`)
+                                                            );
                                                             setForm({
-                                                                permissions: [
-                                                                    ...new Set([
-                                                                        ...form.permissions,
-                                                                        managePermission,
-                                                                        ...allPermissions,
-                                                                    ]),
-                                                                ],
+                                                                permissions: [...filtered, managePermission],
                                                             });
                                                         } else {
                                                             setForm({
-                                                                permissions:
-                                                                    form.permissions.filter(
-                                                                        (p) =>
-                                                                            p !== managePermission &&
-                                                                            !allPermissions.includes(p)
-                                                                    ),
+                                                                permissions: form.permissions.filter(
+                                                                    (p) => p !== managePermission
+                                                                ),
                                                             });
                                                         }
                                                     }}
                                                 />
-                                                {base}:manage (Full Access)
+                                                {managePermission} (Full Access)
                                             </label>
 
-                                            {/* ===== GRANULAR ACTIONS ===== */}
+                                            {/* ===== GRANULAR ===== */}
                                             <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                                                 {ACTIONS.map((action) => {
                                                     const permission = `${base}:${action}`;
@@ -186,36 +205,21 @@ export default function RoleForm({ roleId }: Props) {
                                                         >
                                                             <input
                                                                 type="checkbox"
+                                                                disabled={hasManage}
                                                                 checked={isChecked}
                                                                 onChange={(e) => {
                                                                     if (e.target.checked) {
-                                                                        const updated = [
-                                                                            ...form.permissions,
-                                                                            permission,
-                                                                        ];
-
-                                                                        const allSelected =
-                                                                            allPermissions.every((p) =>
-                                                                                updated.includes(p)
-                                                                            );
-
                                                                         setForm({
-                                                                            permissions: allSelected
-                                                                                ? [
-                                                                                    ...new Set([
-                                                                                        ...updated,
-                                                                                        managePermission,
-                                                                                    ]),
-                                                                                ]
-                                                                                : updated,
+                                                                            permissions: [
+                                                                                ...form.permissions,
+                                                                                permission,
+                                                                            ],
                                                                         });
                                                                     } else {
                                                                         setForm({
                                                                             permissions:
                                                                                 form.permissions.filter(
-                                                                                    (p) =>
-                                                                                        p !== permission &&
-                                                                                        p !== managePermission
+                                                                                    (p) => p !== permission
                                                                                 ),
                                                                         });
                                                                     }
@@ -235,10 +239,32 @@ export default function RoleForm({ roleId }: Props) {
                 </CardContent>
             </Card>
 
-            {/* ================= SUBMIT ================= */}
-            <Button className="w-full" onClick={handleSubmit}>
-                {roleId ? "Update Role" : "Create Role"}
-            </Button>
+            {/* ================= BUTTONS ================= */}
+            <div className="flex gap-3">
+                <Button
+                className="w-1/2"
+                    onClick={handleSubmit}
+                    disabled={loading}
+                >
+                    {loading
+                        ? "Processing..."
+                        : roleId
+                            ? "Update Role"
+                            : "Create Role"}
+                </Button>
+
+                {!roleId && (
+                    <Button
+                    className="w-1/2"
+                        type="button"
+                        variant="outline"
+                        onClick={resetForm}
+                        disabled={loading}
+                    >
+                        Reset
+                    </Button>
+                )}
+            </div>
         </div>
     );
 };
