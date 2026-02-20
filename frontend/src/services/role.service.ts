@@ -6,25 +6,24 @@ import type {
     FeaturesApiResponse,
     GetRoleResponse,
 } from "@/types/role";
-import type { AxiosResponse } from "axios";
 
 /* =========================
    Get All Roles
 ========================= */
 export const fetchRolesService = async (): Promise<RoleItem[]> => {
-    const res = await api.get("/v1/roles") as AxiosResponse<RolesApiResponse>;
+    const res = await api.get<RolesApiResponse>("/v1/roles");
     return res.data.data.roles;
 };
 
 /* =========================
    Get Role by ID
 ========================= */
-export const fetchRoleByIdService = async (id: string) => { return await api.get(`/v1/roles/${id}`); };
-// export const fetchRoleByIdService = async (
-//     id: string
-// ): Promise<AxiosResponse<GetRoleResponse>> => {
-//     return await api.get(`/v1/roles/${id}`);
-// };
+export const fetchRoleByIdService = async (
+    id: string
+): Promise<RoleItem> => {
+    const res = await api.get<GetRoleResponse>(`/v1/roles/${id}`);
+    return res.data.data;
+};
 
 /* =========================
    Create Role
@@ -61,9 +60,7 @@ export const deleteRoleService = async (id: string) => {
 /* =========================
    Get Features
 ========================= */
-// export const fetchFeaturesService = async (): Promise<FeatureItem[]> => {
-//     const res: AxiosResponse<FeaturesApiResponse> =
-//         await api.get("/v1/roles/features");
-
-//     return res.data.data.features;
-// };
+export const fetchFeaturesService = async (): Promise<FeatureItem[]> => {
+    const res = await api.get<FeaturesApiResponse>("/v1/roles/features");
+    return res.data.data.features;
+};

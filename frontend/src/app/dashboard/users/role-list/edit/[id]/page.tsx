@@ -25,37 +25,23 @@ export default function RoleEditPage() {
                 return;
             }
 
-            console.log("Fetching role with ID:", id); // Debug log
-
             try {
-                const response = await fetchRoleByIdService(id);
-                console.log("API Response:", response); // Debug log
-                console.log("Response data:", response.data); // Debug log
+                const roleData = await fetchRoleByIdService(id);
 
-                // Type assertion to tell TypeScript the shape of response.data
-                const responseData = response.data as {
-                    success: boolean;
-                    message: string;
-                    data: RoleItem;
-                };
-
-                const roleData = responseData?.data;
-
-                if (!roleData || !roleData._id) {
-                    setError("Role not found or invalid response structure");
-                    console.error("Unexpected response structure:", response.data);
-                } else {
-                    setRole(roleData);
-                    setForm({
-                        name: roleData.name,
-                        description: roleData.description || "",
-                        permissions: roleData.permissions || [],
-                    });
+                if (!roleData?._id) {
+                    setError("Role not found");
+                    return;
                 }
+
+                setRole(roleData);
+
+                setForm({
+                    name: roleData.name,
+                    description: roleData.description || "",
+                    permissions: roleData.permissions || [],
+                });
+
             } catch (err: any) {
-                console.error("Error fetching role:", err);
-                console.error("Error response:", err?.response); // Debug log
-                console.error("Error data:", err?.response?.data); // Debug log
                 setError(err?.response?.data?.message || "Failed to fetch role");
             } finally {
                 setLoading(false);

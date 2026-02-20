@@ -87,6 +87,10 @@ export default function RoleForm({ roleId }: Props) {
         setLoading(false);
     };
 
+    if (!features.length) {
+        return <p className="text-sm text-muted-foreground">Loading permissions...</p>;
+    }
+
     return (
         <div className="space-y-6">
             {/* ===== ALERT MESSAGE ===== */}
@@ -242,7 +246,7 @@ export default function RoleForm({ roleId }: Props) {
             {/* ================= BUTTONS ================= */}
             <div className="flex gap-3">
                 <Button
-                className="w-1/2"
+                    className="w-1/2"
                     onClick={handleSubmit}
                     disabled={loading}
                 >
@@ -255,7 +259,7 @@ export default function RoleForm({ roleId }: Props) {
 
                 {!roleId && (
                     <Button
-                    className="w-1/2"
+                        className="w-1/2"
                         type="button"
                         variant="outline"
                         onClick={resetForm}
