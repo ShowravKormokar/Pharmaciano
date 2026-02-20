@@ -5,7 +5,7 @@ import {
     createRoleService,
     updateRoleService,
     deleteRoleService,
-    fetchFeaturesService,
+    // fetchFeaturesService,
 } from "@/services/role.service";
 import type { RoleItem, FeatureItem } from "@/types/role";
 
@@ -61,8 +61,8 @@ export const useRoleStore = create<RoleState>()(
             },
 
             fetchFeatures: async () => {
-                const features = await fetchFeaturesService();
-                set({ features });
+                // const features = await fetchFeaturesService();
+                // set({ features });
             },
 
             createRole: async () => {

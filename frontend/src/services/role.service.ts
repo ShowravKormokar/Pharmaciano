@@ -12,7 +12,7 @@ import type { AxiosResponse } from "axios";
    Get All Roles
 ========================= */
 export const fetchRolesService = async (): Promise<RoleItem[]> => {
-    const res: AxiosResponse<RolesApiResponse> = await api.get("/v1/roles");
+    const res = await api.get("/v1/roles") as AxiosResponse<RolesApiResponse>;
     return res.data.data.roles;
 };
 
@@ -61,9 +61,9 @@ export const deleteRoleService = async (id: string) => {
 /* =========================
    Get Features
 ========================= */
-export const fetchFeaturesService = async (): Promise<FeatureItem[]> => {
-    const res: AxiosResponse<FeaturesApiResponse> =
-        await api.get("/v1/roles/features");
+// export const fetchFeaturesService = async (): Promise<FeatureItem[]> => {
+//     const res: AxiosResponse<FeaturesApiResponse> =
+//         await api.get("/v1/roles/features");
 
-    return res.data.data.features;
-};
+//     return res.data.data.features;
+// };
