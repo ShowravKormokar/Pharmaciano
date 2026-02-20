@@ -1,6 +1,5 @@
 "use client";
 
-import { RoleItem } from "@/types/role";
 import { useRoleStore } from "@/store/role.store";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
@@ -15,6 +14,7 @@ import {
     AlertDialogAction,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { RoleItem } from "@/types/role";
 
 interface Props {
     role: RoleItem;
