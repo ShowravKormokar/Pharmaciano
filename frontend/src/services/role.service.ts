@@ -4,6 +4,7 @@ import type {
     FeatureItem,
     RolesApiResponse,
     FeaturesApiResponse,
+    GetRoleResponse,
 } from "@/types/role";
 import type { AxiosResponse } from "axios";
 
@@ -18,7 +19,9 @@ export const fetchRolesService = async (): Promise<RoleItem[]> => {
 /* =========================
    Get Role by ID
 ========================= */
-export const fetchRoleByIdService = async (id: string) => {
+export const fetchRoleByIdService = async (
+    id: string
+): Promise<AxiosResponse<GetRoleResponse>> => {
     return await api.get(`/v1/roles/${id}`);
 };
 

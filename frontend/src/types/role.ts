@@ -37,3 +37,9 @@ export interface FeaturesApiResponse {
         features: FeatureItem[];
     };
 }
+
+export interface GetRoleResponse {
+    success: boolean;
+    message: string;
+    data: RoleItem;
+}
