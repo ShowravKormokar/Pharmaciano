@@ -3,9 +3,11 @@ export interface RoleItem {
     name: string;
     description?: string;
     permissions: string[];
-    isActive: boolean;
-    createdAt: string;
-    updatedAt: string;
+
+    isActive?: boolean;
+    createdAt?: string;
+    updatedAt?: string;
+
     createdBy?: {
         _id: string;
         email: string;
@@ -13,10 +15,25 @@ export interface RoleItem {
     };
 }
 
+export interface FeatureItem {
+    _id: string;
+    name: string;
+    category: string;
+    isActive: boolean;
+}
+
 export interface RolesApiResponse {
     success: boolean;
     message: string;
     data: {
         roles: RoleItem[];
+    };
+}
+
+export interface FeaturesApiResponse {
+    success: boolean;
+    message: string;
+    data: {
+        features: FeatureItem[];
     };
 }

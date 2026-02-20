@@ -1,27 +1,65 @@
 import { api } from "@/lib/api";
+import type {
+    RoleItem,
+    FeatureItem,
+    RolesApiResponse,
+    FeaturesApiResponse,
+} from "@/types/role";
+import type { AxiosResponse } from "axios";
 
-export interface RoleItem {
-    _id: string;
+/* =========================
+   Get All Roles
+========================= */
+export const fetchRolesService = async (): Promise<RoleItem[]> => {
+    const res: AxiosResponse<RolesApiResponse> = await api.get("/v1/roles");
+    return res.data.data.roles;
+};
+
+/* =========================
+   Get Role by ID
+========================= */
+export const fetchRoleByIdService = async (id: string) => {
+    return await api.get(`/v1/roles/${id}`);
+};
+
+/* =========================
+   Create Role
+========================= */
+export const createRoleService = async (data: {
     name: string;
     description: string;
     permissions: string[];
-    isActive: boolean;
-}
-
-// Fetch all roles
-export const fetchRolesService = async () => {
-    const res = await api.get<{ success: boolean; data: { roles: RoleItem[] } }>("/v1/roles");
-    return res.data;
+}) => {
+    return await api.post("/v1/roles", data);
 };
 
-// Fetch a single role by ID (for edit)
-export const fetchRoleByIdService = async (id: string) => {
-    const res = await api.get<{ success: boolean; data: RoleItem }>(`/v1/roles/${id}`);
-    return res.data;
+/* =========================
+   Update Role
+========================= */
+export const updateRoleService = async (
+    id: string,
+    data: {
+        name: string;
+        description: string;
+        permissions: string[];
+    }
+) => {
+    return await api.put(`/v1/roles/${id}`, data);
 };
 
-// Delete a role by ID
+/* =========================
+   Delete Role
+========================= */
 export const deleteRoleService = async (id: string) => {
-    const res = await api.delete(`/v1/roles/${id}`);
-    return res.data;
+    return await api.delete(`/v1/roles/${id}`);
+};
+
+/* =========================
+   Get Features
+========================= */
+export const fetchFeaturesService = async (): Promise<FeatureItem[]> => {
+    const res: AxiosResponse<FeaturesApiResponse> =
+        await api.get("/v1/roles/features");
+
+    return res.data.data.features;
 };
