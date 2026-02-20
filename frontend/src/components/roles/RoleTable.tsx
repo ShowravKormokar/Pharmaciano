@@ -1,6 +1,6 @@
 "use client";
 
-import { RoleItem } from "@/services/role.service";
+import type { RoleItem } from "@/types/role";
 import RoleActions from "./RoleActions";
 
 interface Props {
@@ -26,7 +26,7 @@ export default function RoleTable({ roles }: Props) {
                             <td className="p-4 font-medium">{role.name}</td>
                             <td className="p-4">{role.description}</td>
                             <td className="p-4 flex flex-wrap gap-2">
-                                {role.permissions.map((p) => (
+                                {role.permissions.map((p: string) => (
                                     <span
                                         key={p}
                                         className="rounded-full bg-primary/10 px-3 py-1 text-xs"
