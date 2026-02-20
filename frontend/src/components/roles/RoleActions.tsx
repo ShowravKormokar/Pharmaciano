@@ -1,6 +1,6 @@
 "use client";
 
-import { RoleItem, deleteRoleService } from "@/services/role.service";
+import { RoleItem } from "@/types/role";
 import { useRoleStore } from "@/store/role.store";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
