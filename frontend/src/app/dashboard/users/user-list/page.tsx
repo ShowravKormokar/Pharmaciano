@@ -1,128 +1,113 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { useUserStore } from "@/store/user.store";
 import { Button } from "@/components/ui/button";
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogFooter,
-} from "@/components/ui/dialog";
-import { useRouter } from "next/navigation";
+import { Input } from "@/components/ui/input";
+import { RefreshCcw, UserPlus, Search } from "lucide-react";
+import Link from "next/link";
+import UserTable from "@/components/users/UserTable";
+import UserTableSkeleton from "@/components/users/UserTableSkeleton";
+import UserFilter from "@/components/users/UserFilter";
 
-export default function UserList() {
+export default function UserListPage() {
     const { users, fetchUsers, removeUser, loading } = useUserStore();
-    const [deleteId, setDeleteId] = useState<string | null>(null);
-    const router = useRouter();
+    const [searchTerm, setSearchTerm] = useState("");
+    const [filters, setFilters] = useState({ role: "all", status: "all" });
+    const [deleting, setDeleting] = useState(false);
 
-    useEffect(() => {
-        fetchUsers();
+    const loadUsers = useCallback(async () => {
+        await fetchUsers();
     }, [fetchUsers]);
 
-    if (loading) return <div className="p-6">Loading users...</div>;
+    useEffect(() => {
+        loadUsers();
+    }, [loadUsers]);
+
+    const handleDelete = async (id: string) => {
+        setDeleting(true);
+        await removeUser(id);
+        setDeleting(false);
+    };
+
+    // Filter users based on search term, role, and status
+    const filteredUsers = useMemo(() => {
+        return users.filter((user) => {
+            // Search filter
+            const matchesSearch =
+                !searchTerm.trim() ||
+                user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                user.roleId?.name?.toLowerCase().includes(searchTerm.toLowerCase());
+
+            if (!matchesSearch) return false;
+
+            // Role filter
+            if (filters.role !== "all" && user.roleId?.name !== filters.role) {
+                return false;
+            }
+
+            // Status filter
+            if (filters.status !== "all") {
+                const isActive = filters.status === "active";
+                if (user.isActive !== isActive) return false;
+            }
+
+            return true;
+        });
+    }, [users, searchTerm, filters]);
 
     return (
-        <div className="space-y-6">
-            <div className="rounded-xl border shadow-sm">
-                <Table>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead>Name</TableHead>
-                            <TableHead>Email</TableHead>
-                            <TableHead>Role</TableHead>
-                            <TableHead>Status</TableHead>
-                            <TableHead className="text-right">Actions</TableHead>
-                        </TableRow>
-                    </TableHeader>
+        <div className="p-6 space-y-6">
+            {/* Header */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div>
+                    <h1 className="text-2xl sm:text-3xl font-bold text-foreground">
+                        User List
+                    </h1>
+                    <p className="text-muted-foreground mt-1">
+                        Manage system users, their roles and status.
+                    </p>
+                </div>
 
-                    <TableBody>
-                        {users.map((user) => (
-                            <TableRow key={user._id}>
-                                <TableCell>{user.name}</TableCell>
-                                <TableCell>{user.email}</TableCell>
-                                <TableCell>{user.roleId.name}</TableCell>
-                                <TableCell>
-                                    {user.isActive ? (
-                                        <span className="text-green-600 font-medium">
-                                            Active
-                                        </span>
-                                    ) : (
-                                        <span className="text-red-600 font-medium">
-                                            Inactive
-                                        </span>
-                                    )}
-                                </TableCell>
+                <div className="flex items-center gap-2">
+                    <Link href="/dashboard/users/add">
+                        <Button variant="outline" size="sm">
+                            <UserPlus className="h-4 w-4 mr-2" />
+                            Create User
+                        </Button>
+                    </Link>
 
-                                <TableCell className="text-right space-x-2">
-                                    <Button
-                                        size="sm"
-                                        variant="outline"
-                                        onClick={() =>
-                                            router.push(`/dashboard/users/view/${user._id}`)
-                                        }
-                                    >
-                                        View
-                                    </Button>
-
-                                    <Button
-                                        size="sm"
-                                        variant="secondary"
-                                        onClick={() =>
-                                            router.push(`/dashboard/users/edit/${user._id}`)
-                                        }
-                                    >
-                                        Edit
-                                    </Button>
-
-                                    <Button
-                                        size="sm"
-                                        variant="destructive"
-                                        onClick={() => setDeleteId(user._id)}
-                                    >
-                                        Delete
-                                    </Button>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
+                    <Button size="sm" onClick={loadUsers} disabled={loading}>
+                        <RefreshCcw
+                            className={`h-4 w-4 mr-2 ${loading ? "animate-spin" : ""}`}
+                        />
+                        Refresh
+                    </Button>
+                </div>
             </div>
 
-            {/* Delete Confirmation */}
-            <Dialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>Confirm Delete</DialogTitle>
-                    </DialogHeader>
+            {/* Search and Filters */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                <div className="relative w-full sm:w-64">
+                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                    <Input
+                        placeholder="Search users..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="pl-8"
+                    />
+                </div>
 
-                    <p>Are you sure you want to delete this user?</p>
+                <UserFilter users={users} onFilterChange={setFilters} />
+            </div>
 
-                    <DialogFooter>
-                        <Button variant="outline" onClick={() => setDeleteId(null)}>
-                            Cancel
-                        </Button>
-                        <Button
-                            variant="destructive"
-                            onClick={() => {
-                                if (deleteId) removeUser(deleteId);
-                                setDeleteId(null);
-                            }}
-                        >
-                            Confirm Delete
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
+            {/* Table or Skeleton */}
+            {loading ? (
+                <UserTableSkeleton />
+            ) : (
+                <UserTable users={filteredUsers} onDelete={handleDelete} />
+            )}
         </div>
     );
-};
+}

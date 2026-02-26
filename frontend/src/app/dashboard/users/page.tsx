@@ -5,7 +5,7 @@ import UserList from "./user-list/page";
 
 export default function UsersPage() {
     return (
-        <RoleGuard roles={["Super Admin", "Manager"]}>
+        <RoleGuard roles={["SUPER_ADMIN", "MANAGER"]}>
             <UserList />
         </RoleGuard>
     );
