@@ -78,7 +78,14 @@ export default function RoleActions({ role }: Props) {
 
                     <AlertDialogFooter>
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={() => deleteRole(role._id)}>
+                        <AlertDialogAction
+                            onClick={async () => {
+                                const success = await deleteRole(role._id);
+                                if (!success) {
+                                    alert("Failed to delete role. Please try again.");
+                                }
+                            }}
+                        >
                             Confirm
                         </AlertDialogAction>
                     </AlertDialogFooter>

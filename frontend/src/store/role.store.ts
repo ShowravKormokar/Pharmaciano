@@ -26,7 +26,7 @@ interface RoleState {
     fetchFeatures: () => Promise<void>;
     createRole: () => Promise<boolean>;
     updateRole: (id: string) => Promise<boolean>;
-    deleteRole: (id: string) => Promise<void>;
+    deleteRole: (id: string) => Promise<boolean>;
 
     setForm: (data: Partial<RoleState["form"]>) => void;
     resetForm: () => void;
@@ -135,11 +135,20 @@ export const useRoleStore = create<RoleState>()(
                 }
             },
 
-            deleteRole: async (id) => {
-                await deleteRoleService(id);
-                set((state) => ({
-                    roles: state.roles.filter((r) => r._id !== id),
-                }));
+            deleteRole: async (id: string) => {
+                try {
+                    await deleteRoleService(id);
+                    // Remove from local state only after successful API call
+                    set((state) => ({
+                        roles: state.roles.filter((r) => r._id !== id),
+                        error: null,
+                    }));
+                    return true;
+                } catch (err: any) {
+                    const errorMsg = err?.response?.data?.message || "Failed to delete role";
+                    set({ error: errorMsg });
+                    return false;
+                }
             },
         }),
         {
