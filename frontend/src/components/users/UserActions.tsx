@@ -14,40 +14,46 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Eye, Pencil, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { UserItem } from "@/types/user";
 import { useUserStore } from "@/store/user.store";
+import { UserItem } from "@/types/user";
 
 interface Props {
     user: UserItem;
-    onDelete: (id: string) => Promise<void>;
 }
 
-export default function UserActions({ user, onDelete }: Props) {
+export default function UserActions({ user }: Props) {
     const router = useRouter();
+    const deleteUser = useUserStore((state) => state.deleteUser);
     const setForm = useUserStore((state) => state.setForm);
 
     const handleEdit = () => {
         setForm({
             email: user.email,
-            password: "", // don't prefill password
+            password: "",
             name: user.name,
             role: user.roleId?.name || "",
             orgName: user.organizationId?.name || "",
             branchName: user.branchId?.name || "",
-            warehouseName: "", // we don't have this yet – could be extended
+            warehouseName: "",
             phone: user.phone || "",
             isActive: user.isActive,
         });
         router.push(`/dashboard/users/user-list/edit/${user._id}`);
     };
 
+    const handleDelete = async (id: string) => {
+        const success = await deleteUser(id);
+        if (!success) {
+            alert("Failed to delete user. Please try again.");
+        }
+    };
 
     return (
         <div className="flex justify-end gap-2">
             <Button
                 variant="ghost"
                 size="sm"
-                onClick={handleEdit}
+                onClick={() => router.push(`/dashboard/users/user-list/view/${user._id}`)}
                 title="View"
                 className="border-[0.1rem] rounded-md"
             >
@@ -57,7 +63,7 @@ export default function UserActions({ user, onDelete }: Props) {
             <Button
                 variant="outline"
                 size="sm"
-                onClick={() => router.push(`/dashboard/users/user-list/edit/${user._id}`)}
+                onClick={handleEdit}
                 title="Edit"
             >
                 <Pencil className="h-4 w-4" />
@@ -69,7 +75,6 @@ export default function UserActions({ user, onDelete }: Props) {
                         <Trash2 className="h-4 w-4" />
                     </Button>
                 </AlertDialogTrigger>
-
                 <AlertDialogContent>
                     <AlertDialogHeader>
                         <AlertDialogTitle>Delete User?</AlertDialogTitle>
@@ -77,10 +82,9 @@ export default function UserActions({ user, onDelete }: Props) {
                             This action cannot be undone. This will permanently delete the user account.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
-
                     <AlertDialogFooter>
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={() => onDelete(user._id)}>
+                        <AlertDialogAction onClick={() => handleDelete(user._id)}>
                             Confirm
                         </AlertDialogAction>
                     </AlertDialogFooter>

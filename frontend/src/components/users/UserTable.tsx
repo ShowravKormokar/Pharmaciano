@@ -14,10 +14,9 @@ import { UserItem } from "@/types/user";
 
 interface Props {
     users: UserItem[];
-    onDelete: (id: string) => Promise<void>;
 }
 
-export default function UserTable({ users, onDelete }: Props) {
+export default function UserTable({ users }: Props) {
     return (
         <div className="rounded-xl border shadow-sm overflow-x-auto">
             <Table>
@@ -42,7 +41,7 @@ export default function UserTable({ users, onDelete }: Props) {
                                 </Badge>
                             </TableCell>
                             <TableCell className="text-right">
-                                <UserActions user={user} onDelete={onDelete} />
+                                <UserActions user={user} />
                             </TableCell>
                         </TableRow>
                     ))}

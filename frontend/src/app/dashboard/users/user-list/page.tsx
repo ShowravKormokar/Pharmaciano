@@ -106,7 +106,7 @@ export default function UserListPage() {
             {loading ? (
                 <UserTableSkeleton />
             ) : (
-                <UserTable users={filteredUsers} onDelete={handleDelete} />
+                <UserTable users={filteredUsers} />
             )}
         </div>
     );

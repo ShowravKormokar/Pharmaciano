@@ -154,10 +154,12 @@ export const useUserStore = create<UserState>()(
                     await deleteUserService(id);
                     set((state) => ({
                         users: state.users.filter((u) => u._id !== id),
+                        error: null,
                     }));
                     return true;
                 } catch (err: any) {
-                    set({ error: err?.response?.data?.message || "Failed to delete user" });
+                    const errorMsg = err?.response?.data?.message || "Failed to delete user";
+                    set({ error: errorMsg });
                     return false;
                 }
             },
