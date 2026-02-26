@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChevronDown, ChevronRight } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 interface Props {
     roleId?: string;
@@ -67,7 +69,7 @@ export default function RoleForm({ roleId, onSuccess }: Props) {
 
         // Backend requires uppercase
         setForm({ name: form.name.toUpperCase() });
-
+        //console.log("Submitting form with data:", form); // Debug log
         try {
             const success = roleId
                 ? await updateRole(roleId)
@@ -132,6 +134,14 @@ export default function RoleForm({ roleId, onSuccess }: Props) {
                             setForm({ description: e.target.value })
                         }
                     />
+                    <div className="flex items-center space-x-2">
+                        <Switch
+                            id="isActive"
+                            checked={form.isActive}
+                            onCheckedChange={(checked) => setForm({ isActive: checked })}
+                        />
+                        <Label htmlFor="isActive">Active</Label>
+                    </div>
                 </CardContent>
             </Card>
 

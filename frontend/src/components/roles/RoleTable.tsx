@@ -16,6 +16,7 @@ export default function RoleTable({ roles }: Props) {
                         <th className="p-4 text-left">Role Name</th>
                         <th className="p-4 text-left">Description</th>
                         <th className="p-4 text-left">Permissions</th>
+                        <th className="p-4 text-left">Status</th>
                         <th className="p-4 text-right">Actions</th>
                     </tr>
                 </thead>
@@ -34,6 +35,17 @@ export default function RoleTable({ roles }: Props) {
                                         {p}
                                     </span>
                                 ))}
+                            </td>
+                            <td className="p-4">
+                                {role.isActive ? (
+                                    <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
+                                        Active
+                                    </span>
+                                ) : (
+                                    <span className="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800">
+                                        Inactive
+                                    </span>
+                                )}
                             </td>
                             <td className="p-4 text-right">
                                 <RoleActions role={role} />

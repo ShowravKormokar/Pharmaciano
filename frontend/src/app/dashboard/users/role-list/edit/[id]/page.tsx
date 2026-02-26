@@ -49,6 +49,7 @@ export default function RoleEditPage() {
                 name: role.name,
                 description: role.description || "",
                 permissions: role.permissions || [],
+                isActive: role.isActive ?? true,
             });
 
             setLoading(false);

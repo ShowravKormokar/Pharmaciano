@@ -19,6 +19,7 @@ interface RoleState {
         name: string;
         description: string;
         permissions: string[];
+        isActive: boolean;
     };
 
     fetchRoles: () => Promise<void>;
@@ -43,6 +44,7 @@ export const useRoleStore = create<RoleState>()(
                 name: "",
                 description: "",
                 permissions: [],
+                isActive: true,
             },
 
             setForm: (data) =>
@@ -52,7 +54,7 @@ export const useRoleStore = create<RoleState>()(
 
             resetForm: () =>
                 set({
-                    form: { name: "", description: "", permissions: [] },
+                    form: { name: "", description: "", isActive: true, permissions: [] },
                 }),
 
             fetchRoles: async () => {
@@ -74,7 +76,7 @@ export const useRoleStore = create<RoleState>()(
 
             createRole: async () => {
                 try {
-                    const { name, description, permissions } = get().form;
+                    const { name, description, permissions, isActive } = get().form;
 
                     if (!name || permissions.length === 0) {
                         set({ error: "Role name and at least one permission are required." });
@@ -87,6 +89,7 @@ export const useRoleStore = create<RoleState>()(
                         description,
                         // Only include unique permissions
                         permissions: Array.from(new Set(permissions)),
+                        isActive,
                     };
 
                     const res = await createRoleService(payload);
@@ -105,7 +108,7 @@ export const useRoleStore = create<RoleState>()(
 
             updateRole: async (id: string) => {
                 try {
-                    const { name, description, permissions } = get().form;
+                    const { name, description, permissions, isActive } = get().form;
 
                     if (!name || permissions.length === 0) {
                         set({ error: "Role name and at least one permission are required." });
@@ -116,6 +119,7 @@ export const useRoleStore = create<RoleState>()(
                         name: name.toUpperCase(),
                         description,
                         permissions: Array.from(new Set(permissions)),
+                        isActive,
                     };
 
                     const res = await updateRoleService(id, payload);

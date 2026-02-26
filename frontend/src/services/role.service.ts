@@ -32,6 +32,7 @@ export const createRoleService = async (data: {
     name: string;
     description: string;
     permissions: string[];
+    isActive: boolean;
 }) => {
     return await api.post("/v1/roles", data);
 };
@@ -45,6 +46,7 @@ export const updateRoleService = async (
         name: string;
         description: string;
         permissions: string[];
+        isActive: boolean;
     }
 ) => {
     return await api.put(`/v1/roles/${id}`, data);

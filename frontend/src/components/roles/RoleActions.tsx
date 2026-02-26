@@ -31,6 +31,7 @@ export default function RoleActions({ role }: Props) {
             name: role.name,
             description: role.description || "",
             permissions: role.permissions || [],
+            isActive: role.isActive ?? true,
         });
 
         // ✅ Navigate with id
