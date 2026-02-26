@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRoleStore } from "@/store/role.store";
 import RoleTable from "@/components/roles/RoleTable";
 import { Button } from "@/components/ui/button";
-import { RefreshCcw, User } from "lucide-react";
+import { RefreshCcw, User, ListChecks } from "lucide-react";
 import Link from "next/link";
 import RoleTableSkeleton from "@/components/roles/RoleTableSkeleton";
 
@@ -39,6 +39,13 @@ export default function RoleListPage() {
                         <Button variant="outline" size="sm">
                             <User className="h-4 w-4 mr-2" />
                             Create Role
+                        </Button>
+                    </Link>
+
+                    <Link href="/dashboard/users/role-list/features">
+                        <Button variant="outline" size="sm">
+                            <ListChecks className="h-4 w-4 mr-2" />
+                            Features
                         </Button>
                     </Link>
 

@@ -20,6 +20,9 @@ export interface FeatureItem {
     name: string;
     category: string;
     isActive: boolean;
+    description?: string;
+    createdAt?: string;
+    updatedAt?: string;
 }
 
 export interface RolesApiResponse {
