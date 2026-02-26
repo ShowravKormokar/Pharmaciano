@@ -29,7 +29,7 @@ export default function UserActions({ user, onDelete }: Props) {
             <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => router.push(`/dashboard/users/view/${user._id}`)}
+                onClick={() => router.push(`/dashboard/users/user-list/view/${user._id}`)}
                 title="View"
                 className="border-[0.1rem] rounded-md"
             >
