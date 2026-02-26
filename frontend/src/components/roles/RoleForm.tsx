@@ -10,6 +10,7 @@ import { ChevronDown, ChevronRight } from "lucide-react";
 
 interface Props {
     roleId?: string;
+    onSuccess?: () => void;
 }
 
 const ACTIONS = [
@@ -67,8 +68,6 @@ export default function RoleForm({ roleId }: Props) {
         // Backend requires uppercase
         setForm({ name: form.name.toUpperCase() });
 
-        // console.log("Submitting form with permissions:", form);// Debug log
-
         try {
             const success = roleId
                 ? await updateRole(roleId)
@@ -77,6 +76,13 @@ export default function RoleForm({ roleId }: Props) {
             if (success) {
                 setMessage(roleId ? "Role updated successfully." : "Role created successfully.");
                 if (!roleId) resetForm();
+
+                // ✅ Call onSuccess after showing message (optional)
+                // if (onSuccess) {
+                //     setTimeout(() => {
+                //         onSuccess();
+                //     }, 1500);
+                // }
             } else {
                 setErrorMsg("Something went wrong.");
             }

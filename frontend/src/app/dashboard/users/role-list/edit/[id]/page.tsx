@@ -1,9 +1,8 @@
+// app/dashboard/users/role-list/edit/[id]/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { fetchRoleByIdService } from "@/services/role.service";
-import { RoleItem } from "@/types/role";
 import { useRoleStore } from "@/store/role.store";
 import { Button } from "@/components/ui/button";
 import RoleForm from "@/components/roles/RoleForm";
@@ -11,60 +10,66 @@ import RoleForm from "@/components/roles/RoleForm";
 export default function RoleEditPage() {
     const { id } = useParams();
     const router = useRouter();
-    const { setForm, resetForm } = useRoleStore();
+    const { roles, fetchRoles, setForm, form } = useRoleStore();
 
-    const [role, setRole] = useState<RoleItem | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        const fetchRole = async () => {
+        const loadRole = async () => {
             if (!id || Array.isArray(id)) {
                 setError("Invalid role ID");
                 setLoading(false);
                 return;
             }
 
-            try {
-                const roleData = await fetchRoleByIdService(id);
-
-                if (!roleData?._id) {
-                    setError("Role not found");
-                    return;
-                }
-
-                setRole(roleData);
-
-                setForm({
-                    name: roleData.name,
-                    description: roleData.description || "",
-                    permissions: roleData.permissions || [],
-                });
-
-            } catch (err: any) {
-                setError(err?.response?.data?.message || "Failed to fetch role");
-            } finally {
+            // If form is already populated (from RoleActions), we can use it directly
+            if (form.name) {
                 setLoading(false);
+                return;
             }
+
+            // Otherwise, try to find the role in the already fetched roles list
+            let role = roles.find((r) => r._id === id);
+
+            // If roles are not loaded yet, fetch them
+            if (!role && roles.length === 0) {
+                await fetchRoles();
+                role = roles.find((r) => r._id === id);
+            }
+
+            if (!role) {
+                setError("Role not found");
+                setLoading(false);
+                return;
+            }
+
+            // Pre-fill the form with the role data
+            setForm({
+                name: role.name,
+                description: role.description || "",
+                permissions: role.permissions || [],
+            });
+
+            setLoading(false);
         };
 
-        fetchRole();
-    }, [id]);
+        loadRole();
+    }, [id, roles, form.name, fetchRoles, setForm]);
 
     if (loading) return <p className="p-6">Loading role...</p>;
     if (error) return <p className="p-6 text-red-500">{error}</p>;
-    if (!role) return <p className="p-6 text-red-500">Role not found</p>;
 
     return (
         <div className="p-6 space-y-6">
-            <h1 className="text-2xl font-bold">Edit Role: {role.name}</h1>
+            <h1 className="text-2xl font-bold">Edit Role</h1>
 
-            {/* Use RoleForm for editing */}
-            <RoleForm roleId={role._id} />
+            {/* Pass roleId and onSuccess callback */}
+            <RoleForm roleId={id as string} onSuccess={() => router.push("/dashboard/users/role-list")} />
 
             <Button variant="outline" onClick={() => router.back()}>
                 Back
             </Button>
         </div>
     );
-};
+}

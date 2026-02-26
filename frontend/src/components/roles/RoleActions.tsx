@@ -23,15 +23,26 @@ interface Props {
 export default function RoleActions({ role }: Props) {
     const router = useRouter();
     const deleteRole = useRoleStore((state) => state.deleteRole);
+    const setForm = useRoleStore((state) => state.setForm);
+
+    const handleEdit = () => {
+        // ✅ Pre-fill form in store
+        setForm({
+            name: role.name,
+            description: role.description || "",
+            permissions: role.permissions || [],
+        });
+
+        // ✅ Navigate with id
+        router.push(`/dashboard/users/role-list/edit/${role._id}`);
+    };
 
     return (
         <div className="flex justify-end gap-2">
             <Button
                 variant="outline"
                 size="sm"
-                onClick={() =>
-                    router.push(`/dashboard/users/role-list/edit/${role._id}`)
-                }
+                onClick={handleEdit}
             >
                 Edit
             </Button>
@@ -61,4 +72,4 @@ export default function RoleActions({ role }: Props) {
             </AlertDialog>
         </div>
     );
-};
+}

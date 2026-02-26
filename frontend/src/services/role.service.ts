@@ -16,14 +16,14 @@ export const fetchRolesService = async (): Promise<RoleItem[]> => {
 };
 
 /* =========================
-   Get Role by ID
+   Get Role by ID: Doesn't exist yet, but can be implemented if needed for direct role fetching (e.g. for edit page without pre-filled data)
 ========================= */
-export const fetchRoleByIdService = async (
-    id: string
-): Promise<RoleItem> => {
-    const res = await api.get<GetRoleResponse>(`/v1/roles/${id}`);
-    return res.data.data;
-};
+// export const fetchRoleByIdService = async (
+//     id: string
+// ): Promise<RoleItem> => {
+//     const res = await api.get<GetRoleResponse>(`/v1/roles/${id}`);
+//     return res.data.data;
+// };
 
 /* =========================
    Create Role
