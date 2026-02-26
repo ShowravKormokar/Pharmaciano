@@ -15,6 +15,7 @@ import {
 import { Eye, Pencil, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { UserItem } from "@/types/user";
+import { useUserStore } from "@/store/user.store";
 
 interface Props {
     user: UserItem;
@@ -23,13 +24,30 @@ interface Props {
 
 export default function UserActions({ user, onDelete }: Props) {
     const router = useRouter();
+    const setForm = useUserStore((state) => state.setForm);
+
+    const handleEdit = () => {
+        setForm({
+            email: user.email,
+            password: "", // don't prefill password
+            name: user.name,
+            role: user.roleId?.name || "",
+            orgName: user.organizationId?.name || "",
+            branchName: user.branchId?.name || "",
+            warehouseName: "", // we don't have this yet – could be extended
+            phone: user.phone || "",
+            isActive: user.isActive,
+        });
+        router.push(`/dashboard/users/user-list/edit/${user._id}`);
+    };
+
 
     return (
         <div className="flex justify-end gap-2">
             <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => router.push(`/dashboard/users/user-list/view/${user._id}`)}
+                onClick={handleEdit}
                 title="View"
                 className="border-[0.1rem] rounded-md"
             >
@@ -39,7 +57,7 @@ export default function UserActions({ user, onDelete }: Props) {
             <Button
                 variant="outline"
                 size="sm"
-                onClick={() => router.push(`/dashboard/users/edit/${user._id}`)}
+                onClick={() => router.push(`/dashboard/users/user-list/edit/${user._id}`)}
                 title="Edit"
             >
                 <Pencil className="h-4 w-4" />

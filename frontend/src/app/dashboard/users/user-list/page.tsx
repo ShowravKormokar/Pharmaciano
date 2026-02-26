@@ -11,7 +11,7 @@ import UserTableSkeleton from "@/components/users/UserTableSkeleton";
 import UserFilter from "@/components/users/UserFilter";
 
 export default function UserListPage() {
-    const { users, fetchUsers, removeUser, loading } = useUserStore();
+    const { users, fetchUsers, loading } = useUserStore();
     const [searchTerm, setSearchTerm] = useState("");
     const [filters, setFilters] = useState({ role: "all", status: "all" });
     const [deleting, setDeleting] = useState(false);
@@ -26,7 +26,7 @@ export default function UserListPage() {
 
     const handleDelete = async (id: string) => {
         setDeleting(true);
-        await removeUser(id);
+        // await removeUser(id);
         setDeleting(false);
     };
 
@@ -71,7 +71,7 @@ export default function UserListPage() {
                 </div>
 
                 <div className="flex items-center gap-2">
-                    <Link href="/dashboard/users/add">
+                    <Link href="/dashboard/users/user-list/add">
                         <Button variant="outline" size="sm">
                             <UserPlus className="h-4 w-4 mr-2" />
                             Create User
