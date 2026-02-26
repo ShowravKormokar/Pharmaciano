@@ -22,7 +22,7 @@ export default function UserView({ user }: UserViewProps) {
                 <div className="flex gap-2">
                     <Button
                         variant="outline"
-                        onClick={() => router.push(`/dashboard/users/edit/${user._id}`)}
+                        onClick={() => router.push(`/dashboard/users/user-list/edit/${user._id}`)}
                         title="Edit"
                     >
                         <Pencil className="h-4 w-4" />

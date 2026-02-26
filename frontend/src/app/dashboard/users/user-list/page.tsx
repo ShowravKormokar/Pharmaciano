@@ -24,12 +24,6 @@ export default function UserListPage() {
         loadUsers();
     }, [loadUsers]);
 
-    const handleDelete = async (id: string) => {
-        setDeleting(true);
-        // await removeUser(id);
-        setDeleting(false);
-    };
-
     // Filter users based on search term, role, and status
     const filteredUsers = useMemo(() => {
         return users.filter((user) => {
