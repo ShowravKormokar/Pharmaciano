@@ -13,11 +13,11 @@ export default function RoleTable({ roles }: Props) {
             <table className="w-full text-sm">
                 <thead className="border-b bg-muted/50">
                     <tr>
-                        <th className="p-4 text-left">Role Name</th>
-                        <th className="p-4 text-left">Description</th>
-                        <th className="p-4 text-left">Permissions</th>
-                        <th className="p-4 text-left">Status</th>
-                        <th className="p-4 text-right">Actions</th>
+                        <th className="p-4 text-center">Role Name</th>
+                        <th className="p-4 text-center">Description</th>
+                        <th className="p-4 text-center">Permissions</th>
+                        <th className="p-4 text-center">Status</th>
+                        <th className="p-4 text-center">Actions</th>
                     </tr>
                 </thead>
 

@@ -14,6 +14,7 @@ import {
     AlertDialogAction,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Eye, Pencil, Trash2 } from "lucide-react"; // Import icons
 import { RoleItem } from "@/types/role";
 
 interface Props {
@@ -26,32 +27,44 @@ export default function RoleActions({ role }: Props) {
     const setForm = useRoleStore((state) => state.setForm);
 
     const handleEdit = () => {
-        // ✅ Pre-fill form in store
         setForm({
             name: role.name,
             description: role.description || "",
             permissions: role.permissions || [],
             isActive: role.isActive ?? true,
         });
-
-        // ✅ Navigate with id
         router.push(`/dashboard/users/role-list/edit/${role._id}`);
+    };
+
+    const handleView = () => {
+        router.push(`/dashboard/users/role-list/view/${role._id}`);
     };
 
     return (
         <div className="flex justify-end gap-2">
             <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleView}
+                title="View"
+                className="border-[0.1rem] rounded-md"
+            >
+                <Eye className="h-4 w-4" />
+            </Button>
+
+            <Button
                 variant="outline"
                 size="sm"
                 onClick={handleEdit}
+                title="Edit"
             >
-                Edit
+                <Pencil className="h-4 w-4" />
             </Button>
 
             <AlertDialog>
                 <AlertDialogTrigger asChild>
-                    <Button variant="destructive" size="sm">
-                        Delete
+                    <Button variant="destructive" size="sm" title="Delete">
+                        <Trash2 className="h-4 w-4" />
                     </Button>
                 </AlertDialogTrigger>
 
