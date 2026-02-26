@@ -108,7 +108,7 @@ export const navigation: NavItem[] = [
         id: "warehouses",
         children: [
             { label: "Warehouse List", icon: List, href: "/dashboard/warehouses/warehouse-list", permission: "warehouse:read" },
-            { label: "Add Warehouse", icon: PlusCircle, href: "/dashboard/warehouses/add-warehouse", permission: "warehouse:create" },
+            { label: "Add Warehouse", icon: PlusCircle, href: "/dashboard/warehouses/add", permission: "warehouse:create" },
         ],
     },
 
