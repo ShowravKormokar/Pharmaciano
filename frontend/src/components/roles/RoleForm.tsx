@@ -31,7 +31,7 @@ const ACTIONS = [
     "recommend",
 ];
 
-export default function RoleForm({ roleId }: Props) {
+export default function RoleForm({ roleId, onSuccess }: Props) {
     const {
         form,
         setForm,
@@ -78,11 +78,11 @@ export default function RoleForm({ roleId }: Props) {
                 if (!roleId) resetForm();
 
                 // ✅ Call onSuccess after showing message (optional)
-                // if (onSuccess) {
-                //     setTimeout(() => {
-                //         onSuccess();
-                //     }, 1500);
-                // }
+                if (onSuccess) {
+                    setTimeout(() => {
+                        onSuccess();
+                    }, 1500);
+                }
             } else {
                 setErrorMsg("Something went wrong.");
             }
