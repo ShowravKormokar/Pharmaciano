@@ -79,7 +79,7 @@ export default function EditOrganizationPage() {
                     Back
                 </Button>
             </div>
-            <OrganizationForm organizationId={id as string} onSuccess={() => router.push("/dashboard/organizations/list")} />
+            <OrganizationForm organizationId={id as string} onSuccess={() => router.push("/dashboard/organizations/org-list")} />
         </div>
     );
 }
