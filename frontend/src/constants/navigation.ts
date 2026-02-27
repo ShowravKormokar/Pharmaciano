@@ -8,7 +8,8 @@ import {
     Wallet, ArrowLeftRight, WalletCards,
     ListOrdered, RotateCcw, FileText, Scroll, AlertTriangle,
     CheckCircle, Brain, TrendingUp, Activity,
-    User
+    User,
+    Landmark
 } from "lucide-react";
 
 export type NavChild = {
@@ -151,6 +152,30 @@ export const navigation: NavItem[] = [
             { label: "Stock Recommendations", icon: Activity, href: "/dashboard/ai/stock-recommendation", permission: "ai:recommend" },
             { label: "Trending Products", icon: TrendingUp, href: "/dashboard/ai/trending-products", permission: "ai:read" },
             { label: "Business Insights", icon: Brain, href: "/dashboard/ai/insights", permission: "ai:read" },
+        ],
+    },
+
+    /* ORGANIZATION & BRANCHES */
+    {
+        label: "Organization & Branches",
+        icon: Landmark,
+        id: "org-branches",
+        children: [
+            {
+                label: "Overview",
+                href: "/dashboard/organization/",
+                permission: "organization:view",
+            },
+            {
+                label: "Organization List",
+                href: "/dashboard/organization/list",
+                permission: "organization:read",
+            },
+            {
+                label: "Branch List",
+                href: "/dashboard/branches/list",
+                permission: "branch:read",
+            } 
         ],
     },
 
