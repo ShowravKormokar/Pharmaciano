@@ -1,23 +1,24 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import Link from 'next/link'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Eye, EyeOff, Mail, Lock } from 'lucide-react'
+import { useState } from 'react';
+import Link from 'next/link';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
 import { loginService } from "@/services/auth.service";
 
-export default function LoginForm() {
-    const [showPassword, setShowPassword] = useState(false)
-    const [rememberMe, setRememberMe] = useState(false)
-    const [isLoading, setIsLoading] = useState(false)
-    const [formData, setFormData] = useState({
-        email: '',
-        password: '',
-    })
+interface Props {
+    formData: { email: string; password: string };
+    setFormData: (data: { email: string; password: string }) => void;
+}
+
+export default function LoginForm({ formData, setFormData }: Props) {
+    const [showPassword, setShowPassword] = useState(false);
+    const [rememberMe, setRememberMe] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -25,26 +26,22 @@ export default function LoginForm() {
 
         try {
             const res = await loginService(formData);
-
             const { token } = res.data;
 
             if (!token) {
                 throw new Error("Invalid login response");
             }
 
-            // Store token for API usage (For dummy now)
+            // Store token for API usage
             if (rememberMe) {
                 localStorage.setItem("accessToken", token);
-                // persistent cookie (1 day)
                 document.cookie = `auth-token=${token}; path=/; max-age=86400; SameSite=Lax`;
             } else {
                 sessionStorage.setItem("accessToken", token);
-                // session cookie (removed when tab closes)
                 document.cookie = `auth-token=${token}; path=/; SameSite=Lax`;
             }
 
-
-            // Store token in cookie for middleware (NOT HttpOnly)
+            // Also store in cookie for middleware
             document.cookie = `auth-token=${token}; path=/; max-age=86400; SameSite=Lax`;
 
             window.location.href = "/dashboard";
@@ -57,12 +54,9 @@ export default function LoginForm() {
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }))
-    }
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+    };
 
     return (
         <Card className="border-0 shadow-lg">
@@ -172,5 +166,5 @@ export default function LoginForm() {
                 </form>
             </CardContent>
         </Card>
-    )
-};
+    );
+}

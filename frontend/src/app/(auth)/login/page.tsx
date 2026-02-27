@@ -1,9 +1,11 @@
-import dynamic from 'next/dynamic'
+"use client";
+
+import { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { DemoCredentials } from "@/components/auth/demo-credentials";
 import { LoginHero } from "@/components/auth/login-hero";
 import { ModeToggle } from "@/components/ui/modeToggle";
 import { Spinner } from '@/components/ui/shadcn-io/spinner';
-
 
 const LoginForm = dynamic(() => import('@/components/auth/login-form'), {
     loading: () => (
@@ -14,10 +16,15 @@ const LoginForm = dynamic(() => import('@/components/auth/login-form'), {
             <p className="text-muted-foreground"> Loading...</p>
         </div>
     ),
-    // ssr: false
 });
 
 export default function LoginPage() {
+    const [formData, setFormData] = useState({ email: '', password: '' });
+
+    const handleFillCredentials = (email: string, password: string) => {
+        setFormData({ email, password });
+    };
+
     return (
         <div className="min-h-screen w-full flex relative">
             {/* Mode Toggle - Fixed Position */}
@@ -28,13 +35,13 @@ export default function LoginPage() {
             {/* Left Side - Login Form */}
             <div className="flex-1 flex items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
                 <div className="w-full max-w-md space-y-6">
-                    <LoginForm />
-                    <DemoCredentials />
+                    <LoginForm formData={formData} setFormData={setFormData} />
+                    <DemoCredentials onFillCredentials={handleFillCredentials} />
                 </div>
             </div>
 
             {/* Right Side - Hero Section */}
             <LoginHero />
         </div>
-    )
-};
+    );
+}
