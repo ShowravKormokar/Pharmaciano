@@ -9,7 +9,8 @@ import {
     ListOrdered, RotateCcw, FileText, Scroll, AlertTriangle,
     CheckCircle, Brain, TrendingUp, Activity,
     User,
-    Landmark
+    Landmark,
+    BrainCog
 } from "lucide-react";
 
 export type NavChild = {
@@ -155,27 +156,51 @@ export const navigation: NavItem[] = [
         ],
     },
 
-    /* ORGANIZATION & BRANCHES */
+    /* ORGANIZATION */
     {
-        label: "Organization & Branches",
+        label: "Organization",
         icon: Landmark,
-        id: "org-branches",
+        id: "organization",
         children: [
             {
                 label: "Overview",
-                href: "/dashboard/organization/",
+                href: "/dashboard/organizations/",
                 permission: "organization:view",
             },
             {
                 label: "Organization List",
-                href: "/dashboard/organization/list",
+                href: "/dashboard/organizations/org-list",
                 permission: "organization:read",
             },
             {
+                label: "Create Organization",
+                href: "/dashboard/organizations/add",
+                permission: "organization:create",
+            }
+        ],
+    },
+
+    /* BRANCHES */
+    {
+        label: "Branches",
+        icon: BrainCog,
+        id: "branches",
+        children: [
+            {
+                label: "Overview",
+                href: "/dashboard/branches/",
+                permission: "branch:view",
+            },
+            {
                 label: "Branch List",
-                href: "/dashboard/branches/list",
+                href: "/dashboard/branches/branch-list",
                 permission: "branch:read",
-            } 
+            },
+            {
+                label: "Create Branch",
+                href: "/dashboard/branches/add",
+                permission: "branch:create",
+            }
         ],
     },
 
