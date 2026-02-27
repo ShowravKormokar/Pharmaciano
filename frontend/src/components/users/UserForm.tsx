@@ -3,6 +3,9 @@
 import { useEffect, useState } from "react";
 import { useUserStore } from "@/store/user.store";
 import { useRoleStore } from "@/store/role.store";
+import { useOrganizationStore } from "@/store/organization.store";
+import { useBranchStore } from "@/store/branch.store";
+import { useWarehouseStore } from "@/store/warehouse.store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -24,14 +27,21 @@ interface Props {
 export default function UserForm({ userId, onSuccess }: Props) {
     const { form, setForm, createUser, updateUser, resetForm, loading, error } = useUserStore();
     const { roles, fetchRoles } = useRoleStore();
+    const { organizations, fetchOrganizations } = useOrganizationStore();
+    const { branches, fetchBranches } = useBranchStore();
+    const { warehouses, fetchWarehouses } = useWarehouseStore();
 
     const [message, setMessage] = useState<string | null>(null);
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
     const [submitting, setSubmitting] = useState(false);
 
+    // Fetch dropdown data on mount
     useEffect(() => {
         fetchRoles();
-    }, [fetchRoles]);
+        fetchOrganizations();
+        fetchBranches();
+        fetchWarehouses();
+    }, [fetchRoles, fetchOrganizations, fetchBranches, fetchWarehouses]);
 
     const handleSubmit = async () => {
         setSubmitting(true);
@@ -115,31 +125,61 @@ export default function UserForm({ userId, onSuccess }: Props) {
                             </Select>
                         </div>
                         <div>
-                            <Label>Organization Name</Label>
-                            <Input
-                                placeholder="Organization Name"
+                            <Label>Organization</Label>
+                            <Select
                                 value={form.orgName}
-                                onChange={(e) => setForm({ orgName: e.target.value })}
-                            />
+                                onValueChange={(val) => setForm({ orgName: val })}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select organization" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {organizations.map((org) => (
+                                        <SelectItem key={org._id} value={org.name}>
+                                            {org.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                         </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <Label>Branch Name</Label>
-                            <Input
-                                placeholder="Branch Name"
+                            <Label>Branch</Label>
+                            <Select
                                 value={form.branchName}
-                                onChange={(e) => setForm({ branchName: e.target.value })}
-                            />
+                                onValueChange={(val) => setForm({ branchName: val })}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select branch" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {branches.map((branch) => (
+                                        <SelectItem key={branch._id} value={branch.name}>
+                                            {branch.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                         </div>
                         <div>
-                            <Label>Warehouse Name (optional)</Label>
-                            <Input
-                                placeholder="Warehouse Name"
+                            <Label>Warehouse (optional)</Label>
+                            <Select
                                 value={form.warehouseName}
-                                onChange={(e) => setForm({ warehouseName: e.target.value })}
-                            />
+                                onValueChange={(val) => setForm({ warehouseName: val })}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select warehouse" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {warehouses.map((wh) => (
+                                        <SelectItem key={wh._id} value={wh.name}>
+                                            {wh.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                         </div>
                     </div>
 
@@ -180,4 +220,4 @@ export default function UserForm({ userId, onSuccess }: Props) {
             </div>
         </div>
     );
-}
+};
