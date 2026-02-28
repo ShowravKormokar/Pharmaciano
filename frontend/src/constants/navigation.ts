@@ -83,7 +83,7 @@ export const navigation: NavItem[] = [
         children: [
             { label: "Items", icon: List, href: "/dashboard/inventory/item-list", permission: "inventory:read" },
             { label: "Categories", icon: Tags, href: "/dashboard/inventory/category-list", permission: "inventory:manage" },
-            { label: "Brands", icon: PackageSearch, href: "/dashboard/inventory/brand-list", permission: "inventory:manage" },
+            { label: "Brands", icon: PackageSearch, href: "/dashboard/inventory/brands", permission: "inventory:manage" },
             { label: "Variants / Batches", icon: Layers, href: "/dashboard/inventory/variant-list", permission: "inventory:manage" },
             { label: "Stock Adjustment", icon: Activity, href: "/dashboard/inventory/adjustment", permission: "inventory:adjust" },
             { label: "Expiry Alerts", icon: AlertTriangle, href: "/dashboard/inventory/expiry-alerts", permission: "inventory:read" },
