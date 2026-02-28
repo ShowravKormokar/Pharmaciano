@@ -29,3 +29,8 @@ export interface BrandApiResponse {
         brand: BrandItem;
     };
 }
+
+export interface BasicApiResponse {
+    success: boolean;
+    message: string;
+}
