@@ -2,7 +2,7 @@
 
 export default function RoleTableSkeleton() {
     return (
-        <div className="rounded-2xl border bg-white shadow-sm overflow-x-auto">
+        <div className="rounded-2xl border shadow-sm overflow-x-auto">
             <table className="w-full text-sm">
                 <thead className="border-b bg-muted/50">
                     <tr>

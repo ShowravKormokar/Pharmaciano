@@ -32,7 +32,13 @@ export default function CategoryTable({ categories }: Props) {
                     {categories.map((category) => (
                         <TableRow key={category._id}>
                             <TableCell className="font-medium">{category.name}</TableCell>
-                            <TableCell>{category.description || "—"}</TableCell>
+                            <TableCell>
+                                {category?.description
+                                    ? category.description.length > 30
+                                        ? category.description.substring(0, 30) + "..."
+                                        : category.description
+                                    : "—"}
+                            </TableCell>
                             <TableCell>
                                 <Badge variant={category.isActive ? "default" : "secondary"}>
                                     {category.isActive ? "Active" : "Inactive"}
