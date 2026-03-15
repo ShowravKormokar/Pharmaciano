@@ -6,6 +6,7 @@ import {
     updateRoleService,
     deleteRoleService,
     fetchFeaturesService,
+    fetchRoleByIdService,
 } from "@/services/role.service";
 import type { RoleItem, FeatureItem } from "@/types/role";
 
@@ -24,6 +25,7 @@ interface RoleState {
 
     fetchRoles: () => Promise<void>;
     fetchFeatures: () => Promise<void>;
+    fetchRoleById: (id: string) => Promise<RoleItem | null>;
     createRole: () => Promise<boolean>;
     updateRole: (id: string) => Promise<boolean>;
     deleteRole: (id: string) => Promise<boolean>;
@@ -71,6 +73,23 @@ export const useRoleStore = create<RoleState>()(
                     set({ error: err?.response?.data?.message || "Failed to fetch features" });
                 } finally {
                     set({ loading: false });
+                }
+            },
+
+            fetchRoleById: async (id: string) => {
+                set({ loading: true, error: null });
+                try {
+                    const role = await fetchRoleByIdService(id);
+                    // Optionally update the roles list with this fresh data[future use case: edit page that needs latest permissions]
+                    set((state) => ({
+                        roles: state.roles.map(r => r._id === id ? role : r),
+                        loading: false
+                    }));
+                    return role;
+                } catch (err: any) {
+                    const msg = err?.response?.data?.message || "Failed to fetch role";
+                    set({ error: msg, loading: false });
+                    return null;
                 }
             },
 

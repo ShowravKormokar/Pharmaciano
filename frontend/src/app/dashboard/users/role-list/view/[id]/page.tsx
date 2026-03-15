@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { useRoleStore } from "@/store/role.store";
 import { useUserStore } from "@/store/user.store";
+import { fetchRoleByIdService } from "@/services/role.service"; // ✅ import service
 import { Button } from "@/components/ui/button";
 import RoleView from "@/components/roles/RoleView";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -11,37 +11,34 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function RoleViewPage() {
     const { id } = useParams();
     const router = useRouter();
-    const { roles, fetchRoles, loading: rolesLoading } = useRoleStore();
     const { users, fetchUsers, loading: usersLoading } = useUserStore();
 
     const [role, setRole] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        const loadData = async () => {
+        const loadRole = async () => {
             if (!id || Array.isArray(id)) {
                 setError("Invalid role ID");
+                setLoading(false);
                 return;
             }
 
-            // Ensure roles are loaded
-            if (roles.length === 0) {
-                await fetchRoles();
+            try {
+                const roleData = await fetchRoleByIdService(id);
+                setRole(roleData);
+            } catch (err: any) {
+                setError(err?.response?.data?.message || "Failed to load role");
+            } finally {
+                setLoading(false);
             }
-
-            const foundRole = roles.find((r) => r._id === id);
-            if (!foundRole) {
-                setError("Role not found");
-                return;
-            }
-
-            setRole(foundRole);
         };
 
-        loadData();
-    }, [id, roles, fetchRoles]);
+        loadRole();
+    }, [id]);
 
-    // Fetch users if not loaded
+    // Fetch users if needed (unchanged)
     useEffect(() => {
         if (users.length === 0) {
             fetchUsers();
@@ -59,7 +56,7 @@ export default function RoleViewPage() {
         );
     }
 
-    if (!role || rolesLoading) {
+    if (loading) {
         return (
             <div className="p-6 space-y-4">
                 <Skeleton className="h-8 w-1/3" />

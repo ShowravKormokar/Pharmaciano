@@ -15,7 +15,7 @@ export default function RoleTable({ roles }: Props) {
                     <tr>
                         <th className="p-4 text-center">Role Name</th>
                         <th className="p-4 text-center">Description</th>
-                        <th className="p-4 text-center">Permissions</th>
+                        {/* <th className="p-4 text-center">Permissions</th> */}
                         <th className="p-4 text-center">Status</th>
                         <th className="p-4 text-center">Actions</th>
                     </tr>
@@ -26,7 +26,7 @@ export default function RoleTable({ roles }: Props) {
                         <tr key={role._id} className="border-b hover:bg-muted/10">
                             <td className="p-4 font-medium">{role.name}</td>
                             <td className="p-4">{role.description}</td>
-                            <td className="p-4 flex flex-wrap gap-2">
+                            {/* <td className="p-4 flex flex-wrap gap-2">
                                 {role.permissions.map((p: string) => (
                                     <span
                                         key={p}
@@ -35,7 +35,7 @@ export default function RoleTable({ roles }: Props) {
                                         {p}
                                     </span>
                                 ))}
-                            </td>
+                            </td> */}
                             <td className="p-4">
                                 {role.isActive ? (
                                     <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">

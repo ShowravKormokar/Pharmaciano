@@ -44,5 +44,7 @@ export interface FeaturesApiResponse {
 export interface GetRoleResponse {
     success: boolean;
     message: string;
-    data: RoleItem;
+    data: {
+        role: RoleItem;      // Last modified to include permissions
+    };
 }
