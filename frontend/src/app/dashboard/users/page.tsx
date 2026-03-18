@@ -192,10 +192,6 @@ export default function UsersOverviewPage() {
                                     >
                                         <div>
                                             <p className="font-medium">{role.name}</p>
-                                            <p className="text-sm text-muted-foreground">
-                                                {role.description || "No description"} •{" "}
-                                                {role.permissions.length} permissions
-                                            </p>
                                         </div>
                                         <Button
                                             variant="ghost"
