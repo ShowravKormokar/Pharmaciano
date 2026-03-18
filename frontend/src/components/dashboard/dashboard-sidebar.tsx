@@ -18,6 +18,8 @@ import {
 } from "@/components/ui/sidebar";
 import { LogoutButton } from "./logout-button";
 
+import { isRouteActive, getBestMatch } from "@/utils/route-matcher";
+
 type IconComponent = React.ElementType;
 
 function SidebarNavItem({
@@ -31,17 +33,30 @@ function SidebarNavItem({
     toggleOpen: (id: string) => void;
     pathname: string;
 }) {
+
     const Icon = item.icon as IconComponent | undefined;
-    const hasChildren = Array.isArray(item.children) && item.children.length > 0;
+
+    const hasChildren =
+        Array.isArray(item.children) && item.children.length > 0;
 
     const visibleChildren = useMemo(() => {
         if (!hasChildren) return [];
-        return item.children!; // Also showing others, but navigation.engine.ts already filtered
+        return item.children!;
     }, [item.children, hasChildren]);
 
-    if (hasChildren && visibleChildren.length === 0) {
-        return null;
-    }
+    if (hasChildren && visibleChildren.length === 0) return null;
+
+    const bestChildMatch = hasChildren
+        ? getBestMatch(
+            pathname,
+            visibleChildren.map((c) => c.href)
+        )
+        : null;
+
+    const parentActive =
+        item.href
+            ? isRouteActive(pathname, item.href)
+            : !!bestChildMatch;
 
     return (
         <SidebarMenuItem>
@@ -51,19 +66,15 @@ function SidebarNavItem({
                 aria-expanded={hasChildren ? isOpen : undefined}
                 aria-controls={hasChildren ? `submenu-${item.id || item.label}` : undefined}
                 className="flex items-center justify-between w-full"
-                isActive={
-                    item.href
-                        ? pathname === item.href
-                        : hasChildren
-                            ? visibleChildren.some((c) => pathname === c.href)
-                            : false
-                }
+                isActive={parentActive}
             >
                 {hasChildren ? (
                     <button type="button" className="flex items-center gap-3 w-full text-left">
                         {Icon && <Icon className="h-4 w-4" />}
                         <span>{item.label}</span>
-                        <span className="ml-auto text-xs opacity-60">{isOpen ? "−" : "+"}</span>
+                        <span className="ml-auto text-xs opacity-60">
+                            {isOpen ? "−" : "+"}
+                        </span>
                     </button>
                 ) : (
                     <Link href={item.href ?? "#"} className="flex items-center gap-3 w-full">
@@ -74,14 +85,24 @@ function SidebarNavItem({
             </SidebarMenuButton>
 
             {hasChildren && isOpen && (
-                <nav id={`submenu-${item.id || item.label}`} className="ml-6 mt-2 flex flex-col space-y-2">
+                <nav
+                    id={`submenu-${item.id || item.label}`}
+                    className="ml-6 mt-2 flex flex-col space-y-2"
+                >
                     {visibleChildren.map((child) => {
-                        const ChildIcon = child.icon as IconComponent | undefined;
-                        const childActive = pathname === child.href;
+
+                        const ChildIcon =
+                            child.icon as IconComponent | undefined;
+
+                        const childActive = bestChildMatch === child.href;
+
                         return (
                             <SidebarMenuItem key={child.href}>
                                 <SidebarMenuButton asChild isActive={childActive}>
-                                    <Link href={child.href} className="flex items-center gap-3">
+                                    <Link
+                                        href={child.href}
+                                        className="flex items-center gap-3"
+                                    >
                                         {ChildIcon && <ChildIcon className="h-4 w-4" />}
                                         <span>{child.label}</span>
                                     </Link>
@@ -96,36 +117,44 @@ function SidebarNavItem({
 }
 
 export function DashboardSidebar() {
+
     const pathname = usePathname();
     const { user } = useAuthStore();
 
-    // Filter navigation based on user role
     const filteredNavigation = useMemo(() => {
         if (!user) return [];
         return filterNavigationByPermission(navigation);
     }, [user]);
 
-
-    // Open default group
     const defaultOpenId = useMemo(() => {
+
         const found = filteredNavigation.find((n) =>
-            n.children?.some((c) => pathname.startsWith(c.href))
+            n.children &&
+            getBestMatch(
+                pathname,
+                n.children.map((c) => c.href)
+            )
         );
         return found?.id ?? null;
     }, [pathname, filteredNavigation]);
 
     const [open, setOpen] = useState<string | null>(defaultOpenId);
-    const toggleOpen = (id: string) => setOpen((prev) => (prev === id ? null : id));
+
+    const toggleOpen = (id: string) =>
+        setOpen((prev) => (prev === id ? null : id));
 
     return (
         <Sidebar>
             <SidebarContent className="hide-scrollbar">
                 <SidebarGroup>
                     <SidebarGroupLabel className="text-lg font-bold p-6 border-2 mb-2">
-                        <span className="mr-2 text-xl">💊</span>Pharmaciano
+                        <span className="mr-2 text-xl">💊</span>
+                        Pharmaciano
                     </SidebarGroupLabel>
+
                     <SidebarGroupContent>
                         <SidebarMenu>
+
                             {filteredNavigation.map((item) => (
                                 <SidebarNavItem
                                     key={item.id ?? item.label}
@@ -135,12 +164,12 @@ export function DashboardSidebar() {
                                     pathname={pathname}
                                 />
                             ))}
+
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
 
-            {/* Footer */}
             <div className="mt-auto border-t px-4 py-2">
                 <div className="flex items-center justify-between gap-2">
                     <div className="flex flex-col leading-tight">
@@ -148,7 +177,7 @@ export function DashboardSidebar() {
                             Logged in as
                         </span>
                         <span className="text-xs font-semibold text-foreground">
-                            {user?.name || user?.email || 'User'}
+                            {user?.name || user?.email || "User"}
                         </span>
                     </div>
                     <div className="shrink-0">

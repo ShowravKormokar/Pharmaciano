@@ -164,7 +164,7 @@ export const navigation: NavItem[] = [
         children: [
             {
                 label: "Overview",
-                href: "/dashboard/organizations/",
+                href: "/dashboard/organizations",
                 permission: "organization:view",
             },
             {
@@ -188,7 +188,7 @@ export const navigation: NavItem[] = [
         children: [
             {
                 label: "Overview",
-                href: "/dashboard/branches/",
+                href: "/dashboard/branches",
                 permission: "branch:view",
             },
             {
