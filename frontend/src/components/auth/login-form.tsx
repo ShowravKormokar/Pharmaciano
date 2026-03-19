@@ -20,29 +20,61 @@ export default function LoginForm({ formData, setFormData }: Props) {
     const [rememberMe, setRememberMe] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
+    // const handleSubmit = async (e: React.FormEvent) => {
+    //     e.preventDefault();
+    //     setIsLoading(true);
+
+    //     try {
+    //         const res = await loginService(formData);
+    //         const { token } = res.data;
+
+    //         if (!token) {
+    //             throw new Error("Invalid login response");
+    //         }
+
+    //         // Store token for API usage
+    //         if (rememberMe) {
+    //             localStorage.setItem("accessToken", token);
+    //             document.cookie = `auth-token=${token}; path=/; max-age=86400; SameSite=Lax`;
+    //         } else {
+    //             sessionStorage.setItem("accessToken", token);
+    //             document.cookie = `auth-token=${token}; path=/; SameSite=Lax`;
+    //         }
+
+    //         // Also store in cookie for middleware
+    //         document.cookie = `auth-token=${token}; path=/; max-age=86400; SameSite=Lax`;
+
+    //         window.location.href = "/dashboard";
+    //     } catch (error: any) {
+    //         console.error("LOGIN ERROR:", error);
+    //         alert(error?.response?.data?.message || "Login failed");
+    //     } finally {
+    //         setIsLoading(false);
+    //     }
+    // };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
 
         try {
             const res = await loginService(formData);
-            const { token } = res.data;
+            // API returns: { success, message, data: { token, user } }
+            const { token, user } = res.data.data; // ← fix the nesting
 
-            if (!token) {
-                throw new Error("Invalid login response");
-            }
+            if (!token) throw new Error("Invalid login response");
 
-            // Store token for API usage
+            const cookieOptions = rememberMe
+                ? `path=/; max-age=604800; SameSite=Lax` // 7 days
+                : `path=/; SameSite=Lax`;                // session cookie
+
+            document.cookie = `auth-token=${token}; ${cookieOptions}`;
+
             if (rememberMe) {
                 localStorage.setItem("accessToken", token);
-                document.cookie = `auth-token=${token}; path=/; max-age=86400; SameSite=Lax`;
             } else {
                 sessionStorage.setItem("accessToken", token);
-                document.cookie = `auth-token=${token}; path=/; SameSite=Lax`;
             }
-
-            // Also store in cookie for middleware
-            document.cookie = `auth-token=${token}; path=/; max-age=86400; SameSite=Lax`;
 
             window.location.href = "/dashboard";
         } catch (error: any) {
