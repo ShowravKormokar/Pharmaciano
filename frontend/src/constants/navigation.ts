@@ -98,7 +98,7 @@ export const navigation: NavItem[] = [
         id: "contacts",
         children: [
             { label: "Customers", icon: UserCheck, href: "/dashboard/contacts/customer-list", permission: "contacts:read" },
-            { label: "Suppliers", icon: Truck, href: "/dashboard/contacts/supplier-list", permission: "contacts:read" },
+            { label: "Suppliers", icon: Truck, href: "/dashboard/contacts/suppliers", permission: "contacts:read" },
             { label: "Import Contacts", icon: FileInput, href: "/dashboard/contacts/import", permission: "contacts:import" },
         ],
     },
