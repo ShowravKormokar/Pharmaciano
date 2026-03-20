@@ -11,7 +11,6 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Eye, EyeOff, Mail, Lock, AlertCircle } from 'lucide-react';
 import { loginService } from "@/services/auth.service";
-import axios, { isAxiosError } from 'axios';
 
 interface Props {
     formData: { email: string; password: string };
