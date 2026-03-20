@@ -1,3 +1,5 @@
+import { PermissionGuard } from "@/hooks/guards/PermissionGuard";
+
 export default function SalesLayout({ children }: { children: React.ReactNode }) {
-    return <div className="space-y-4">{children}</div>
+    return <PermissionGuard module="sales"><div className="space-y-4">{children}</div></PermissionGuard>
 }
