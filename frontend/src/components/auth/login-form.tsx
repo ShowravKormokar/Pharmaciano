@@ -57,14 +57,12 @@ export default function LoginForm({ formData, setFormData }: Props) {
             }, 2000);
 
         } catch (err: unknown) {
-            // Axios error with a backend response
-            if (axios.isAxiosError(err) && err.response?.data?.message) {
-                setError(err.response.data.message);
-            } else if (err instanceof Error) {
-                setError(err.message);
-            } else {
-                setError("Something went wrong. Please try again.");
-            }
+            const message =
+                (err as { response?: { data?: { message?: string } } })?.response?.data?.message
+                ?? (err instanceof Error ? err.message : null)
+                ?? "Something went wrong. Please try again.";
+
+            setError(message);
         } finally {
             setIsLoading(false);
         }
