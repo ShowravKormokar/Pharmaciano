@@ -1,5 +1,5 @@
 import { api } from "@/lib/api";
-import type { BranchesApiResponse, BranchApiResponse, BranchItem } from "@/types/branch";
+import type { BranchesApiResponse, BranchApiResponse, MutationApiResponse } from "@/types/branch";
 
 export const fetchBranchesService = async (): Promise<BranchesApiResponse> => {
     const res = await api.get<BranchesApiResponse>("/v1/branches");
@@ -16,8 +16,8 @@ export const createBranchService = async (data: {
     address: string;
     contact: { phone: string; email: string };
     orgName: string;
-}) => {
-    const res = await api.post("/v1/branches", data);
+}): Promise<MutationApiResponse> => {
+    const res = await api.post<MutationApiResponse>("/v1/branches", data);
     return res.data;
 };
 
@@ -28,13 +28,14 @@ export const updateBranchService = async (
         address: string;
         contact: { phone: string; email: string };
         orgName: string;
+        isActive?: boolean;
     }
-) => {
-    const res = await api.put(`/v1/branches/${id}`, data);
+): Promise<MutationApiResponse> => {
+    const res = await api.put<MutationApiResponse>(`/v1/branches/${id}`, data);
     return res.data;
 };
 
-export const deleteBranchService = async (id: string) => {
-    const res = await api.delete(`/v1/branches/${id}`);
+export const deleteBranchService = async (id: string): Promise<MutationApiResponse> => {
+    const res = await api.delete<MutationApiResponse>(`/v1/branches/${id}`);
     return res.data;
 };
