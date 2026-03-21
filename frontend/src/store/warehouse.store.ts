@@ -8,12 +8,12 @@ import {
     deleteWarehouseService,
 } from "@/services/warehouse.service";
 import type { WarehouseItem } from "@/types/warehouse";
+import { toast } from "sonner";
 
 interface WarehouseState {
     warehouses: WarehouseItem[];
     loading: boolean;
     error: string | null;
-    // Form state for create/edit
     form: {
         name: string;
         location: string;
@@ -22,7 +22,6 @@ interface WarehouseState {
         isActive: boolean;
     };
 
-    // Actions
     fetchWarehouses: () => Promise<void>;
     fetchWarehouseById: (id: string) => Promise<WarehouseItem | null>;
     createWarehouse: () => Promise<boolean>;
@@ -69,7 +68,9 @@ export const useWarehouseStore = create<WarehouseState>()(
                     const res = await fetchWarehousesService();
                     set({ warehouses: res.data.warehouse });
                 } catch (err: any) {
-                    set({ error: err?.response?.data?.message || "Failed to fetch warehouses" });
+                    const msg = err?.response?.data?.message || "Failed to fetch warehouses";
+                    set({ error: msg });
+                    toast.error(msg);
                 } finally {
                     set({ loading: false });
                 }
@@ -81,7 +82,9 @@ export const useWarehouseStore = create<WarehouseState>()(
                     const res = await fetchWarehouseByIdService(id);
                     return res.data.warehouse;
                 } catch (err: any) {
-                    set({ error: err?.response?.data?.message || "Failed to fetch warehouse" });
+                    const msg = err?.response?.data?.message || "Failed to fetch warehouse";
+                    set({ error: msg });
+                    toast.error(msg);
                     return null;
                 } finally {
                     set({ loading: false });
@@ -93,8 +96,7 @@ export const useWarehouseStore = create<WarehouseState>()(
                 try {
                     const { name, location, capacity, branchName, isActive } = get().form;
                     if (!name || !location || !branchName) {
-                        set({ error: "Name, location and branch name are required." });
-                        return false;
+                        throw new Error("Name, location and branch name are required.");
                     }
                     const payload = {
                         name,
@@ -103,15 +105,17 @@ export const useWarehouseStore = create<WarehouseState>()(
                         branchName,
                         isActive,
                     };
-                    await createWarehouseService(payload);
+                    const res = await createWarehouseService(payload);
+                    toast.success(res.message || "Warehouse created successfully", { duration: 3000 });
                     await get().fetchWarehouses();
                     get().resetForm();
                     return true;
                 } catch (err: any) {
-                    const msg = err?.response?.data?.message || "Failed to create warehouse";
-                    // If there's a hint, include it
+                    const msg = err?.response?.data?.message || err.message || "Failed to create warehouse";
                     const hint = err?.response?.data?.hint;
-                    set({ error: hint ? `${msg} - ${hint}` : msg });
+                    const fullMsg = hint ? `${msg} - ${hint}` : msg;
+                    set({ error: fullMsg });
+                    toast.error(fullMsg, { duration: 5000 });
                     return false;
                 } finally {
                     set({ loading: false });
@@ -123,8 +127,7 @@ export const useWarehouseStore = create<WarehouseState>()(
                 try {
                     const { name, location, capacity, branchName, isActive } = get().form;
                     if (!name || !location || !branchName) {
-                        set({ error: "Name, location and branch name are required." });
-                        return false;
+                        throw new Error("Name, location and branch name are required.");
                     }
                     const payload = {
                         name,
@@ -133,14 +136,17 @@ export const useWarehouseStore = create<WarehouseState>()(
                         branchName,
                         isActive,
                     };
-                    await updateWarehouseService(id, payload);
+                    const res = await updateWarehouseService(id, payload);
+                    toast.success(res.message || "Warehouse updated successfully", { duration: 3000 });
                     await get().fetchWarehouses();
                     get().resetForm();
                     return true;
                 } catch (err: any) {
-                    const msg = err?.response?.data?.message || "Failed to update warehouse";
+                    const msg = err?.response?.data?.message || err.message || "Failed to update warehouse";
                     const hint = err?.response?.data?.hint;
-                    set({ error: hint ? `${msg} - ${hint}` : msg });
+                    const fullMsg = hint ? `${msg} - ${hint}` : msg;
+                    set({ error: fullMsg });
+                    toast.error(fullMsg, { duration: 5000 });
                     return false;
                 } finally {
                     set({ loading: false });
@@ -149,7 +155,8 @@ export const useWarehouseStore = create<WarehouseState>()(
 
             deleteWarehouse: async (id: string) => {
                 try {
-                    await deleteWarehouseService(id);
+                    const res = await deleteWarehouseService(id);
+                    toast.success(res.message || "Warehouse deleted successfully", { duration: 3000 });
                     set((state) => ({
                         warehouses: state.warehouses.filter((w) => w._id !== id),
                         error: null,
@@ -158,6 +165,7 @@ export const useWarehouseStore = create<WarehouseState>()(
                 } catch (err: any) {
                     const msg = err?.response?.data?.message || "Failed to delete warehouse";
                     set({ error: msg });
+                    toast.error(msg, { duration: 3000 });
                     return false;
                 }
             },
