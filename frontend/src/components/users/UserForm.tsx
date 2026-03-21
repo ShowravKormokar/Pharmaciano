@@ -25,17 +25,13 @@ interface Props {
 }
 
 export default function UserForm({ userId, onSuccess }: Props) {
-    const { form, setForm, createUser, updateUser, resetForm, loading, error } = useUserStore();
+    const { form, setForm, createUser, updateUser, resetForm } = useUserStore();
     const { roles, fetchRoles } = useRoleStore();
     const { organizations, fetchOrganizations } = useOrganizationStore();
     const { branches, fetchBranches } = useBranchStore();
     const { warehouses, fetchWarehouses } = useWarehouseStore();
-
-    const [message, setMessage] = useState<string | null>(null);
-    const [errorMsg, setErrorMsg] = useState<string | null>(null);
     const [submitting, setSubmitting] = useState(false);
 
-    // Fetch dropdown data on mount
     useEffect(() => {
         fetchRoles();
         fetchOrganizations();
@@ -45,38 +41,15 @@ export default function UserForm({ userId, onSuccess }: Props) {
 
     const handleSubmit = async () => {
         setSubmitting(true);
-        setMessage(null);
-        setErrorMsg(null);
-
-        const success = userId
-            ? await updateUser(userId)
-            : await createUser();
-
-        if (success) {
-            setMessage(userId ? "User updated successfully." : "User created successfully.");
-            if (!userId) resetForm();
-            if (onSuccess) {
-                setTimeout(onSuccess, 1500);
-            }
-        } else {
-            setErrorMsg(error || "Something went wrong.");
+        const success = userId ? await updateUser(userId) : await createUser();
+        if (success && onSuccess) {
+            setTimeout(onSuccess, 1500);
         }
         setSubmitting(false);
     };
 
     return (
         <div className="space-y-6">
-            {message && (
-                <div className="p-3 rounded-lg bg-green-100 text-green-700 text-sm">
-                    {message}
-                </div>
-            )}
-            {errorMsg && (
-                <div className="p-3 rounded-lg bg-red-100 text-red-600 text-sm">
-                    {errorMsg}
-                </div>
-            )}
-
             <Card>
                 <CardHeader>
                     <CardTitle>User Information</CardTitle>
@@ -220,4 +193,4 @@ export default function UserForm({ userId, onSuccess }: Props) {
             </div>
         </div>
     );
-};
+}

@@ -7,13 +7,13 @@ import {
     deleteUserService,
 } from "@/services/user.service";
 import type { UserItem } from "@/types/user";
+import { toast } from "sonner";
 
 interface UserState {
     users: UserItem[];
     loading: boolean;
     error: string | null;
 
-    // Form state for create/edit
     form: {
         email: string;
         password: string;
@@ -26,7 +26,6 @@ interface UserState {
         isActive: boolean;
     };
 
-    // Actions
     fetchUsers: () => Promise<void>;
     createUser: () => Promise<boolean>;
     updateUser: (id: string) => Promise<boolean>;
@@ -80,7 +79,9 @@ export const useUserStore = create<UserState>()(
                     const res = await fetchUsersService();
                     set({ users: res.data.users });
                 } catch (err: any) {
-                    set({ error: err?.message || "Failed to fetch users" });
+                    const msg = err?.response?.data?.message || "Failed to fetch users";
+                    set({ error: msg });
+                    toast.error(msg);
                 } finally {
                     set({ loading: false });
                 }
@@ -91,8 +92,7 @@ export const useUserStore = create<UserState>()(
                 try {
                     const { email, password, name, role, orgName, branchName, warehouseName, phone, isActive } = get().form;
                     if (!email || !password || !name || !role || !orgName || !branchName) {
-                        set({ error: "Required fields missing" });
-                        return false;
+                        throw new Error("Required fields missing");
                     }
                     const payload = {
                         email,
@@ -105,12 +105,15 @@ export const useUserStore = create<UserState>()(
                         ...(phone && { phone }),
                         ...(warehouseName && { warehouseName }),
                     };
-                    await createUserService(payload);
-                    await get().fetchUsers(); // refresh list
+                    const res = await createUserService(payload);
+                    toast.success(res.message || "User created successfully", { duration: 3000 });
+                    await get().fetchUsers();
                     get().resetForm();
                     return true;
                 } catch (err: any) {
-                    set({ error: err?.response?.data?.message || "Failed to create user" });
+                    const msg = err?.response?.data?.message || err.message || "Failed to create user";
+                    set({ error: msg });
+                    toast.error(msg, { duration: 3000 });
                     return false;
                 } finally {
                     set({ loading: false });
@@ -122,8 +125,7 @@ export const useUserStore = create<UserState>()(
                 try {
                     const { email, password, name, role, orgName, branchName, warehouseName, phone, isActive } = get().form;
                     if (!email || !name || !role || !orgName || !branchName) {
-                        set({ error: "Required fields missing" });
-                        return false;
+                        throw new Error("Required fields missing");
                     }
                     const payload: any = {
                         email,
@@ -137,12 +139,15 @@ export const useUserStore = create<UserState>()(
                     if (phone) payload.phone = phone;
                     if (warehouseName) payload.warehouseName = warehouseName;
 
-                    await updateUserService(id, payload);
+                    const res = await updateUserService(id, payload);
+                    toast.success(res.message || "User updated successfully", { duration: 3000 });
                     await get().fetchUsers();
                     get().resetForm();
                     return true;
                 } catch (err: any) {
-                    set({ error: err?.response?.data?.message || "Failed to update user" });
+                    const msg = err?.response?.data?.message || err.message || "Failed to update user";
+                    set({ error: msg });
+                    toast.error(msg, { duration: 3000 });
                     return false;
                 } finally {
                     set({ loading: false });
@@ -151,22 +156,24 @@ export const useUserStore = create<UserState>()(
 
             deleteUser: async (id: string) => {
                 try {
-                    await deleteUserService(id);
+                    const res = await deleteUserService(id);
+                    toast.success(res.message || "User deleted successfully", { duration: 3000 });
                     set((state) => ({
                         users: state.users.filter((u) => u._id !== id),
                         error: null,
                     }));
                     return true;
                 } catch (err: any) {
-                    const errorMsg = err?.response?.data?.message || "Failed to delete user";
-                    set({ error: errorMsg });
+                    const msg = err?.response?.data?.message || "Failed to delete user";
+                    set({ error: msg });
+                    toast.error(msg, { duration: 3000 });
                     return false;
                 }
             },
         }),
         {
             name: "user-store",
-            partialize: (state) => ({ form: state.form }), // persist form only
+            partialize: (state) => ({ form: state.form }),
         }
     )
 );
