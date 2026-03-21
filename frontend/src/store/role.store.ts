@@ -9,6 +9,7 @@ import {
     fetchRoleByIdService,
 } from "@/services/role.service";
 import type { RoleItem, FeatureItem } from "@/types/role";
+import { toast } from "sonner";
 
 interface RoleState {
     roles: RoleItem[];
@@ -60,8 +61,17 @@ export const useRoleStore = create<RoleState>()(
                 }),
 
             fetchRoles: async () => {
-                const roles = await fetchRolesService();
-                set({ roles });
+                set({ loading: true, error: null });
+                try {
+                    const roles = await fetchRolesService();
+                    set({ roles });
+                } catch (err: any) {
+                    const msg = err?.response?.data?.message || "Failed to fetch roles";
+                    set({ error: msg });
+                    toast.error(msg);
+                } finally {
+                    set({ loading: false });
+                }
             },
 
             fetchFeatures: async () => {
@@ -70,7 +80,9 @@ export const useRoleStore = create<RoleState>()(
                     const features = await fetchFeaturesService();
                     set({ features });
                 } catch (err: any) {
-                    set({ error: err?.response?.data?.message || "Failed to fetch features" });
+                    const msg = err?.response?.data?.message || "Failed to fetch features";
+                    set({ error: msg });
+                    toast.error(msg);
                 } finally {
                     set({ loading: false });
                 }
@@ -80,7 +92,7 @@ export const useRoleStore = create<RoleState>()(
                 set({ loading: true, error: null });
                 try {
                     const role = await fetchRoleByIdService(id);
-                    // Optionally update the roles list with this fresh data[future use case: edit page that needs latest permissions]
+                    // Optionally update the roles list with this fresh data
                     set((state) => ({
                         roles: state.roles.map(r => r._id === id ? role : r),
                         loading: false
@@ -89,49 +101,49 @@ export const useRoleStore = create<RoleState>()(
                 } catch (err: any) {
                     const msg = err?.response?.data?.message || "Failed to fetch role";
                     set({ error: msg, loading: false });
+                    toast.error(msg);
                     return null;
                 }
             },
 
             createRole: async () => {
+                set({ loading: true, error: null });
                 try {
                     const { name, description, permissions, isActive } = get().form;
 
                     if (!name || permissions.length === 0) {
-                        set({ error: "Role name and at least one permission are required." });
-                        return false;
+                        throw new Error("Role name and at least one permission are required.");
                     }
 
-                    // Ensure uppercase
                     const payload = {
                         name: name.toUpperCase(),
                         description,
-                        // Only include unique permissions
                         permissions: Array.from(new Set(permissions)),
                         isActive,
                     };
 
                     const res = await createRoleService(payload);
-
-                    // Optional: can show backend message
-                    set({ error: null });
+                    toast.success(res.data?.message || "Role created successfully", { duration: 3000 });
                     await get().fetchRoles();
                     get().resetForm();
-
                     return true;
                 } catch (err: any) {
-                    set({ error: err?.response?.data?.message || "Server error" });
+                    const msg = err?.response?.data?.message || err.message || "Failed to create role";
+                    set({ error: msg });
+                    toast.error(msg, { duration: 3000 });
                     return false;
+                } finally {
+                    set({ loading: false });
                 }
             },
 
             updateRole: async (id: string) => {
+                set({ loading: true, error: null });
                 try {
                     const { name, description, permissions, isActive } = get().form;
 
                     if (!name || permissions.length === 0) {
-                        set({ error: "Role name and at least one permission are required." });
-                        return false;
+                        throw new Error("Role name and at least one permission are required.");
                     }
 
                     const payload = {
@@ -142,37 +154,40 @@ export const useRoleStore = create<RoleState>()(
                     };
 
                     const res = await updateRoleService(id, payload);
-
-                    set({ error: null });
+                    toast.success(res.data?.message || "Role updated successfully", { duration: 3000 });
                     await get().fetchRoles();
                     get().resetForm();
-
                     return true;
                 } catch (err: any) {
-                    set({ error: err?.response?.data?.message || "Server error" });
+                    const msg = err?.response?.data?.message || err.message || "Failed to update role";
+                    set({ error: msg });
+                    toast.error(msg, { duration: 3000 });
                     return false;
+                } finally {
+                    set({ loading: false });
                 }
             },
 
             deleteRole: async (id: string) => {
                 try {
-                    await deleteRoleService(id);
-                    // Remove from local state only after successful API call
+                    const res = await deleteRoleService(id);
+                    toast.success(res.data?.message || "Role deleted successfully", { duration: 3000 });
                     set((state) => ({
                         roles: state.roles.filter((r) => r._id !== id),
                         error: null,
                     }));
                     return true;
                 } catch (err: any) {
-                    const errorMsg = err?.response?.data?.message || "Failed to delete role";
-                    set({ error: errorMsg });
+                    const msg = err?.response?.data?.message || "Failed to delete role";
+                    set({ error: msg });
+                    toast.error(msg, { duration: 3000 });
                     return false;
                 }
             },
         }),
         {
-            name: "role-store", // localStorage key
-            partialize: (state) => ({ form: state.form }), // persist only form
+            name: "role-store",
+            partialize: (state) => ({ form: state.form }),
         }
     )
 );

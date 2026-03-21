@@ -45,9 +45,7 @@ export default function RoleForm({ roleId, onSuccess }: Props) {
     } = useRoleStore();
 
     const [expanded, setExpanded] = useState<Record<string, boolean>>({});
-    const [loading, setLoading] = useState(false);
-    const [message, setMessage] = useState<string | null>(null);
-    const [errorMsg, setErrorMsg] = useState<string | null>(null);
+    const [submitting, setSubmitting] = useState(false);
 
     useEffect(() => {
         fetchFeatures();
@@ -63,36 +61,16 @@ export default function RoleForm({ roleId, onSuccess }: Props) {
     }, [features]);
 
     const handleSubmit = async () => {
-        setLoading(true);
-        setMessage(null);
-        setErrorMsg(null);
-
+        setSubmitting(true);
         // Backend requires uppercase
         setForm({ name: form.name.toUpperCase() });
-        //console.log("Submitting form with data:", form); // Debug log
-        try {
-            const success = roleId
-                ? await updateRole(roleId)
-                : await createRole();
 
-            if (success) {
-                setMessage(roleId ? "Role updated successfully." : "Role created successfully.");
-                if (!roleId) resetForm();
+        const success = roleId ? await updateRole(roleId) : await createRole();
 
-                // ✅ Call onSuccess after showing message (optional)
-                if (onSuccess) {
-                    setTimeout(() => {
-                        onSuccess();
-                    }, 1500);
-                }
-            } else {
-                setErrorMsg("Something went wrong.");
-            }
-        } catch (err: any) {
-            setErrorMsg(err?.response?.data?.message || "Server error");
+        if (success && onSuccess) {
+            setTimeout(onSuccess, 1500);
         }
-
-        setLoading(false);
+        setSubmitting(false);
     };
 
     if (!features.length) {
@@ -101,18 +79,6 @@ export default function RoleForm({ roleId, onSuccess }: Props) {
 
     return (
         <div className="space-y-6">
-            {/* ===== ALERT MESSAGE ===== */}
-            {message && (
-                <div className="p-3 rounded-lg bg-green-100 text-green-700 text-sm">
-                    {message}
-                </div>
-            )}
-            {errorMsg && (
-                <div className="p-3 rounded-lg bg-red-100 text-red-600 text-sm">
-                    {errorMsg}
-                </div>
-            )}
-
             {/* ================= BASIC INFO ================= */}
             <Card className="rounded-2xl shadow-sm">
                 <CardHeader>
@@ -192,7 +158,6 @@ export default function RoleForm({ roleId, onSuccess }: Props) {
                                                     checked={hasManage}
                                                     onChange={(e) => {
                                                         if (e.target.checked) {
-                                                            // remove granular permissions of this base
                                                             const filtered = form.permissions.filter(
                                                                 (p) => !p.startsWith(`${base}:`)
                                                             );
@@ -264,9 +229,9 @@ export default function RoleForm({ roleId, onSuccess }: Props) {
                 <Button
                     className="w-1/2"
                     onClick={handleSubmit}
-                    disabled={loading}
+                    disabled={submitting}
                 >
-                    {loading
+                    {submitting
                         ? "Processing..."
                         : roleId
                             ? "Update Role"
@@ -279,7 +244,7 @@ export default function RoleForm({ roleId, onSuccess }: Props) {
                         type="button"
                         variant="outline"
                         onClick={resetForm}
-                        disabled={loading}
+                        disabled={submitting}
                     >
                         Reset
                     </Button>
@@ -287,4 +252,4 @@ export default function RoleForm({ roleId, onSuccess }: Props) {
             </div>
         </div>
     );
-};
+}
