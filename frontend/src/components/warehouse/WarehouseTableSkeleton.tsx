@@ -19,7 +19,7 @@ export default function WarehouseTableSkeleton() {
                         <TableHead>Name</TableHead>
                         <TableHead>Location</TableHead>
                         <TableHead>Capacity</TableHead>
-                        <TableHead>Branch</TableHead>
+                        {/* <TableHead>Branch</TableHead> */}
                         <TableHead>Status</TableHead>
                         <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
@@ -30,7 +30,7 @@ export default function WarehouseTableSkeleton() {
                             <TableCell><Skeleton className="h-5 w-32" /></TableCell>
                             <TableCell><Skeleton className="h-5 w-40" /></TableCell>
                             <TableCell><Skeleton className="h-5 w-16" /></TableCell>
-                            <TableCell><Skeleton className="h-5 w-24" /></TableCell>
+                            {/* <TableCell><Skeleton className="h-5 w-24" /></TableCell> */}
                             <TableCell><Skeleton className="h-5 w-16" /></TableCell>
                             <TableCell className="text-right">
                                 <div className="flex justify-end gap-2">

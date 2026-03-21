@@ -25,7 +25,7 @@ export default function BranchTable({ branches }: Props) {
                         <TableHead>Name</TableHead>
                         <TableHead>Address</TableHead>
                         <TableHead>Contact</TableHead>
-                        <TableHead>Organization</TableHead>
+                        {/* <TableHead>Organization</TableHead> */}
                         <TableHead>Status</TableHead>
                         <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
@@ -41,7 +41,7 @@ export default function BranchTable({ branches }: Props) {
                                     <div className="text-muted-foreground">{branch.contact?.phone}</div>
                                 </div>
                             </TableCell>
-                            <TableCell>{branch.organization?.name || branch.orgName || "N/A"}</TableCell>
+                            {/* <TableCell>{branch.organization?.name || branch.orgName || "N/A"}</TableCell> */}
                             <TableCell>
                                 <Badge variant={branch.isActive ? "default" : "secondary"}>
                                     {branch.isActive ? "Active" : "Inactive"}

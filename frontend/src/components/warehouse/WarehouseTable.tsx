@@ -25,7 +25,7 @@ export default function WarehouseTable({ warehouses }: Props) {
                         <TableHead>Name</TableHead>
                         <TableHead>Location</TableHead>
                         <TableHead>Capacity</TableHead>
-                        <TableHead>Branch</TableHead>
+                        {/* <TableHead>Branch</TableHead> */}
                         <TableHead>Status</TableHead>
                         <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
@@ -36,9 +36,9 @@ export default function WarehouseTable({ warehouses }: Props) {
                             <TableCell className="font-medium">{warehouse.name}</TableCell>
                             <TableCell>{warehouse.location}</TableCell>
                             <TableCell>{warehouse.capacity}</TableCell>
-                            <TableCell>
+                            {/* <TableCell>
                                 {warehouse.branchName || warehouse.branchId?.name || "N/A"}
-                            </TableCell>
+                            </TableCell> */}
                             <TableCell>
                                 <Badge variant={warehouse.isActive ? "default" : "secondary"}>
                                     {warehouse.isActive ? "Active" : "Inactive"}

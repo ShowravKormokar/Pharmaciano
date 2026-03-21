@@ -19,7 +19,7 @@ export default function BranchTableSkeleton() {
                         <TableHead>Name</TableHead>
                         <TableHead>Address</TableHead>
                         <TableHead>Contact</TableHead>
-                        <TableHead>Organization</TableHead>
+                        {/* <TableHead>Organization</TableHead> */}
                         <TableHead>Status</TableHead>
                         <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
@@ -30,7 +30,7 @@ export default function BranchTableSkeleton() {
                             <TableCell><Skeleton className="h-5 w-32" /></TableCell>
                             <TableCell><Skeleton className="h-5 w-40" /></TableCell>
                             <TableCell><Skeleton className="h-5 w-32" /></TableCell>
-                            <TableCell><Skeleton className="h-5 w-24" /></TableCell>
+                            {/* <TableCell><Skeleton className="h-5 w-24" /></TableCell> */}
                             <TableCell><Skeleton className="h-5 w-16" /></TableCell>
                             <TableCell className="text-right">
                                 <div className="flex justify-end gap-2">
