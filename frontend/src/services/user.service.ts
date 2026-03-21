@@ -1,5 +1,6 @@
 import { api } from "@/lib/api";
-import type { UsersApiResponse, UserItem } from "@/types/user";
+import type { UsersApiResponse } from "@/types/user";
+import type { MutationApiResponse } from "@/types/response";
 
 export const fetchUsersService = async (): Promise<UsersApiResponse> => {
     const res = await api.get<UsersApiResponse>("/v1/users");
@@ -16,8 +17,8 @@ export const createUserService = async (data: {
     isActive: boolean;
     phone?: string;
     warehouseName?: string;
-}) => {
-    const res = await api.post("/v1/users", data);
+}): Promise<MutationApiResponse> => {
+    const res = await api.post<MutationApiResponse>("/v1/users", data);
     return res.data;
 };
 
@@ -25,7 +26,7 @@ export const updateUserService = async (
     id: string,
     data: {
         email: string;
-        password?: string; // optional for update
+        password?: string;
         name: string;
         role: string;
         orgName: string;
@@ -34,12 +35,12 @@ export const updateUserService = async (
         phone?: string;
         warehouseName?: string;
     }
-) => {
-    const res = await api.put(`/v1/users/${id}`, data);
+): Promise<MutationApiResponse> => {
+    const res = await api.put<MutationApiResponse>(`/v1/users/${id}`, data);
     return res.data;
 };
 
-export const deleteUserService = async (id: string) => {
-    const res = await api.delete(`/v1/users/${id}`);
+export const deleteUserService = async (id: string): Promise<MutationApiResponse> => {
+    const res = await api.delete<MutationApiResponse>(`/v1/users/${id}`);
     return res.data;
 };
