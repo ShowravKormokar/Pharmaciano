@@ -1,6 +1,6 @@
-
 import { api } from "@/lib/api";
 import type { OrganizationsApiResponse, OrganizationApiResponse, OrganizationItem } from "@/types/organization";
+import type { MutationApiResponse } from "@/types/response";
 
 export const fetchOrganizationsService = async (): Promise<OrganizationsApiResponse> => {
     const res = await api.get<OrganizationsApiResponse>("/v1/organizations");
@@ -20,8 +20,8 @@ export const createOrganizationService = async (data: {
     address?: string;
     contact: { phone: string; email: string };
     subscriptionPlan: string;
-}) => {
-    const res = await api.post("/v1/organization", data);
+}): Promise<MutationApiResponse> => {
+    const res = await api.post<MutationApiResponse>("/v1/organization", data);
     return res.data;
 };
 
@@ -35,14 +35,14 @@ export const updateOrganizationService = async (
         address?: string;
         contact: { phone: string; email: string };
         subscriptionPlan: string;
-        isActive?: boolean; // maybe allowed in update
+        isActive?: boolean;
     }
-) => {
-    const res = await api.put(`/v1/organizations/${id}`, data);
+): Promise<MutationApiResponse> => {
+    const res = await api.put<MutationApiResponse>(`/v1/organizations/${id}`, data);
     return res.data;
 };
 
-export const deleteOrganizationService = async (id: string) => {
-    const res = await api.delete(`/v1/organizations/${id}`);
+export const deleteOrganizationService = async (id: string): Promise<MutationApiResponse> => {
+    const res = await api.delete<MutationApiResponse>(`/v1/organizations/${id}`);
     return res.data;
 };

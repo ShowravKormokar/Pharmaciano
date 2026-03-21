@@ -1,5 +1,6 @@
 import { api } from "@/lib/api";
-import type { BranchesApiResponse, BranchApiResponse, MutationApiResponse } from "@/types/branch";
+import type { BranchesApiResponse, BranchApiResponse} from "@/types/branch";
+import type { MutationApiResponse } from "@/types/response";
 
 export const fetchBranchesService = async (): Promise<BranchesApiResponse> => {
     const res = await api.get<BranchesApiResponse>("/v1/branches");

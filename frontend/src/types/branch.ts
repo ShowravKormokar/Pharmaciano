@@ -39,8 +39,3 @@ export interface BranchApiResponse {
         branch: BranchItem;
     };
 }
-
-export interface MutationApiResponse {
-    success: boolean;
-    message: string;
-};
