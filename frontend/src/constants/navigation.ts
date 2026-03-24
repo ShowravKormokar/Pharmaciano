@@ -17,7 +17,8 @@ export type NavChild = {
     label: string;
     href: string;
     icon?: LucideIcon;
-    permission?: string;   // page-level control
+    permission?: string;
+    module?: string;
 };
 
 export type NavItem = {
@@ -25,8 +26,9 @@ export type NavItem = {
     href?: string;
     icon?: LucideIcon;
     children?: NavChild[];
-    id?: string;           // module name
-    permission?: string;   // module-level control
+    id?: string;
+    permission?: string;
+    module?: string;
 };
 
 export const navigation: NavItem[] = [
@@ -35,6 +37,7 @@ export const navigation: NavItem[] = [
         icon: Home,
         href: "/dashboard",
         id: "dashboard",
+        permission: "user:read"
     },
 
     /* USERS & ACCESS */

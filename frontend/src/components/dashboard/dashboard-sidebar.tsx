@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { navigation, NavItem } from "@/constants/navigation";
@@ -17,8 +17,8 @@ import {
     SidebarMenuButton,
 } from "@/components/ui/sidebar";
 import { LogoutButton } from "./logout-button";
-
 import { isRouteActive, getBestMatch } from "@/utils/route-matcher";
+import { PermissionLink } from "../pbac/PermissionLink";
 
 type IconComponent = React.ElementType;
 
@@ -27,13 +27,14 @@ function SidebarNavItem({
     isOpen,
     toggleOpen,
     pathname,
+    authReady,
 }: {
     item: NavItem;
     isOpen: boolean;
     toggleOpen: (id: string) => void;
     pathname: string;
+    authReady: boolean;
 }) {
-
     const Icon = item.icon as IconComponent | undefined;
 
     const hasChildren =
@@ -64,20 +65,26 @@ function SidebarNavItem({
                 asChild={hasChildren}
                 onClick={() => hasChildren && toggleOpen(item.id || item.label)}
                 aria-expanded={hasChildren ? isOpen : undefined}
-                aria-controls={hasChildren ? `submenu-${item.id || item.label}` : undefined}
+                aria-controls={
+                    hasChildren ? `submenu-${item.id || item.label}` : undefined
+                }
                 className="flex items-center justify-between w-full"
                 isActive={parentActive}
             >
                 {hasChildren ? (
-                    <button type="button" className="flex items-center gap-3 w-full text-left">
+                    // ✅ FIXED: no nested button
+                    <div className="flex items-center gap-3 w-full text-left">
                         {Icon && <Icon className="h-4 w-4" />}
                         <span>{item.label}</span>
                         <span className="ml-auto text-xs opacity-60">
                             {isOpen ? "−" : "+"}
                         </span>
-                    </button>
+                    </div>
                 ) : (
-                    <Link href={item.href ?? "#"} className="flex items-center gap-3 w-full">
+                    <Link
+                        href={item.href ?? "#"}
+                        className="flex items-center gap-3 w-full"
+                    >
                         {Icon && <Icon className="h-4 w-4" />}
                         <span>{item.label}</span>
                     </Link>
@@ -90,7 +97,6 @@ function SidebarNavItem({
                     className="ml-6 mt-2 flex flex-col space-y-2"
                 >
                     {visibleChildren.map((child) => {
-
                         const ChildIcon =
                             child.icon as IconComponent | undefined;
 
@@ -98,14 +104,32 @@ function SidebarNavItem({
 
                         return (
                             <SidebarMenuItem key={child.href}>
-                                <SidebarMenuButton asChild isActive={childActive}>
-                                    <Link
-                                        href={child.href}
-                                        className="flex items-center gap-3"
-                                    >
-                                        {ChildIcon && <ChildIcon className="h-4 w-4" />}
-                                        <span>{child.label}</span>
-                                    </Link>
+                                <SidebarMenuButton
+                                    asChild
+                                    isActive={childActive}
+                                >
+                                    {authReady && child.permission ? (
+                                        <PermissionLink
+                                            href={child.href}
+                                            permission={child.permission}
+                                            className="flex items-center gap-3"
+                                        >
+                                            {ChildIcon && (
+                                                <ChildIcon className="h-4 w-4" />
+                                            )}
+                                            <span>{child.label}</span>
+                                        </PermissionLink>
+                                    ) : (
+                                        <Link
+                                            href={child.href}
+                                            className="flex items-center gap-3"
+                                        >
+                                            {ChildIcon && (
+                                                <ChildIcon className="h-4 w-4" />
+                                            )}
+                                            <span>{child.label}</span>
+                                        </Link>
+                                    )}
                                 </SidebarMenuButton>
                             </SidebarMenuItem>
                         );
@@ -117,26 +141,43 @@ function SidebarNavItem({
 }
 
 export function DashboardSidebar() {
-
     const pathname = usePathname();
-    const { user } = useAuthStore();
+    const { user, loading } = useAuthStore();
+
+    const authReady = !loading && !!user;
+
+    // ✅ Cache filtered navigation (prevents flicker on reload)
+    const [cachedNavigation, setCachedNavigation] = useState<NavItem[] | null>(null);
 
     const filteredNavigation = useMemo(() => {
-        if (!user) return [];
+        if (!authReady) return null; // ❌ never expose raw navigation
         return filterNavigationByPermission(navigation);
-    }, [user]);
+    }, [authReady]);
+
+    // ✅ Sync cache when ready
+    useEffect(() => {
+        if (filteredNavigation) {
+            setCachedNavigation(filteredNavigation);
+        }
+    }, [filteredNavigation]);
+
+    // ✅ Skeleton only when nothing is ready yet
+    const showSkeleton = !cachedNavigation;
 
     const defaultOpenId = useMemo(() => {
+        const source = cachedNavigation ?? [];
 
-        const found = filteredNavigation.find((n) =>
-            n.children &&
-            getBestMatch(
-                pathname,
-                n.children.map((c) => c.href)
-            )
+        const found = source.find(
+            (n) =>
+                n.children &&
+                getBestMatch(
+                    pathname,
+                    n.children.map((c) => c.href)
+                )
         );
+
         return found?.id ?? null;
-    }, [pathname, filteredNavigation]);
+    }, [pathname, cachedNavigation]);
 
     const [open, setOpen] = useState<string | null>(defaultOpenId);
 
@@ -154,17 +195,24 @@ export function DashboardSidebar() {
 
                     <SidebarGroupContent>
                         <SidebarMenu>
-
-                            {filteredNavigation.map((item) => (
-                                <SidebarNavItem
-                                    key={item.id ?? item.label}
-                                    item={item}
-                                    isOpen={open === (item.id ?? item.label)}
-                                    toggleOpen={toggleOpen}
-                                    pathname={pathname}
-                                />
-                            ))}
-
+                            {showSkeleton ? (
+                                Array.from({ length: 6 }).map((_, i) => (
+                                    <SidebarMenuItem key={i}>
+                                        <div className="h-8 rounded-md bg-muted animate-pulse mx-2" />
+                                    </SidebarMenuItem>
+                                ))
+                            ) : (
+                                (cachedNavigation ?? []).map((item) => (
+                                    <SidebarNavItem
+                                        key={item.id ?? item.label}
+                                        item={item}
+                                        isOpen={open === (item.id ?? item.label)}
+                                        toggleOpen={toggleOpen}
+                                        pathname={pathname}
+                                        authReady={authReady}
+                                    />
+                                ))
+                            )}
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
@@ -177,7 +225,9 @@ export function DashboardSidebar() {
                             Logged in as
                         </span>
                         <span className="text-xs font-semibold text-foreground">
-                            {user?.name || user?.email || "User"}
+                            {authReady
+                                ? user?.name || user?.email || "User"
+                                : "—"}
                         </span>
                     </div>
                     <div className="shrink-0">
@@ -187,4 +237,4 @@ export function DashboardSidebar() {
             </div>
         </Sidebar>
     );
-};
+}
