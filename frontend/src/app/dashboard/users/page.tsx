@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Users, Shield, UserPlus, ShieldPlus, Eye } from "lucide-react";
 import Link from "next/link";
+import { CanAccess } from "@/components/pbac/CanAccess";
 
 export default function UsersOverviewPage() {
     const router = useRouter();
@@ -113,10 +114,12 @@ export default function UsersOverviewPage() {
                     </Button>
                 </Link>
                 <Link href="/dashboard/users/user-list/add">
-                    <Button>
-                        <UserPlus className="h-4 w-4 mr-2" />
-                        Create User
-                    </Button>
+                    <CanAccess permission="user:create" fallback={<Button disabled>Create User</Button>}>
+                        <Button>
+                            <UserPlus className="h-4 w-4 mr-2" />
+                            Create User
+                        </Button>
+                    </CanAccess>
                 </Link>
                 <Link href="/dashboard/users/role-list/add">
                     <Button>
