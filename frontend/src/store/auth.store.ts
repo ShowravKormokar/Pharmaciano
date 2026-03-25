@@ -1,6 +1,8 @@
 import { create } from "zustand";
 import type { UserProfile } from "@/types/auth";
 import { fetchProfileService } from "@/services/auth.service";
+import { navigation as baseNavigation, type NavItem } from "@/constants/navigation";
+import { filterNavigationByPermission } from "@/hooks/engine/navigation.engine";
 
 // ─── Profile Cache Helpers ────────────────────────────────────────────────────
 
@@ -21,9 +23,7 @@ export function setCachedProfile(profile: UserProfile, persistent: boolean): voi
         } else {
             sessionStorage.setItem(PROFILE_CACHE_KEY, serialized);
         }
-    } catch {
-        // Storage quota or serialization error — not fatal
-    }
+    } catch { }
 }
 
 function getCachedProfile(): UserProfile | null {
@@ -46,6 +46,13 @@ export function clearCachedProfile(): void {
     localStorage.removeItem(PROFILE_CACHE_KEY);
 }
 
+// ─── NEW: Navigation Helper ───────────────────────────────────────────────────
+
+function computeNavigation(user: UserProfile | null): NavItem[] {
+    if (!user) return [];
+    return filterNavigationByPermission(baseNavigation);
+}
+
 // ─── Auth Store ───────────────────────────────────────────────────────────────
 
 interface AuthState {
@@ -53,35 +60,29 @@ interface AuthState {
     isAuthenticated: boolean;
     loading: boolean;
 
+    navigation: NavItem[]; // ✅ NEW
+
     setUser: (user: UserProfile) => void;
     initializeAuth: () => Promise<void>;
     logout: () => void;
 }
 
-// ─── Sync initial state from cache ───────────────────────────────────────────
-const getInitialAuthState = (): Pick<AuthState, "user" | "isAuthenticated" | "loading"> => {
-    try {
-        const token =
-            sessionStorage.getItem("accessToken") ||
-            localStorage.getItem("accessToken");
-
-        if (!token) return { user: null, isAuthenticated: false, loading: false };
-
-        const cached = getCachedProfile(); // your existing helper
-        if (cached) {
-            return { user: cached, isAuthenticated: true, loading: false };
-        }
-    } catch {
-        // SSR or storage unavailable
-    }
-    return { user: null, isAuthenticated: false, loading: true };
-};
-
-// ─── Auth Store ───────────────────────────────────────────────────────────────
 export const useAuthStore = create<AuthState>((set) => ({
-    ...getInitialAuthState(), // ← hydrated synchronously, zero flash
+    user: null,
+    isAuthenticated: false,
+    loading: true,
+    navigation: [], // ✅ NEW
 
-    setUser: (user) => set({ user, isAuthenticated: true, loading: false }),
+    setUser: (user) => {
+        const nav = computeNavigation(user); // 🔥 compute once
+
+        set({
+            user,
+            navigation: nav || [],
+            isAuthenticated: true,
+            loading: false,
+        });
+    },
 
     initializeAuth: async () => {
         const isPersistent = !!localStorage.getItem("accessToken");
@@ -90,39 +91,86 @@ export const useAuthStore = create<AuthState>((set) => ({
             localStorage.getItem("accessToken");
 
         if (!token) {
-            set({ user: null, isAuthenticated: false, loading: false });
+            set({
+                user: null,
+                navigation: [],
+                isAuthenticated: false,
+                loading: false,
+            });
             return;
         }
 
+        // ── Step 1: Instant cache hydration ───────────────
         const cached = getCachedProfile();
         if (cached) {
-            // Already hydrated at creation — just revalidate in background
+            const nav = computeNavigation(cached); // 🔥 instant nav
+
+            set({
+                user: cached,
+                navigation: nav,
+                isAuthenticated: true,
+                loading: false,
+            });
+
+            // ── Step 2: Background revalidation ─────────────
             fetchProfileService()
                 .then((res) => {
                     const profile = res.data.profile;
+
                     setCachedProfile(profile, isPersistent);
-                    set({ user: profile, isAuthenticated: true });
+
+                    const updatedNav = computeNavigation(profile); // 🔥 update nav if changed
+
+                    set({
+                        user: profile,
+                        navigation: updatedNav,
+                        isAuthenticated: true,
+                    });
                 })
                 .catch(() => {
                     clearCachedProfile();
                     sessionStorage.removeItem("accessToken");
                     localStorage.removeItem("accessToken");
                     document.cookie = "auth-token=; Max-Age=0; path=/";
-                    set({ user: null, isAuthenticated: false, loading: false });
+
+                    set({
+                        user: null,
+                        navigation: [],
+                        isAuthenticated: false,
+                        loading: false,
+                    });
                 });
+
             return;
         }
 
-        // No cache — must await fresh fetch
+        // ── Step 3: No cache → fetch ──────────────────────
         try {
             const res = await fetchProfileService();
             const profile = res.data.profile;
+
             setCachedProfile(profile, isPersistent);
-            set({ user: profile, isAuthenticated: true, loading: false });
-        } catch {
+
+            const nav = computeNavigation(profile); // 🔥 compute once
+
+            set({
+                user: profile,
+                navigation: nav,
+                isAuthenticated: true,
+                loading: false,
+            });
+        } catch (err) {
+            console.error("Auth init failed:", err);
+
             sessionStorage.removeItem("accessToken");
             localStorage.removeItem("accessToken");
-            set({ user: null, isAuthenticated: false, loading: false });
+
+            set({
+                user: null,
+                navigation: [],
+                isAuthenticated: false,
+                loading: false,
+            });
         }
     },
 
@@ -131,6 +179,12 @@ export const useAuthStore = create<AuthState>((set) => ({
         localStorage.removeItem("accessToken");
         clearCachedProfile();
         document.cookie = "auth-token=; Max-Age=0; path=/";
-        set({ user: null, isAuthenticated: false, loading: false });
+
+        set({
+            user: null,
+            navigation: [],
+            isAuthenticated: false,
+            loading: false,
+        });
     },
 }));
