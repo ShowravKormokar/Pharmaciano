@@ -17,7 +17,7 @@ import {
     SidebarMenuButton,
 } from "@/components/ui/sidebar";
 import { LogoutButton } from "./logout-button";
-import { isRouteActive, getBestMatch } from "@/utils/route-matcher";
+import { isRouteActive, getBestMatch, normalizePath } from "@/utils/route-matcher";
 import { PermissionLink } from "../pbac/PermissionLink";
 
 type IconComponent = React.ElementType;
@@ -47,17 +47,21 @@ function SidebarNavItem({
 
     if (hasChildren && visibleChildren.length === 0) return null;
 
+    //bestChildMatch returns the single most-specific href that matches
+    // the current pathname — used for both parentActive and childActive.
     const bestChildMatch = hasChildren
         ? getBestMatch(
             pathname,
-            visibleChildren.map((c) => c.href)
+            visibleChildren
+                .map((c) => c.href)
+                .filter(Boolean) as string[]
         )
         : null;
 
     const parentActive =
         item.href
             ? isRouteActive(pathname, item.href)
-            : !!bestChildMatch;
+            : !!bestChildMatch; // parent is active only when a child matches
 
     return (
         <SidebarMenuItem>
@@ -72,7 +76,6 @@ function SidebarNavItem({
                 isActive={parentActive}
             >
                 {hasChildren ? (
-                    // ✅ FIXED: no nested button
                     <div className="flex items-center gap-3 w-full text-left">
                         {Icon && <Icon className="h-4 w-4" />}
                         <span>{item.label}</span>

@@ -19,6 +19,8 @@ export function filterNavigationByPermission(navigation: NavItem[]): NavItem[] {
  
     return navigation
         .filter((item) => {
+            if (item.href === "/dashboard") return true;
+
             if (item.id && !rbac.canAccessModule(item.id)) return false;
             return true;
         })
