@@ -84,10 +84,10 @@ export const navigation: NavItem[] = [
         icon: ShoppingBasket,
         id: "inventory",
         children: [
-            { label: "Items", icon: List, href: "/dashboard/inventory/item-list", permission: "inventory:read" },
+            { label: "Medicines", icon: List, href: "/dashboard/inventory/medicines", permission: "inventory:manage" },
             { label: "Categories", icon: Tags, href: "/dashboard/inventory/categories", permission: "inventory:manage" },
             { label: "Brands", icon: PackageSearch, href: "/dashboard/inventory/brands", permission: "inventory:manage" },
-            { label: "Variants / Batches", icon: Layers, href: "/dashboard/inventory/variant-list", permission: "inventory:manage" },
+            { label: "Variants / Batches", icon: Layers, href: "/dashboard/inventory/inventory-batch", permission: "inventory:manage" },
             { label: "Stock Adjustment", icon: Activity, href: "/dashboard/inventory/adjustment", permission: "inventory:adjust" },
             { label: "Expiry Alerts", icon: AlertTriangle, href: "/dashboard/inventory/expiry-alerts", permission: "inventory:read" },
             { label: "Import Items", icon: FileInput, href: "/dashboard/inventory/import-items", permission: "inventory:import" },
