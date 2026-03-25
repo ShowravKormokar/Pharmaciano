@@ -60,11 +60,10 @@ export default function LoginForm({ formData, setFormData }: Props) {
                 description: "Redirecting to your dashboard...",
             });
 
-            // Reduced to 800ms — just enough for toast visibility
-            // setTimeout(() => {
-            //     window.location.href = "/dashboard";
-            // }, 800);
-            router.push("/dashboard");
+            setTimeout(() => {
+                // router.push("/dashboard");
+                window.location.href = "/dashboard";
+            }, 0);
 
         } catch (err: unknown) {
             const message =

@@ -19,6 +19,7 @@ import {
 import { LogoutButton } from "./logout-button";
 import { isRouteActive, getBestMatch, normalizePath } from "@/utils/route-matcher";
 import { PermissionLink } from "../pbac/PermissionLink";
+import { useFilteredNavigation } from "@/hooks/useFilteredNavigation";
 
 type IconComponent = React.ElementType;
 
@@ -145,32 +146,15 @@ function SidebarNavItem({
 
 export function DashboardSidebar() {
     const pathname = usePathname();
-    const { user, loading } = useAuthStore();
+    const { user, loading, navigation } = useAuthStore();
 
     const authReady = !loading && !!user;
-
-    // ✅ Cache filtered navigation (prevents flicker on reload)
-    const [cachedNavigation, setCachedNavigation] = useState<NavItem[] | null>(null);
-
-    const filteredNavigation = useMemo(() => {
-        if (!authReady) return null; // ❌ never expose raw navigation
-        return filterNavigationByPermission(navigation);
-    }, [authReady]);
-
-    // ✅ Sync cache when ready
-    useEffect(() => {
-        if (filteredNavigation) {
-            setCachedNavigation(filteredNavigation);
-        }
-    }, [filteredNavigation]);
-
-    // ✅ Skeleton only when nothing is ready yet
-    const showSkeleton = !cachedNavigation;
+    const showSkeleton = loading || !navigation || navigation.length === 1;
 
     const defaultOpenId = useMemo(() => {
-        const source = cachedNavigation ?? [];
+        if (!navigation.length) return null;
 
-        const found = source.find(
+        const found = navigation.find(
             (n) =>
                 n.children &&
                 getBestMatch(
@@ -180,7 +164,7 @@ export function DashboardSidebar() {
         );
 
         return found?.id ?? null;
-    }, [pathname, cachedNavigation]);
+    }, [pathname, navigation]);
 
     const [open, setOpen] = useState<string | null>(defaultOpenId);
 
@@ -205,7 +189,7 @@ export function DashboardSidebar() {
                                     </SidebarMenuItem>
                                 ))
                             ) : (
-                                (cachedNavigation ?? []).map((item) => (
+                                navigation.map((item) => (
                                     <SidebarNavItem
                                         key={item.id ?? item.label}
                                         item={item}
