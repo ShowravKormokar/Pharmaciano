@@ -11,6 +11,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Eye, EyeOff, Mail, Lock, AlertCircle } from 'lucide-react';
 import { loginService } from "@/services/auth.service";
+import { useAuthStore, setCachedProfile } from "@/store/auth.store";
+import { useRouter } from "next/navigation";
 
 interface Props {
     formData: { email: string; password: string };
@@ -23,14 +25,18 @@ export default function LoginForm({ formData, setFormData }: Props) {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
+    const router = useRouter();
+    // inside LoginForm component:
+    const setUser = useAuthStore((s) => s.setUser);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
-        setError(null); // clear previous error on each attempt
+        setError(null);
 
         try {
             const res = await loginService(formData);
-            const { token } = res.data;
+            const { token, user } = res.data; // ← user is already here, use it!
 
             if (!token) throw new Error("Invalid login response");
 
@@ -46,14 +52,19 @@ export default function LoginForm({ formData, setFormData }: Props) {
                 sessionStorage.setItem("accessToken", token);
             }
 
+            // Cache profile NOW so the next page loads instantly (no extra API call)
+            setCachedProfile(user, rememberMe);
+            setUser(user); // hydrate store immediately
+
             toast.success("Signed in successfully", {
                 description: "Redirecting to your dashboard...",
             });
 
-            // Small delay so the toast is visible before navigation
-            setTimeout(() => {
-                window.location.href = "/dashboard";
-            }, 2000);
+            // Reduced to 800ms — just enough for toast visibility
+            // setTimeout(() => {
+            //     window.location.href = "/dashboard";
+            // }, 800);
+            router.push("/dashboard");
 
         } catch (err: unknown) {
             const message =

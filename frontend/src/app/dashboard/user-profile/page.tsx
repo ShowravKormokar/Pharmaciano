@@ -8,20 +8,20 @@ import { Shield, User, Mail, Calendar, CheckCircle, Building, MapPin, Key, Clock
 import { Spinner } from "@/components/ui/shadcn-io/spinner";
 
 export default function ProfileDetails() {
-    const { user, isAuthenticated } = useAuthStore();
+    const { user, isAuthenticated, loading } = useAuthStore(); // add loading
 
-    if (!isAuthenticated || !user) {
+    // Show spinner only while auth is initializing
+    if (loading) {
         return (
             <div className="flex flex-col items-center justify-center min-h-screen">
                 <Spinner variant="bars" />
-                <div className="flex items-center justify-center">
-                    <div className="text-center">
-                        <h1 className="text-2xl font-semibold text-gray-600">Loading...</h1>
-                        {/* <p className="text-gray-500">Is still </p> */}
-                    </div>
-                </div>
             </div>
         );
+    }
+
+    // Auth resolved but no user — redirect or show message
+    if (!isAuthenticated || !user) {
+        return <div>Not authenticated</div>;
     }
 
     const formatDate = (dateString: string) => {
