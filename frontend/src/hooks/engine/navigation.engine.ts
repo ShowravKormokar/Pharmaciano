@@ -16,7 +16,7 @@ export function filterNavigationByPermission(navigation: NavItem[]): NavItem[] {
     if (loading) return [];
 
     if (rbac.isSuperAdmin()) return navigation;
- 
+
     return navigation
         .filter((item) => {
             if (item.href === "/dashboard") return true;
