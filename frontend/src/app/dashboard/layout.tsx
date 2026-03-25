@@ -1,25 +1,34 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useAuthStore } from "@/store/auth.store";
-import { filterNavigationByPermission } from "@/hooks/engine/navigation.engine";
-import { navigation } from "@/constants/navigation";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { DashboardSidebar } from "@/components/dashboard/dashboard-sidebar";
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import { Spinner } from "@/components/ui/shadcn-io/spinner";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-    const { user, isAuthenticated, initializeAuth } = useAuthStore();
-    const [authReady, setAuthReady] = useState(false);
+    const {
+        user,
+        isAuthenticated,
+        loading,
+        navigation = [],
+        initializeAuth,
+    } = useAuthStore();
 
+    // Initialize auth once
     useEffect(() => {
-        initializeAuth().finally(() => setAuthReady(true));
-    }, []);
+        initializeAuth();
+    }, [initializeAuth]);
 
-    const navItems = authReady ? filterNavigationByPermission(navigation) : null;
+    const isReady =
+        !loading &&
+        isAuthenticated &&
+        !!user &&
+        Array.isArray(navigation) &&
+        navigation.length > 1;
 
-    if (!authReady || !isAuthenticated || !user || !navItems) {
+    if (!isReady) {
         return (
             <div className="flex items-center justify-center h-screen w-full">
                 <Spinner variant="bars" />
@@ -40,4 +49,4 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </div>
         </SidebarProvider>
     );
-};
+}
