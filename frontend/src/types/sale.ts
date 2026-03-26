@@ -78,6 +78,32 @@ export interface SingleSaleApiResponse {
     };
 }
 
+// For draft sale data
+export interface DraftSale {
+    id: string;                 // client‑generated unique ID
+    createdAt: number;          // timestamp for sorting
+    customerName: string;
+    customerPhone: string;
+    discount: number;
+    tax: number;
+    paymentMethod: string;
+    cart: Array<{
+        medicineName: string;
+        batchNo: string;
+        quantity: number;
+        sellingPrice: number;
+    }>;
+}
+
+// types/sale.ts
+
+export interface CartItem {
+    medicineName: string;
+    batchNo: string;
+    quantity: number;
+    sellingPrice: number;
+}
+
 export interface BasicApiResponse {
     success: boolean;
     message: string;
