@@ -60,7 +60,7 @@ export default function InventoryBatchView({ batch }: Props) {
                         </div>
                         <div>
                             <p className="text-sm text-muted-foreground">Purchase Price</p>
-                            <p>${batch.purchasePrice.toFixed(2)}</p>
+                            <p>Tk {batch.purchasePrice.toFixed(2)}/-</p>
                         </div>
                         <div>
                             <p className="text-sm text-muted-foreground">Status</p>

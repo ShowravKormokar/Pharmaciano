@@ -56,7 +56,7 @@ export default function InventoryBatchTable({ batches }: Props) {
                                 {batch.expiryDate ? format(new Date(batch.expiryDate), "MMM dd, yyyy") : "—"}
                             </TableCell>
                             <TableCell>{batch.quantity}</TableCell>
-                            <TableCell>${batch.purchasePrice.toFixed(2)}</TableCell>
+                            <TableCell>Tk {batch.purchasePrice.toFixed(2)}/-</TableCell>
                             <TableCell>{getStatusBadge(batch.status)}</TableCell>
                             <TableCell className="text-right">
                                 <InventoryBatchActions batch={batch} />
