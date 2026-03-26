@@ -1,3 +1,4 @@
+// app/dashboard/sales/sales-list/page.tsx
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
@@ -16,14 +17,17 @@ export default function SalesListPage() {
     const { sales, fetchSales, loading } = useSaleStore();
     const [searchTerm, setSearchTerm] = useState("");
     const [filters, setFilters] = useState({ medicine: "", startDate: "", endDate: "" });
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
 
+    // Fetch sales when medicine filter changes
     useEffect(() => {
         fetchSales(filters.medicine || undefined);
     }, [fetchSales, filters.medicine]);
 
+    // Apply search and date filters
     const filteredSales = useMemo(() => {
         let result = [...sales];
-        // Apply search (invoice or customer name)
         if (searchTerm) {
             const lower = searchTerm.toLowerCase();
             result = result.filter(
@@ -32,7 +36,6 @@ export default function SalesListPage() {
                     (sale.customerName?.toLowerCase().includes(lower))
             );
         }
-        // Apply date range
         if (filters.startDate) {
             result = result.filter(
                 (sale) => new Date(sale.createdAt) >= new Date(filters.startDate)
@@ -46,7 +49,55 @@ export default function SalesListPage() {
         return result;
     }, [sales, searchTerm, filters]);
 
+    // Sort by date descending (most recent first)
+    const sortedSales = useMemo(() => {
+        return [...filteredSales].sort(
+            (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+    }, [filteredSales]);
+
+    // Paginate
+    const totalPages = Math.ceil(sortedSales.length / itemsPerPage);
+    const paginatedSales = useMemo(() => {
+        const start = (currentPage - 1) * itemsPerPage;
+        return sortedSales.slice(start, start + itemsPerPage);
+    }, [sortedSales, currentPage]);
+
+    // Reset to first page when filters change
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchTerm, filters]);
+
     const totalAmount = filteredSales.reduce((sum, sale) => sum + sale.totalAmount, 0);
+
+    // Pagination controls
+    const goToPage = (page: number) => {
+        if (page >= 1 && page <= totalPages) setCurrentPage(page);
+    };
+
+    const renderPageNumbers = () => {
+        const pages = [];
+        const maxVisible = 5;
+        let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+        let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+        if (endPage - startPage + 1 < maxVisible) {
+            startPage = Math.max(1, endPage - maxVisible + 1);
+        }
+        for (let i = startPage; i <= endPage; i++) {
+            pages.push(
+                <Button
+                    key={i}
+                    variant={currentPage === i ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => goToPage(i)}
+                    className="w-8 h-8 p-0"
+                >
+                    {i}
+                </Button>
+            );
+        }
+        return pages;
+    };
 
     return (
         <div className="space-y-6 p-6">
@@ -96,10 +147,34 @@ export default function SalesListPage() {
                     {loading ? (
                         <SalesTableSkeleton />
                     ) : (
-                        <SalesTable sales={filteredSales} />
+                        <>
+                            <SalesTable sales={paginatedSales} />
+                            {/* Pagination Controls */}
+                            {totalPages > 1 && (
+                                <div className="flex justify-center items-center gap-2 mt-6">
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => goToPage(currentPage - 1)}
+                                        disabled={currentPage === 1}
+                                    >
+                                        Previous
+                                    </Button>
+                                    {renderPageNumbers()}
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => goToPage(currentPage + 1)}
+                                        disabled={currentPage === totalPages}
+                                    >
+                                        Next
+                                    </Button>
+                                </div>
+                            )}
+                        </>
                     )}
                 </CardContent>
             </Card>
         </div>
     );
-};
+}
