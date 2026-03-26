@@ -51,7 +51,7 @@ export default function UserFilter({ users, onFilterChange }: Props) {
                 <SelectContent>
                     <SelectItem value="all">All Roles</SelectItem>
                     {roleOptions.map((roleName) => (
-                        <SelectItem key={roleName} value={roleName}>
+                        <SelectItem key={roleName} value={roleName} className="capitalize">
                             {roleName}
                         </SelectItem>
                     ))}

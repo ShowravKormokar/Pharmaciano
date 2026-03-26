@@ -33,8 +33,8 @@ export default function WarehouseTable({ warehouses }: Props) {
                 <TableBody>
                     {warehouses.map((warehouse) => (
                         <TableRow key={warehouse._id}>
-                            <TableCell className="font-medium">{warehouse.name}</TableCell>
-                            <TableCell>{warehouse.location}</TableCell>
+                            <TableCell className="font-medium capitalize">{warehouse.name}</TableCell>
+                            <TableCell className="capitalize">{warehouse.location}</TableCell>
                             <TableCell>{warehouse.capacity}</TableCell>
                             {/* <TableCell>
                                 {warehouse.branchName || warehouse.branchId?.name || "N/A"}

@@ -120,13 +120,13 @@ export default function WarehouseOverviewPage() {
                                     className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/20 transition-colors"
                                 >
                                     <div className="space-y-1">
-                                        <p className="font-medium">{warehouse.name}</p>
+                                        <p className="font-medium capitalize">{warehouse.name}</p>
                                         <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                                            <span className="flex items-center gap-1">
+                                            <span className="flex items-center gap-1 capitalize">
                                                 <MapPin className="h-3.5 w-3.5" />
                                                 {warehouse.location || "N/A"}
                                             </span>
-                                            <span className="flex items-center gap-1">
+                                            <span className="flex items-center gap-1 capitalize">
                                                 <Building2 className="h-3.5 w-3.5" />
                                                 {warehouse.branchId?.name || warehouse.branchName || "N/A"}
                                             </span>
@@ -144,7 +144,7 @@ export default function WarehouseOverviewPage() {
                                         variant="ghost"
                                         size="sm"
                                         onClick={() =>
-                                            router.push(`/dashboard/warehouse/view/${warehouse._id}`)
+                                            router.push(`/dashboard/warehouses/view/${warehouse._id}`)
                                         }
                                     >
                                         View

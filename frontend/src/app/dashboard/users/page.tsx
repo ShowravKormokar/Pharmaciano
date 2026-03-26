@@ -151,7 +151,7 @@ export default function UsersOverviewPage() {
                                         className="flex items-center justify-between p-2 border rounded-lg"
                                     >
                                         <div>
-                                            <p className="font-medium">{user.name}</p>
+                                            <p className="font-medium capitalize">{user.name}</p>
                                             <p className="text-sm text-muted-foreground">
                                                 {user.email} • {user.roleId?.name || "No role"}
                                             </p>

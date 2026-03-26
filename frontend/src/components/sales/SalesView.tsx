@@ -32,7 +32,7 @@ export default function SalesView({ sale }: Props) {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <p className="text-sm text-muted-foreground">Customer</p>
-                            <p>{sale.customerName || "Walk-in"}</p>
+                            <p className="capitalize">{sale.customerName || "Walk-in"}</p>
                             {sale.customerPhone && <p className="text-sm">{sale.customerPhone}</p>}
                         </div>
                         <div>
@@ -41,7 +41,7 @@ export default function SalesView({ sale }: Props) {
                         </div>
                         <div>
                             <p className="text-sm text-muted-foreground">Cashier</p>
-                            <p>{sale.cashierId?.name}</p>
+                            <p className="capitalize">{sale.cashierId?.name}</p>
                         </div>
                         <div>
                             <p className="text-sm text-muted-foreground">Payment Method</p>
@@ -62,7 +62,7 @@ export default function SalesView({ sale }: Props) {
                                     className="flex justify-between items-center p-2 border rounded"
                                 >
                                     <div>
-                                        <p className="font-medium">{item.medicineName}</p>
+                                        <p className="font-medium capitalize">{item.medicineName}</p>
                                         <p className="text-xs text-muted-foreground">
                                             Batch: {item.batchNo} | Qty: {item.quantity}
                                         </p>

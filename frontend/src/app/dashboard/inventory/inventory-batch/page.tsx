@@ -110,7 +110,7 @@ export default function InventoryBatchOverviewPage() {
                                     className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/20"
                                 >
                                     <div className="space-y-1">
-                                        <p className="font-medium">
+                                        <p className="font-medium capitalize">
                                             {typeof batch.medicineId === 'object' ? batch.medicineId?.name : batch.medicineName}
                                         </p>
                                         <p className="text-sm text-muted-foreground">

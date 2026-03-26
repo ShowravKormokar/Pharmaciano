@@ -38,14 +38,11 @@ export default function InventoryBatchView({ batch }: Props) {
             </div>
 
             <Card>
-                <CardHeader>
-                    <CardTitle>Inventory Batch Information</CardTitle>
-                </CardHeader>
                 <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <p className="text-sm text-muted-foreground">Medicine</p>
-                            <p className="font-medium">
+                            <p className="font-medium capitalize">
                                 {typeof batch.medicineId === 'object' ? batch.medicineId?.name : batch.medicineName}
                             </p>
                         </div>
@@ -76,19 +73,19 @@ export default function InventoryBatchView({ batch }: Props) {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                         <div>
                             <p className="text-muted-foreground">Organization</p>
-                            <p>{batch.orgName || "N/A"}</p>
+                            <p className="capitalize">{batch.orgName || "N/A"}</p>
                         </div>
                         <div>
                             <p className="text-muted-foreground">Branch</p>
-                            <p>{batch.branchName || "N/A"}</p>
+                            <p className="capitalize">{batch.branchName || "N/A"}</p>
                         </div>
                         <div>
                             <p className="text-muted-foreground">Warehouse</p>
-                            <p>{batch.warehouseName || "N/A"}</p>
+                            <p className="capitalize">{batch.warehouseName || "N/A"}</p>
                         </div>
                         <div>
                             <p className="text-muted-foreground">Created By</p>
-                            <p>{batch.createdBy?.name || batch.createdBy?.email || "System"}</p>
+                            <p className="capitalize">{batch.createdBy?.name || batch.createdBy?.email || "System"}</p>
                         </div>
                         <div>
                             <p className="text-muted-foreground">Created At</p>

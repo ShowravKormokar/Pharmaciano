@@ -64,8 +64,23 @@ export default function MedicineFilter({ medicines, onFilterChange }: Props) {
                 </SelectContent>
             </Select>
 
+            {/* Dosage Form Filter */}
+            <Select value={dosageForm} onValueChange={setDosageForm}>
+                <SelectTrigger className="w-[150px]">
+                    <SelectValue placeholder="All Dosage Forms" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="all">All Dosage Forms</SelectItem>
+                    {dosageForms.map((form) => (
+                        <SelectItem key={form} value={form} className="capitalize">
+                            {form}
+                        </SelectItem>
+                    ))}
+                </SelectContent>
+            </Select>
+
             {/* Prescription Required Filter */}
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 border border-gray-200 px-2 py-2.5 rounded-lg">
                 <Checkbox
                     id="prescription-required"
                     checked={prescriptionRequired === true}
@@ -82,21 +97,6 @@ export default function MedicineFilter({ medicines, onFilterChange }: Props) {
                     Prescription Required
                 </label>
             </div>
-
-            {/* Dosage Form Filter */}
-            <Select value={dosageForm} onValueChange={setDosageForm}>
-                <SelectTrigger className="w-[150px]">
-                    <SelectValue placeholder="All Dosage Forms" />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="all">All Dosage Forms</SelectItem>
-                    {dosageForms.map((form) => (
-                        <SelectItem key={form} value={form}>
-                            {form}
-                        </SelectItem>
-                    ))}
-                </SelectContent>
-            </Select>
 
             {/* Clear Filters */}
             {hasFilters && (

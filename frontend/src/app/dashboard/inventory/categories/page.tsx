@@ -105,10 +105,15 @@ export default function CategoryOverviewPage() {
                                     className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/20"
                                 >
                                     <div className="space-y-1">
-                                        <p className="font-medium">{category.name}</p>
-                                        <p className="text-sm text-muted-foreground line-clamp-1">
-                                            {category.description || "No description"}
+                                        <p className="font-medium capitalize">{category.name}</p>
+                                        <p className="text-sm text-muted-foreground">
+                                            {category.description
+                                                ? category.description.length > 40
+                                                    ? category.description.substring(0, 40) + "..."
+                                                    : category.description
+                                                : "No description"}
                                         </p>
+
                                     </div>
                                     <div className="flex items-center gap-3">
                                         <span

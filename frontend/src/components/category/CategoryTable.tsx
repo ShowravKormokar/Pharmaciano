@@ -31,7 +31,7 @@ export default function CategoryTable({ categories }: Props) {
                 <TableBody>
                     {categories.map((category) => (
                         <TableRow key={category._id}>
-                            <TableCell className="font-medium">{category.name}</TableCell>
+                            <TableCell className="font-medium capitalize">{category.name}</TableCell>
                             <TableCell>
                                 {category?.description
                                     ? category.description.length > 30

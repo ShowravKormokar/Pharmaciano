@@ -25,22 +25,19 @@ export default function BrandView({ brand }: Props) {
             </div>
 
             <Card>
-                <CardHeader>
-                    <CardTitle>Brand Information</CardTitle>
-                </CardHeader>
                 <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <p className="text-sm text-muted-foreground">Name</p>
-                            <p className="font-medium">{brand.name}</p>
+                            <p className="font-medium capitalize">{brand.name}</p>
                         </div>
                         <div>
                             <p className="text-sm text-muted-foreground">Manufacturer</p>
-                            <p className="font-medium">{brand.manufacturer}</p>
+                            <p className="font-medium capitalize">{brand.manufacturer}</p>
                         </div>
                         <div>
                             <p className="text-sm text-muted-foreground">Country</p>
-                            <p>{brand.country}</p>
+                            <p className="capitalize">{brand.country}</p>
                         </div>
                         <div>
                             <p className="text-sm text-muted-foreground">Status</p>
@@ -55,7 +52,7 @@ export default function BrandView({ brand }: Props) {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                         <div>
                             <p className="text-muted-foreground">Created By</p>
-                            <p>{brand.createdBy?.name || brand.createdBy?.email || "System"}</p>
+                            <p className="capitalize">{brand.createdBy?.name || brand.createdBy?.email || "System"}</p>
                         </div>
                         <div>
                             <p className="text-muted-foreground">Created At</p>

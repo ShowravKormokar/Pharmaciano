@@ -4,11 +4,24 @@ import { useAuthStore } from "@/store/auth.store";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Shield, User, Mail, Calendar, CheckCircle, Building, MapPin, Key, Clock } from "lucide-react";
+import { Shield, User, Mail, Calendar, CheckCircle, Building, MapPin, Key, Clock, Copy } from "lucide-react";
 import { Spinner } from "@/components/ui/shadcn-io/spinner";
+import { useState } from "react";
 
 export default function ProfileDetails() {
-    const { user, isAuthenticated, loading } = useAuthStore(); // add loading
+    const { user, isAuthenticated, loading } = useAuthStore();
+
+    const [copied, setCopied] = useState(false);
+
+    const handleCopy = async () => {
+        try {
+            await navigator.clipboard.writeText(JSON.stringify(user, null, 2));
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        } catch (err) {
+            console.error("Failed to copy:", err);
+        }
+    };
 
     // Show spinner only while auth is initializing
     if (loading) {
@@ -60,7 +73,7 @@ export default function ProfileDetails() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label className="text-sm font-medium text-gray-500">Full Name</label>
-                                    <p className="text-lg font-semibold">{user.name}</p>
+                                    <p className="text-lg font-semibold capitalize">{user.name}</p>
                                 </div>
                                 <div>
                                     <label className="text-sm font-medium text-gray-500">Email Address</label>
@@ -143,11 +156,11 @@ export default function ProfileDetails() {
                         <CardContent className="space-y-4">
                             <div>
                                 <label className="text-sm font-medium text-gray-500">Organization</label>
-                                <p className="text-lg font-semibold">
+                                <p className="text-lg font-semibold capitalize">
                                     {user.organizationId?.name || "Not Assigned"}
                                 </p>
                                 {user.organizationId?.address && (
-                                    <p className="text-sm text-gray-600">{user.organizationId.address}</p>
+                                    <p className="text-sm text-gray-600 capitalize">{user.organizationId.address}</p>
                                 )}
                             </div>
 
@@ -158,11 +171,11 @@ export default function ProfileDetails() {
                                     <MapPin className="h-4 w-4" />
                                     Branch
                                 </label>
-                                <p className="text-lg font-semibold">
+                                <p className="text-lg font-semibold capitalize">
                                     {user.branchId?.name || "Not Assigned"}
                                 </p>
                                 {user.branchId?.address && (
-                                    <p className="text-sm text-gray-600">{user.branchId.address}</p>
+                                    <p className="text-sm text-gray-600 capitalize">{user.branchId.address}</p>
                                 )}
                             </div>
                         </CardContent>
@@ -212,7 +225,7 @@ export default function ProfileDetails() {
                                 <div className="space-y-2">
                                     <div>
                                         <label className="text-sm font-medium text-gray-500">Name</label>
-                                        <p className="font-semibold">{user.createdBy.name}</p>
+                                        <p className="font-semibold capitalize">{user.createdBy.name}</p>
                                     </div>
                                     <div>
                                         <label className="text-sm font-medium text-gray-500">Email</label>
@@ -272,14 +285,26 @@ export default function ProfileDetails() {
             </Card> */}
 
             {/* Raw JSON Data (for debugging) */}
-            <details className="mt-8">
-                <summary className="text-sm font-medium text-gray-500 cursor-pointer hover:text-gray-700">
-                    View Raw Data
-                </summary>
-                <pre className="mt-2 p-4 bg-gray-50 rounded-md text-xs overflow-auto max-h-64">
-                    {JSON.stringify(user, null, 2)}
-                </pre>
-            </details>
+            <div className="mt-8 border rounded-lg">
+                <div className="flex items-center justify-between p-4 bg-gray-50 cursor-pointer hover:bg-gray-100 rounded-t-lg">
+                    <details className="flex-1">
+                        <summary className="text-sm font-medium text-gray-500 hover:text-gray-700 flex items-center gap-2 list-none">
+                            View Raw Data
+                        </summary>
+                        <pre className="mt-4 p-4 bg-white text-xs overflow-auto max-h-64">
+                            {JSON.stringify(user, null, 2)}
+                        </pre>
+                    </details>
+                    <button
+                        onClick={handleCopy}
+                        className="ml-2 p-1 rounded hover:bg-gray-200"
+                        aria-label="Copy JSON"
+                    >
+                        <Copy className="h-4 w-4" />
+                    </button>
+                    {copied && <span className="text-xs text-green-600">Copied!</span>}
+                </div>
+            </div>
         </div>
     );
 };

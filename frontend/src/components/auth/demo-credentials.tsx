@@ -26,10 +26,10 @@ export function DemoCredentials({ onFillCredentials }: Props) {
                     </div>
                     <div className="flex items-center justify-between">
                         <p>
-                            <strong>Salesman:</strong> abc@example.com / abc123
+                            <strong>Salesman:</strong> rafiz001@gmail.com / rafiz123
                         </p>
                         <button
-                            onClick={() => onFillCredentials("abc@example.com", "abc123")}
+                            onClick={() => onFillCredentials("rafiz001@gmail.com", "rafiz123")}
                             className="text-xs bg-primary/20 hover:bg-primary/30 px-2 py-1 rounded transition-colors"
                         >
                             Try this

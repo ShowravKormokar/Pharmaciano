@@ -211,7 +211,7 @@ export function DashboardSidebar() {
                         <span className="text-xs font-medium text-muted-foreground">
                             Logged in as
                         </span>
-                        <span className="text-xs font-semibold text-foreground">
+                        <span className="text-xs font-semibold text-foreground capitalize">
                             {authReady
                                 ? user?.name || user?.email || "User"
                                 : "—"}

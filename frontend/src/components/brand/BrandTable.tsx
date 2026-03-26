@@ -32,9 +32,9 @@ export default function BrandTable({ brands }: Props) {
                 <TableBody>
                     {brands.map((brand) => (
                         <TableRow key={brand._id}>
-                            <TableCell className="font-medium">{brand.name}</TableCell>
-                            <TableCell>{brand.manufacturer}</TableCell>
-                            <TableCell>{brand.country}</TableCell>
+                            <TableCell className="font-medium capitalize">{brand.name}</TableCell>
+                            <TableCell className="capitalize">{brand.manufacturer}</TableCell>
+                            <TableCell className="capitalize">{brand.country}</TableCell>
                             <TableCell>
                                 <Badge variant={brand.isActive ? "default" : "secondary"}>
                                     {brand.isActive ? "Active" : "Inactive"}

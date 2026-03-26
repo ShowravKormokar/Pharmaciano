@@ -25,14 +25,11 @@ export default function WarehouseView({ warehouse }: Props) {
             </div>
 
             <Card>
-                <CardHeader>
-                    <CardTitle>Warehouse Information</CardTitle>
-                </CardHeader>
                 <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <p className="text-sm text-muted-foreground">Name</p>
-                            <p className="font-medium">{warehouse.name}</p>
+                            <p className="font-medium capitalize">{warehouse.name}</p>
                         </div>
                         <div>
                             <p className="text-sm text-muted-foreground">Status</p>
@@ -44,7 +41,7 @@ export default function WarehouseView({ warehouse }: Props) {
 
                     <div>
                         <p className="text-sm text-muted-foreground">Location</p>
-                        <p>{warehouse.location}</p>
+                        <p className="capitalize">{warehouse.location}</p>
                     </div>
 
                     <div>
@@ -56,9 +53,9 @@ export default function WarehouseView({ warehouse }: Props) {
                         <p className="text-sm text-muted-foreground">Branch</p>
                         {warehouse.branchId ? (
                             <div className="bg-muted/30 p-3 rounded-lg">
-                                <p className="font-medium">{warehouse.branchId.name}</p>
+                                <p className="font-medium capitalize">{warehouse.branchId.name}</p>
                                 {warehouse.branchId.address && (
-                                    <p className="text-sm text-muted-foreground">{warehouse.branchId.address}</p>
+                                    <p className="text-sm text-muted-foreground ca">{warehouse.branchId.address}</p>
                                 )}
                                 {warehouse.branchId.contact && (
                                     <div className="mt-2 text-sm">
@@ -68,7 +65,7 @@ export default function WarehouseView({ warehouse }: Props) {
                                 )}
                             </div>
                         ) : (
-                            <p>{warehouse.branchName || "N/A"}</p>
+                                <p className="capitalize">{warehouse.branchName || "N/A"}</p>
                         )}
                     </div>
 

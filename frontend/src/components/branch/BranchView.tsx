@@ -25,14 +25,11 @@ export default function BranchView({ branch }: Props) {
             </div>
 
             <Card>
-                <CardHeader>
-                    <CardTitle>Branch Information</CardTitle>
-                </CardHeader>
                 <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <p className="text-sm text-muted-foreground">Branch Name</p>
-                            <p className="font-medium">{branch.name}</p>
+                            <p className="font-medium capitalize">{branch.name}</p>
                         </div>
                         <div>
                             <p className="text-sm text-muted-foreground">Status</p>
@@ -44,7 +41,7 @@ export default function BranchView({ branch }: Props) {
 
                     <div>
                         <p className="text-sm text-muted-foreground">Address</p>
-                        <p>{branch.address}</p>
+                        <p className="capitalize">{branch.address}</p>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -60,7 +57,7 @@ export default function BranchView({ branch }: Props) {
 
                     <div>
                         <p className="text-sm text-muted-foreground">Organization</p>
-                        <p>{branch.organization?.name || branch.orgName || "N/A"}</p>
+                        <p className="capitalize">{branch.organization?.name || branch.orgName || "N/A"}</p>
                     </div>
 
                     <Separator />
@@ -68,7 +65,7 @@ export default function BranchView({ branch }: Props) {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                         <div>
                             <p className="text-muted-foreground">Created By</p>
-                            <p>{branch.createdBy?.name || "System"}</p>
+                            <p className="capitalize">{branch.createdBy?.name || "System"}</p>
                         </div>
                         <div>
                             <p className="text-muted-foreground">Created At</p>

@@ -48,7 +48,7 @@ export default function InventoryBatchTable({ batches }: Props) {
                 <TableBody>
                     {batches.map((batch) => (
                         <TableRow key={batch._id}>
-                            <TableCell className="font-medium">
+                            <TableCell className="font-medium capitalize">
                                 {typeof batch.medicineId === 'object' ? batch.medicineId?.name : batch.medicineName}
                             </TableCell>
                             <TableCell>{batch.batchNo}</TableCell>

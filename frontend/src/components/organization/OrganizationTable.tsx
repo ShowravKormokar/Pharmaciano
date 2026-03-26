@@ -33,7 +33,7 @@ export default function OrganizationTable({ organizations }: Props) {
                 <TableBody>
                     {organizations.map((org) => (
                         <TableRow key={org._id}>
-                            <TableCell className="font-medium">{org.name}</TableCell>
+                            <TableCell className="font-medium capitalize">{org.name}</TableCell>
                             <TableCell>{org.contact.email}</TableCell>
                             <TableCell>{org.contact.phone}</TableCell>
                             <TableCell>

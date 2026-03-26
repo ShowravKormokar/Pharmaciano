@@ -40,11 +40,11 @@ export function LogoutButton() {
         <Button
             variant="outline"
             disabled={isLoading}
-            className="w-full justify-start space-x-3 text-foreground hover:text-red-700 hover:bg-red-50 transition-colors cursor-pointer"
+            className="w-full justify-start text-foreground hover:text-red-700 hover:bg-red-50 transition-colors cursor-pointer"
             onClick={handleLogout}
         >
             <LogOut className="h-4 w-4" />
-            <span>{isLoading ? 'Logging out...' : 'Logout'}</span>
+            <span className='text-sm'>{isLoading ? 'Logging out...' : 'Logout'}</span>
         </Button>
     )
 };

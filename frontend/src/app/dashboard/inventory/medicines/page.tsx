@@ -101,8 +101,8 @@ export default function MedicineOverviewPage() {
                                     className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/20"
                                 >
                                     <div className="space-y-1">
-                                        <p className="font-medium">{med.name}</p>
-                                        <p className="text-sm text-muted-foreground">
+                                        <p className="font-medium capitalize">{med.name}</p>
+                                        <p className="text-sm text-muted-foreground capitalize">
                                             {med.genericName} | {med.dosageForm} {med.strength}{med.unit}
                                         </p>
                                     </div>

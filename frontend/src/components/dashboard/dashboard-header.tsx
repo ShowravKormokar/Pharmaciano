@@ -25,7 +25,7 @@ export function DashboardHeader() {
                 <SidebarTrigger />
 
                 {/* Breadcrumb */}
-                <nav aria-label="breadcrumb" className="flex items-center gap-1 text-sm text-muted-foreground">
+                <nav aria-label="breadcrumb" className="md:flex items-center gap-1 text-[12px] text-muted-foreground hidden">
                     {breadcrumbs.map((crumb, idx) => (
                         <span key={crumb.href} className="flex items-center gap-1">
                             {idx > 0 && <span className="select-none">/</span>}

@@ -32,9 +32,9 @@ export default function UserTable({ users }: Props) {
                 <TableBody>
                     {users.map((user) => (
                         <TableRow key={user._id}>
-                            <TableCell className="font-medium">{user.name}</TableCell>
+                            <TableCell className="font-medium capitalize">{user.name}</TableCell>
                             <TableCell>{user.email}</TableCell>
-                            <TableCell>{user.roleId?.name || "N/A"}</TableCell>
+                            <TableCell className="capitalize">{user.roleId?.name || "N/A"}</TableCell>
                             <TableCell>
                                 <Badge variant={user.isActive ? "default" : "secondary"}>
                                     {user.isActive ? "Active" : "Inactive"}

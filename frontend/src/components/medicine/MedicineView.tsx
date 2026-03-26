@@ -25,9 +25,6 @@ export default function MedicineView({ medicine }: Props) {
             </div>
 
             <Card>
-                <CardHeader>
-                    <CardTitle>Medicine Information</CardTitle>
-                </CardHeader>
                 <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
@@ -35,20 +32,20 @@ export default function MedicineView({ medicine }: Props) {
                             <p className="font-medium capitalize">{medicine.name}</p>
                         </div>
                         <div>
-                            <p className="text-sm text-muted-foreground capitalize">Generic Name</p>
-                            <p>{medicine.genericName || "—"}</p>
+                            <p className="text-sm text-muted-foreground">Generic Name</p>
+                            <p className="capitalize">{medicine.genericName || "—"}</p>
                         </div>
                         <div>
                             <p className="text-sm text-muted-foreground">Category</p>
-                            <p>{medicine.categoryName || "—"}</p>
+                            <p className="capitalize">{medicine.categoryName || "—"}</p>
                         </div>
                         <div>
                             <p className="text-sm text-muted-foreground">Brand</p>
-                            <p>{medicine.brandName || "—"}</p>
+                            <p className="capitalize">{medicine.brandName || "—"}</p>
                         </div>
                         <div>
                             <p className="text-sm text-muted-foreground">Dosage Form</p>
-                            <p>{medicine.dosageForm || "—"}</p>
+                            <p className="capitalize">{medicine.dosageForm || "—"}</p>
                         </div>
                         <div>
                             <p className="text-sm text-muted-foreground">Strength</p>

@@ -102,7 +102,7 @@ export default function SalesOverviewPage() {
                                 >
                                     <div className="space-y-1">
                                         <p className="font-medium">{sale.invoiceNo}</p>
-                                        <p className="text-sm text-muted-foreground">
+                                        <p className="text-sm text-muted-foreground capitalize">
                                             {sale.customerName || "Walk-in"} | {sale.paymentMethod}
                                         </p>
                                     </div>

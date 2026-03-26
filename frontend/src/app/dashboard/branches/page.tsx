@@ -113,9 +113,9 @@ export default function BranchOverviewPage() {
                                     className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/20 transition-colors"
                                 >
                                     <div className="space-y-1">
-                                        <p className="font-medium">{branch.name}</p>
+                                        <p className="font-medium capitalize">{branch.name}</p>
                                         <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                                            <span className="flex items-center gap-1">
+                                            <span className="flex items-center gap-1 capitalize">
                                                 <MapPin className="h-3.5 w-3.5" />
                                                 {branch.address || "N/A"}
                                             </span>

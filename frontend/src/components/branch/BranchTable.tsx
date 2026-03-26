@@ -33,8 +33,8 @@ export default function BranchTable({ branches }: Props) {
                 <TableBody>
                     {branches.map((branch) => (
                         <TableRow key={branch._id}>
-                            <TableCell className="font-medium">{branch.name}</TableCell>
-                            <TableCell>{branch.address}</TableCell>
+                            <TableCell className="font-medium capitalize">{branch.name}</TableCell>
+                            <TableCell className="capitalize">{branch.address}</TableCell>
                             <TableCell>
                                 <div className="text-sm">
                                     <div>{branch.contact?.email}</div>

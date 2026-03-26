@@ -33,8 +33,8 @@ export default function SupplierTable({ suppliers }: Props) {
                 <TableBody>
                     {suppliers.map((supplier) => (
                         <TableRow key={supplier._id}>
-                            <TableCell className="font-medium">{supplier.name}</TableCell>
-                            <TableCell>{supplier.contactPerson || "—"}</TableCell>
+                            <TableCell className="font-medium capitalize">{supplier.name}</TableCell>
+                            <TableCell className="capitalize">{supplier.contactPerson || "—"}</TableCell>
                             <TableCell>{supplier.phone || "—"}</TableCell>
                             <TableCell>{supplier.email || "—"}</TableCell>
                             <TableCell>

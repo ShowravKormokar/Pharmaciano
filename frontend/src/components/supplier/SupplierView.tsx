@@ -25,14 +25,11 @@ export default function SupplierView({ supplier }: Props) {
             </div>
 
             <Card>
-                <CardHeader>
-                    <CardTitle>Supplier Information</CardTitle>
-                </CardHeader>
                 <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <p className="text-sm text-muted-foreground">Name</p>
-                            <p className="font-medium">{supplier.name}</p>
+                            <p className="font-medium capitalize">{supplier.name}</p>
                         </div>
                         <div>
                             <p className="text-sm text-muted-foreground">Status</p>
@@ -43,7 +40,7 @@ export default function SupplierView({ supplier }: Props) {
                         {supplier.contactPerson && (
                             <div>
                                 <p className="text-sm text-muted-foreground">Contact Person</p>
-                                <p>{supplier.contactPerson}</p>
+                                <p className="capitalize">{supplier.contactPerson}</p>
                             </div>
                         )}
                         {supplier.phone && (
@@ -61,7 +58,7 @@ export default function SupplierView({ supplier }: Props) {
                         {supplier.address && (
                             <div className="md:col-span-2">
                                 <p className="text-sm text-muted-foreground">Address</p>
-                                <p className="whitespace-pre-wrap">{supplier.address}</p>
+                                <p className="whitespace-pre-wrap capitalize">{supplier.address}</p>
                             </div>
                         )}
                     </div>
@@ -71,7 +68,7 @@ export default function SupplierView({ supplier }: Props) {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                         <div>
                             <p className="text-muted-foreground">Created By</p>
-                            <p>{supplier.createdBy?.name || supplier.createdBy?.email || "System"}</p>
+                            <p className="capitalize">{supplier.createdBy?.name || supplier.createdBy?.email || "System"}</p>
                         </div>
                         <div>
                             <p className="text-muted-foreground">Created At</p>

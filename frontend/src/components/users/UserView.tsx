@@ -42,7 +42,7 @@ export default function UserView({ user }: UserViewProps) {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <p className="text-sm text-muted-foreground">Name</p>
-                            <p className="font-medium">{user.name}</p>
+                            <p className="font-medium capitalize">{user.name}</p>
                         </div>
                         <div>
                             <p className="text-sm text-muted-foreground">Email</p>
@@ -83,18 +83,18 @@ export default function UserView({ user }: UserViewProps) {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <p className="text-sm text-muted-foreground">Organization</p>
-                            <p className="font-medium">{user.organizationId?.name || "N/A"}</p>
+                            <p className="font-medium capitalize">{user.organizationId?.name || "N/A"}</p>
                             {user.organizationId?.address && (
-                                <p className="text-sm text-muted-foreground">
+                                <p className="text-sm text-muted-foreground capitalize">
                                     {user.organizationId.address}
                                 </p>
                             )}
                         </div>
                         <div>
                             <p className="text-sm text-muted-foreground">Branch</p>
-                            <p className="font-medium">{user.branchId?.name || "N/A"}</p>
+                            <p className="font-medium capitalize">{user.branchId?.name || "N/A"}</p>
                             {user.branchId?.address && (
-                                <p className="text-sm text-muted-foreground">
+                                <p className="text-sm text-muted-foreground capitalize">
                                     {user.branchId.address}
                                 </p>
                             )}
@@ -107,7 +107,7 @@ export default function UserView({ user }: UserViewProps) {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                         <div>
                             <p className="text-muted-foreground">Created By</p>
-                            <p>{user.createdBy?.name || "System"}</p>
+                            <p className="capitalize">{user.createdBy?.name || "System"}</p>
                         </div>
                         <div>
                             <p className="text-muted-foreground">Created At</p>

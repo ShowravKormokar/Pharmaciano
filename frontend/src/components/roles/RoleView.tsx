@@ -36,14 +36,11 @@ export default function RoleView({ role, users, usersLoading = false }: Props) {
 
             {/* Role Information Card */}
             <Card>
-                <CardHeader>
-                    <CardTitle>Role Information</CardTitle>
-                </CardHeader>
                 <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <p className="text-sm text-muted-foreground">Role Name</p>
-                            <p className="font-medium">{role.name}</p>
+                            <p className="font-medium capitalize">{role.name}</p>
                         </div>
                         <div>
                             <p className="text-sm text-muted-foreground">Status</p>
@@ -74,7 +71,7 @@ export default function RoleView({ role, users, usersLoading = false }: Props) {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                         <div>
                             <p className="text-muted-foreground">Created By</p>
-                            <p>
+                            <p className="capitalize">
                                 {role.createdBy?.name || role.createdBy?.email || "System"}
                             </p>
                         </div>
@@ -118,7 +115,7 @@ export default function RoleView({ role, users, usersLoading = false }: Props) {
                                     className="flex items-center justify-between p-2 border rounded-lg"
                                 >
                                     <div>
-                                        <p className="font-medium">{user.name}</p>
+                                        <p className="font-medium capitalize">{user.name}</p>
                                         <p className="text-sm text-muted-foreground">
                                             {user.email}
                                         </p>

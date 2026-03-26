@@ -80,7 +80,7 @@ export default function BranchFilter({ branches, onFilterChange }: Props) {
                 <SelectContent>
                     <SelectItem value="all">All Locations</SelectItem>
                     {locationOptions.map((loc) => (
-                        <SelectItem key={loc} value={loc}>
+                        <SelectItem key={loc} value={loc} className="capitalize">
                             {loc}
                         </SelectItem>
                     ))}

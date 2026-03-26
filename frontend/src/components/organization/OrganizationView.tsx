@@ -25,14 +25,11 @@ export default function OrganizationView({ organization }: Props) {
             </div>
 
             <Card>
-                <CardHeader>
-                    <CardTitle>Organization Information</CardTitle>
-                </CardHeader>
                 <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <p className="text-sm text-muted-foreground">Name</p>
-                            <p className="font-medium">{organization.name}</p>
+                            <p className="font-medium capitalize">{organization.name}</p>
                         </div>
                         <div>
                             <p className="text-sm text-muted-foreground">Status</p>
@@ -59,7 +56,7 @@ export default function OrganizationView({ organization }: Props) {
 
                     <div>
                         <p className="text-sm text-muted-foreground">Address</p>
-                        <p>{organization.address || "N/A"}</p>
+                        <p className="capitalize">{organization.address || "N/A"}</p>
                     </div>
 
                     <Separator />

@@ -116,9 +116,9 @@ export default function OrganizationOverviewPage() {
                                     className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/20 transition-colors"
                                 >
                                     <div className="space-y-1">
-                                        <p className="font-medium">{org.name}</p>
+                                        <p className="font-medium capitalize">{org.name}</p>
                                         <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                                            <span>{org.contact.email}</span>
+                                            <span>{org.contact.email}</span>|
                                             <span>{org.contact.phone}</span>
                                             {/* <Badge variant="outline">{org.subscriptionPlan}</Badge>
                                             <Badge variant={org.isActive ? "default" : "secondary"}>

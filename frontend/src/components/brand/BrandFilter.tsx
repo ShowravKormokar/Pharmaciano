@@ -50,7 +50,7 @@ export default function BrandFilter({ brands, onFilterChange }: Props) {
                 <SelectContent>
                     <SelectItem value="all">All Manufacturers</SelectItem>
                     {manufacturerOptions.map((m) => (
-                        <SelectItem key={m} value={m}>{m}</SelectItem>
+                        <SelectItem key={m} value={m} className="capitalize">{m}</SelectItem>
                     ))}
                 </SelectContent>
             </Select>
@@ -62,7 +62,7 @@ export default function BrandFilter({ brands, onFilterChange }: Props) {
                 <SelectContent>
                     <SelectItem value="all">All Countries</SelectItem>
                     {countryOptions.map((c) => (
-                        <SelectItem key={c} value={c}>{c}</SelectItem>
+                        <SelectItem key={c} value={c} className="capitalize">{c}</SelectItem>
                     ))}
                 </SelectContent>
             </Select>

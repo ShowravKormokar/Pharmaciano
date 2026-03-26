@@ -114,13 +114,13 @@ export default function BrandOverviewPage() {
                                     className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/20"
                                 >
                                     <div className="space-y-1">
-                                        <p className="font-medium">{brand.name}</p>
+                                        <p className="font-medium capitalize">{brand.name}</p>
                                         <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                                            <span className="flex items-center gap-1">
+                                            <span className="flex items-center gap-1 capitalize">
                                                 <Factory className="h-3.5 w-3.5" />
                                                 {brand.manufacturer}
                                             </span>
-                                            <span className="flex items-center gap-1">
+                                            <span className="flex items-center gap-1 capitalize">
                                                 <Globe className="h-3.5 w-3.5" />
                                                 {brand.country}
                                             </span>
