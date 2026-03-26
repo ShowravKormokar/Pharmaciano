@@ -45,23 +45,32 @@ export default function MedicineForm({ medicineId, onSuccess }: Props) {
     return (
         <div className="space-y-6">
             <Card>
-                <CardHeader>
-                    <CardTitle>Medicine Information</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                    <Input
-                        placeholder="Medicine Name *"
-                        value={form.name}
-                        onChange={(e) => setForm({ name: e.target.value })}
-                    />
-                    <Input
-                        placeholder="Generic Name"
-                        value={form.genericName}
-                        onChange={(e) => setForm({ genericName: e.target.value })}
-                    />
+                <CardContent className="space-y-6">
+                    {/* Basic Info */}
+                    <div className="grid gap-4">
+                        <div>
+                            <Label className="pb-1 pl-1">Medicine Name <span className="text-red-500">*</span></Label>
+                            <Input
+                                placeholder="Enter medicine name"
+                                value={form.name}
+                                onChange={(e) => setForm({ name: e.target.value })}
+                            />
+                        </div>
+
+                        <div>
+                            <Label className="pb-1 pl-1">Generic Name</Label>
+                            <Input
+                                placeholder="Enter generic name"
+                                value={form.genericName}
+                                onChange={(e) => setForm({ genericName: e.target.value })}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Category + Brand */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <Label>Category</Label>
+                            <Label className="pb-1 pl-1">Category <span className="text-red-500">*</span></Label>
                             <Select
                                 value={form.categoryName}
                                 onValueChange={(val) => setForm({ categoryName: val })}
@@ -71,15 +80,16 @@ export default function MedicineForm({ medicineId, onSuccess }: Props) {
                                 </SelectTrigger>
                                 <SelectContent>
                                     {categories.map((cat) => (
-                                        <SelectItem key={cat._id} value={cat.name}>
+                                        <SelectItem key={cat._id} value={cat.name} className="capitalize">
                                             {cat.name}
                                         </SelectItem>
                                     ))}
                                 </SelectContent>
                             </Select>
                         </div>
+
                         <div>
-                            <Label>Brand</Label>
+                            <Label className="pb-1 pl-1">Brand <span className="text-red-500">*</span></Label>
                             <Select
                                 value={form.brandName}
                                 onValueChange={(val) => setForm({ brandName: val })}
@@ -89,7 +99,7 @@ export default function MedicineForm({ medicineId, onSuccess }: Props) {
                                 </SelectTrigger>
                                 <SelectContent>
                                     {brands.map((brand) => (
-                                        <SelectItem key={brand._id} value={brand.name}>
+                                        <SelectItem key={brand._id} value={brand.name} className="capitalize">
                                             {brand.name}
                                         </SelectItem>
                                     ))}
@@ -97,68 +107,108 @@ export default function MedicineForm({ medicineId, onSuccess }: Props) {
                             </Select>
                         </div>
                     </div>
+
+                    {/* Dosage */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <Input
-                            placeholder="Dosage Form"
-                            value={form.dosageForm}
-                            onChange={(e) => setForm({ dosageForm: e.target.value })}
-                        />
-                        <div className="flex gap-2">
+                        <div>
+                            <Label className="pb-1 pl-1">Dosage Form</Label>
                             <Input
-                                placeholder="Strength"
-                                value={form.strength}
-                                onChange={(e) => setForm({ strength: e.target.value })}
+                                placeholder="Tablet / Syrup / Capsule"
+                                value={form.dosageForm}
+                                onChange={(e) => setForm({ dosageForm: e.target.value })}
                             />
+                        </div>
+
+                        <div className="flex gap-2">
+                            <div className="w-full">
+                                <Label className="pb-1 pl-1">Strength</Label>
+                                <Input
+                                    placeholder="e.g. 500"
+                                    value={form.strength}
+                                    onChange={(e) => setForm({ strength: e.target.value })}
+                                />
+                            </div>
+
+                            <div className="w-full">
+                                <Label className="pb-1 pl-1">Unit</Label>
+                                <Input
+                                    placeholder="mg / ml"
+                                    value={form.unit}
+                                    onChange={(e) => setForm({ unit: e.target.value })}
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Pricing */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <Label className="pb-1 pl-1">Unit Price (Tk) <span className="text-red-500">*</span></Label>
                             <Input
-                                placeholder="Unit"
-                                value={form.unit}
-                                onChange={(e) => setForm({ unit: e.target.value })}
+                                type="number"
+                                step="0.01"
+                                placeholder="Enter price"
+                                value={form.unitPrice}
+                                onChange={(e) =>
+                                    setForm({ unitPrice: parseFloat(e.target.value) || 0 })
+                                }
+                            />
+                        </div>
+
+                        <div>
+                            <Label className="pb-1 pl-1">Units per Strip</Label>
+                            <Input
+                                type="number"
+                                placeholder="e.g. 10"
+                                value={form.unitsPerStrip}
+                                onChange={(e) =>
+                                    setForm({ unitsPerStrip: parseInt(e.target.value) || 0 })
+                                }
                             />
                         </div>
                     </div>
+
+                    {/* Tax + Switches */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <Input
-                            type="number"
-                            step="0.01"
-                            placeholder="Unit Price"
-                            value={form.unitPrice}
-                            onChange={(e) => setForm({ unitPrice: parseFloat(e.target.value) || 0 })}
-                        />
-                        <Input
-                            type="number"
-                            placeholder="Units per Strip"
-                            value={form.unitsPerStrip}
-                            onChange={(e) => setForm({ unitsPerStrip: parseInt(e.target.value) || 0 })}
-                        />
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <Input
-                            type="number"
-                            step="0.01"
-                            placeholder="Tax Rate (%)"
-                            value={form.taxRate}
-                            onChange={(e) => setForm({ taxRate: parseFloat(e.target.value) || 0 })}
-                        />
-                        <div className="flex items-center space-x-2">
+                        <div>
+                            <Label className="pb-1 pl-1">Tax Rate (%)</Label>
+                            <Input
+                                type="number"
+                                step="0.01"
+                                placeholder="e.g. 5"
+                                value={form.taxRate}
+                                onChange={(e) =>
+                                    setForm({ taxRate: parseFloat(e.target.value) || 0 })
+                                }
+                            />
+                        </div>
+
+                        <div className="flex items-center justify-between border rounded-lg p-3">
+                            <Label htmlFor="prescription">Prescription Required</Label>
                             <Switch
                                 id="prescription"
                                 checked={form.isPrescriptionRequired}
-                                onCheckedChange={(checked) => setForm({ isPrescriptionRequired: checked })}
+                                onCheckedChange={(checked) =>
+                                    setForm({ isPrescriptionRequired: checked })
+                                }
                             />
-                            <Label htmlFor="prescription">Prescription Required</Label>
                         </div>
                     </div>
-                    <div className="flex items-center space-x-2">
+
+                    <div className="flex items-center justify-between border rounded-lg p-3">
+                        <Label htmlFor="isActive">Active Status</Label>
                         <Switch
                             id="isActive"
                             checked={form.isActive}
-                            onCheckedChange={(checked) => setForm({ isActive: checked })}
+                            onCheckedChange={(checked) =>
+                                setForm({ isActive: checked })
+                            }
                         />
-                        <Label htmlFor="isActive">Active</Label>
                     </div>
                 </CardContent>
             </Card>
 
+            {/* Actions */}
             <div className="flex gap-3">
                 <Button
                     className="w-1/2"
@@ -171,6 +221,7 @@ export default function MedicineForm({ medicineId, onSuccess }: Props) {
                             ? "Update Medicine"
                             : "Create Medicine"}
                 </Button>
+
                 {!medicineId && (
                     <Button
                         className="w-1/2"

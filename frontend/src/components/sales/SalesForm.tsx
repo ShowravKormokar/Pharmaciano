@@ -135,7 +135,7 @@ export default function SalesForm({ saleId, onSuccess }: Props) {
             <div className="lg:col-span-2 space-y-6">
                 <Card>
                     <CardHeader>
-                        <CardTitle>Shopping Cart</CardTitle>
+                        <CardTitle className="text-primary">Shopping Cart</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         {cart.length === 0 ? (
@@ -181,22 +181,29 @@ export default function SalesForm({ saleId, onSuccess }: Props) {
                 {/* Customer & Payment */}
                 <Card>
                     <CardHeader>
-                        <CardTitle>Customer & Payment</CardTitle>
+                        <CardTitle className="text-primary">Customer & Payment</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                        <Input
+                        <div>
+                            <Label className="pb-1 pl-1">Name</Label>
+                            <Input
                             placeholder="Customer Name *"
                             value={customerName}
                             onChange={(e) => setCustomer({ customerName: e.target.value })}
                         />
+                        </div>
+                        
+                        <div>
+                            <Label className="pb-1 pl-1">Phone no.</Label>
                         <Input
                             placeholder="Customer Phone *"
                             value={customerPhone}
                             onChange={(e) => setCustomer({ customerPhone: e.target.value })}
                         />
+                        </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <Label className="pb-2">Discount (%)</Label>
+                                <Label className="pb-1 pl-1">Discount (%)</Label>
                                 <Input
                                     type="number"
                                     step="0.01"
@@ -205,7 +212,7 @@ export default function SalesForm({ saleId, onSuccess }: Props) {
                                 />
                             </div>
                             <div>
-                                <Label className="pb-2">Tax (%)</Label>
+                                <Label className="pb-1 pl-1">Tax (%)</Label>
                                 <Input
                                     type="number"
                                     step="0.01"
@@ -236,7 +243,7 @@ export default function SalesForm({ saleId, onSuccess }: Props) {
             <div className="space-y-6">
                 <Card>
                     <CardHeader>
-                        <CardTitle>Add Medicine</CardTitle>
+                        <CardTitle className="text-primary">Add Medicine</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div className="relative">
@@ -316,7 +323,7 @@ export default function SalesForm({ saleId, onSuccess }: Props) {
                 {/* Summary */}
                 <Card>
                     <CardHeader>
-                        <CardTitle>Summary</CardTitle>
+                        <CardTitle className="text-primary">Summary</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-2">
                         <div className="flex justify-between">
