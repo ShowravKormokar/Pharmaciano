@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { useSaleStore } from "@/store/sale.store";
 import { useMedicineStore } from "@/store/medicine.store";
 import { useInventoryBatchStore } from "@/store/inventoryBatch.store";
+import { useDraftSaleStore } from "@/store/draftSale.store";
+import { useDebouncedCallback } from "use-debounce"; // I need install: npm i use - debounce
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -51,6 +53,7 @@ export default function SalesForm({ saleId, onSuccess }: Props) {
 
     const [submitting, setSubmitting] = useState(false);
 
+    const { updateCurrentDraft } = useDraftSaleStore();
     const { medicines, fetchMedicines } = useMedicineStore();
     const { batches, fetchBatches } = useInventoryBatchStore();
 
@@ -63,6 +66,14 @@ export default function SalesForm({ saleId, onSuccess }: Props) {
         fetchMedicines();
         fetchBatches();
     }, [fetchMedicines, fetchBatches]);
+
+    const debouncedUpdate = useDebouncedCallback(() => {
+        updateCurrentDraft();
+    }, 500); // save after 500ms of inactivity
+
+    useEffect(() => {
+        debouncedUpdate();
+    }, [cart, customerName, customerPhone, discount, tax, paymentMethod, debouncedUpdate]);
 
     // Filter medicines based on search
     const filteredMedicines = medicines.filter((med) =>
@@ -326,30 +337,48 @@ export default function SalesForm({ saleId, onSuccess }: Props) {
                             <span>${calculateTotal().toFixed(2)}</span>
                         </div>
                         {/* ================= BUTTONS ================= */}
-                        <div className="flex gap-3">
-                            <Button
-                                className="w-1/2"
-                                onClick={handleSubmit}
-                                disabled={submitting || cart.length === 0}
-                            >
-                                {submitting
-                                    ? "Processing..."
-                                    : saleId
-                                        ? "Update Sale"
-                                        : "Complete Sale"}
-                            </Button>
+                        <div className="flex flex-col gap-3">
+                            <div className="flex gap-3">
+                                {!saleId && (
+                                    <Button
+                                        className="flex-1 text-yellow-200"
+                                        type="button"
+                                        variant="outline"
+                                        onClick={() => {
+                                            updateCurrentDraft();
+                                            toast.success("Sale saved as draft");
+                                        }}
+                                        disabled={submitting}
+                                    >
+                                        Set As Draft
+                                    </Button>
+                                )}
 
-                            {!saleId && (
+                                {!saleId && (
+                                    <Button
+                                        className="flex-1"
+                                        type="button"
+                                        variant="outline"
+                                        onClick={clearCart}
+                                        disabled={submitting}
+                                    >
+                                        Reset Cart
+                                    </Button>
+                                )}
+                            </div>
+                            <div className="w-full">
                                 <Button
-                                    className="w-1/2"
-                                    type="button"
-                                    variant="outline"
-                                    onClick={clearCart}
-                                    disabled={submitting}
+                                    className="w-full"
+                                    onClick={handleSubmit}
+                                    disabled={submitting || cart.length === 0}
                                 >
-                                    Reset Cart
+                                    {submitting
+                                        ? "Processing..."
+                                        : saleId
+                                            ? "Update Sale"
+                                            : "Complete Sale"}
                                 </Button>
-                            )}
+                            </div>
                         </div>
                     </CardContent>
                 </Card>
