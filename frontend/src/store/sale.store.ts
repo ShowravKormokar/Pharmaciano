@@ -7,7 +7,7 @@ import {
     updateSaleService,
     deleteSaleService,
 } from "@/services/sale.service";
-import type { SaleItem, CreateSalePayload, UpdateSalePayload } from "@/types/sale";
+import type { SaleItem, CreateSalePayload, UpdateSalePayload, CartItem } from "@/types/sale";
 import { toast } from "sonner";
 
 interface SaleState {
@@ -37,7 +37,9 @@ interface SaleState {
     loadSaleIntoForm: (sale: SaleItem) => void;
     deleteSale: (id: string) => Promise<boolean>;
 
+
     // Cart actions
+    setCart: (cart: CartItem[]) => void;
     addToCart: (item: Omit<SaleState['cart'][0], 'quantity'>, quantity: number) => void;
     removeFromCart: (batchNo: string) => void;
     updateCartQuantity: (batchNo: string, quantity: number) => void;
@@ -198,6 +200,8 @@ export const useSaleStore = create<SaleState>()(
         },
 
         // Cart actions
+        setCart: (cart) => set({ cart }),
+
         addToCart: (item, quantity) => {
             set((state) => {
                 const existing = state.cart.find((i) => i.batchNo === item.batchNo);
