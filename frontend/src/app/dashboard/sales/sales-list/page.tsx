@@ -1,24 +1,52 @@
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow
-} from '@/components/ui/table'
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
-import { Download, Filter, MoreVertical, Search } from 'lucide-react'
-import Link from 'next/link'
+"use client";
+
+import { useEffect, useState, useMemo } from "react";
+import { useSaleStore } from "@/store/sale.store";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Download, Filter, Search } from "lucide-react";
+import SalesTable from "@/components/sales/SalesTable";
+import SalesTableSkeleton from "@/components/sales/SalesTableSkeleton";
+import SalesFilter from "@/components/sales/SalesFilter";
+import { format } from "date-fns";
 
 export default function SalesListPage() {
+    const { sales, fetchSales, loading } = useSaleStore();
+    const [searchTerm, setSearchTerm] = useState("");
+    const [filters, setFilters] = useState({ medicine: "", startDate: "", endDate: "" });
+
+    useEffect(() => {
+        fetchSales(filters.medicine || undefined);
+    }, [fetchSales, filters.medicine]);
+
+    const filteredSales = useMemo(() => {
+        let result = [...sales];
+        // Apply search (invoice or customer name)
+        if (searchTerm) {
+            const lower = searchTerm.toLowerCase();
+            result = result.filter(
+                (sale) =>
+                    sale.invoiceNo.toLowerCase().includes(lower) ||
+                    (sale.customerName?.toLowerCase().includes(lower))
+            );
+        }
+        // Apply date range
+        if (filters.startDate) {
+            result = result.filter(
+                (sale) => new Date(sale.createdAt) >= new Date(filters.startDate)
+            );
+        }
+        if (filters.endDate) {
+            result = result.filter(
+                (sale) => new Date(sale.createdAt) <= new Date(filters.endDate)
+            );
+        }
+        return result;
+    }, [sales, searchTerm, filters]);
+
+    const totalAmount = filteredSales.reduce((sum, sale) => sum + sale.totalAmount, 0);
+
     return (
         <div className="space-y-6 p-6">
             <div className="flex items-center justify-between">
@@ -28,7 +56,7 @@ export default function SalesListPage() {
                         View and manage all sales transactions
                     </p>
                 </div>
-                <Button>
+                <Button variant="outline" onClick={() => { /* export logic */ }}>
                     <Download className="h-4 w-4 mr-2" />
                     Export
                 </Button>
@@ -40,26 +68,14 @@ export default function SalesListPage() {
                     <div className="flex flex-col sm:flex-row gap-4">
                         <div className="relative flex-1">
                             <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                            <Input placeholder="Search by invoice ID, customer name..." className="pl-9" />
+                            <Input
+                                placeholder="Search by invoice ID, customer name..."
+                                className="pl-9"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
                         </div>
-                        <div className="flex flex-col lg:flex-row gap-2">
-                            <Input type="date" className="w-full lg:w-40" />
-                            <Input type="date" className="w-full lg:w-40" />
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <Button variant="outline">
-                                        <Filter className="h-4 w-4 mr-2" />
-                                        Filter
-                                    </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent>
-                                    <DropdownMenuItem>All Status</DropdownMenuItem>
-                                    <DropdownMenuItem>Completed</DropdownMenuItem>
-                                    <DropdownMenuItem>Pending</DropdownMenuItem>
-                                    <DropdownMenuItem>Cancelled</DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </div>
+                        <SalesFilter onFilterChange={setFilters} />
                     </div>
                 </CardContent>
             </Card>
@@ -72,68 +88,18 @@ export default function SalesListPage() {
                         <CardDescription>List of all sales transactions</CardDescription>
                     </div>
                     <div className="text-sm text-muted-foreground">
-                        Total: <span className="font-semibold text-foreground">5</span> sales
+                        Total: <span className="font-semibold text-foreground">{filteredSales.length}</span> sales |{" "}
+                        <span className="font-semibold text-foreground">TK. {totalAmount.toLocaleString()}/-</span>
                     </div>
                 </CardHeader>
                 <CardContent>
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Invoice ID</TableHead>
-                                <TableHead>Customer</TableHead>
-                                <TableHead>Date</TableHead>
-                                <TableHead>Amount</TableHead>
-                                <TableHead>Status</TableHead>
-                                <TableHead>Payment</TableHead>
-                                <TableHead className="text-right">Actions</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {[
-                                { id: '#001', customer: 'Walk-in Customer', date: '2024-01-15', amount: 1250, status: 'Completed', payment: 'Cash' },
-                                { id: '#002', customer: 'Regular Customer', date: '2024-01-15', amount: 2800, status: 'Completed', payment: 'Card' },
-                                { id: '#003', customer: 'Hospital Order', date: '2024-01-14', amount: 8400, status: 'Pending', payment: 'Bank Transfer' },
-                                { id: '#004', customer: 'Pharmacy Store', date: '2024-01-14', amount: 5200, status: 'Completed', payment: 'Cash' },
-                                { id: '#005', customer: 'Online Order', date: '2024-01-13', amount: 3100, status: 'Completed', payment: 'Mobile Banking' },
-                            ].map((sale) => (
-                                <TableRow key={sale.id}>
-                                    <TableCell className="font-medium">{sale.id}</TableCell>
-                                    <TableCell>{sale.customer}</TableCell>
-                                    <TableCell>{sale.date}</TableCell>
-                                    <TableCell>TK. {sale.amount.toLocaleString()}/-</TableCell>
-                                    <TableCell>
-                                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${sale.status === 'Completed'
-                                            ? 'bg-green-100 text-green-800'
-                                            : 'bg-yellow-100 text-yellow-800'
-                                            }`}>
-                                            {sale.status}
-                                        </span>
-                                    </TableCell>
-                                    <TableCell>{sale.payment}</TableCell>
-                                    <TableCell className="text-right">
-                                        <DropdownMenu>
-                                            <DropdownMenuTrigger asChild>
-                                                <Button variant="ghost" size="icon">
-                                                    <MoreVertical className="h-4 w-4" />
-                                                </Button>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent align="end">
-                                                <DropdownMenuItem asChild>
-                                                    <Link href={`/dashboard/sales/sales-list/${sale.id.slice(1)}`}>
-                                                        View Details
-                                                    </Link>
-                                                </DropdownMenuItem>
-                                                <DropdownMenuItem>Print Invoice</DropdownMenuItem>
-                                                <DropdownMenuItem className="text-red-600">Cancel Sale</DropdownMenuItem>
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                    {loading ? (
+                        <SalesTableSkeleton />
+                    ) : (
+                        <SalesTable sales={filteredSales} />
+                    )}
                 </CardContent>
             </Card>
         </div>
-    )
-}
+    );
+};
