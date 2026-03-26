@@ -10,6 +10,7 @@ import SalesTable from "@/components/sales/SalesTable";
 import SalesTableSkeleton from "@/components/sales/SalesTableSkeleton";
 import SalesFilter from "@/components/sales/SalesFilter";
 import { format } from "date-fns";
+import SalesExport from "@/components/sales/SalesExport";
 
 export default function SalesListPage() {
     const { sales, fetchSales, loading } = useSaleStore();
@@ -56,10 +57,9 @@ export default function SalesListPage() {
                         View and manage all sales transactions
                     </p>
                 </div>
-                <Button variant="outline" onClick={() => { /* export logic */ }}>
-                    <Download className="h-4 w-4 mr-2" />
-                    Export
-                </Button>
+                <div className="flex gap-2">
+                    <SalesExport sales={filteredSales} />
+                </div>
             </div>
 
             {/* Filters and Search */}

@@ -137,7 +137,7 @@ export default function SalesForm({ saleId, onSuccess }: Props) {
                                         className="flex items-center justify-between p-3 border rounded-lg"
                                     >
                                         <div className="space-y-1">
-                                            <p className="font-medium">{item.medicineName}</p>
+                                            <p className="font-medium capitalize">{item.medicineName}</p>
                                             <p className="text-sm text-muted-foreground">
                                                 Batch: {item.batchNo} | Price: Tk {item.sellingPrice.toFixed(2)}/-
                                             </p>
@@ -174,18 +174,18 @@ export default function SalesForm({ saleId, onSuccess }: Props) {
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <Input
-                            placeholder="Customer Name"
+                            placeholder="Customer Name *"
                             value={customerName}
                             onChange={(e) => setCustomer({ customerName: e.target.value })}
                         />
                         <Input
-                            placeholder="Customer Phone"
+                            placeholder="Customer Phone *"
                             value={customerPhone}
                             onChange={(e) => setCustomer({ customerPhone: e.target.value })}
                         />
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <Label>Discount (%)</Label>
+                                <Label className="pb-2">Discount (%)</Label>
                                 <Input
                                     type="number"
                                     step="0.01"
@@ -194,7 +194,7 @@ export default function SalesForm({ saleId, onSuccess }: Props) {
                                 />
                             </div>
                             <div>
-                                <Label>Tax (%)</Label>
+                                <Label className="pb-2">Tax (%)</Label>
                                 <Input
                                     type="number"
                                     step="0.01"
@@ -204,7 +204,7 @@ export default function SalesForm({ saleId, onSuccess }: Props) {
                             </div>
                         </div>
                         <div>
-                            <Label>Payment Method</Label>
+                            <Label className="pb-2">Payment Method</Label>
                             <Select value={paymentMethod} onValueChange={setPaymentMethod}>
                                 <SelectTrigger>
                                     <SelectValue />
@@ -246,7 +246,7 @@ export default function SalesForm({ saleId, onSuccess }: Props) {
                                             setSelectedMedicine(med);
                                             setSearchMedicine(med.name);
                                         }}
-                                        className="w-full text-left px-2 py-1 hover:bg-muted rounded"
+                                        className="w-full text-left px-2 py-1 hover:bg-muted rounded capitalize"
                                     >
                                         {med.name} - {med.strength} {med.unit}
                                     </button>
@@ -256,7 +256,7 @@ export default function SalesForm({ saleId, onSuccess }: Props) {
                         {selectedMedicine && (
                             <>
                                 <div>
-                                    <Label>Select Batch</Label>
+                                    <Label className="pb-2">Select Batch</Label>
                                     <Select
                                         value={selectedBatch?.batchNo || ""}
                                         onValueChange={(batchNo) => {
@@ -285,7 +285,7 @@ export default function SalesForm({ saleId, onSuccess }: Props) {
                                     </Select>
                                 </div>
                                 <div>
-                                    <Label>Quantity</Label>
+                                    <Label className="pb-2">Quantity</Label>
                                     <Input
                                         type="number"
                                         min="1"
@@ -325,13 +325,32 @@ export default function SalesForm({ saleId, onSuccess }: Props) {
                             <span>Total:</span>
                             <span>${calculateTotal().toFixed(2)}</span>
                         </div>
-                        <Button
-                            className="w-full mt-4"
-                            onClick={handleSubmit}
-                            disabled={cart.length === 0}
-                        >
-                            Complete Sale
-                        </Button>
+                        {/* ================= BUTTONS ================= */}
+                        <div className="flex gap-3">
+                            <Button
+                                className="w-1/2"
+                                onClick={handleSubmit}
+                                disabled={submitting || cart.length === 0}
+                            >
+                                {submitting
+                                    ? "Processing..."
+                                    : saleId
+                                        ? "Update Sale"
+                                        : "Complete Sale"}
+                            </Button>
+
+                            {!saleId && (
+                                <Button
+                                    className="w-1/2"
+                                    type="button"
+                                    variant="outline"
+                                    onClick={clearCart}
+                                    disabled={submitting}
+                                >
+                                    Reset Cart
+                                </Button>
+                            )}
+                        </div>
                     </CardContent>
                 </Card>
             </div>

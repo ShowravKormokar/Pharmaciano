@@ -30,8 +30,8 @@ export default function SalesActions({ sale }: Props) {
     };
 
     const handlePrint = () => {
-        // Implement print functionality (e.g., open print dialog)
-        window.print();
+        window.open(`/dashboard/sales/print/${sale._id}`, '_blank');
+        //window.print()
     };
 
     return (

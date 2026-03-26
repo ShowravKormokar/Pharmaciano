@@ -40,6 +40,18 @@
   /* Firefox */
 }
 
+/* For print invoice style */
+@media print {
+  body {
+    background-color: white;
+    color: black;
+  }
+
+  .print\:hidden {
+    display: none !important;
+  }
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
