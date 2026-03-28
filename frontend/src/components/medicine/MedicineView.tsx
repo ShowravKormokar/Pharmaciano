@@ -7,21 +7,36 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { format } from "date-fns";
 import { MedicineItem } from "@/types/medicine";
+import { RefreshCcw } from "lucide-react";
 
 interface Props {
     medicine: MedicineItem;
+    onRefresh?: () => void;
 }
 
-export default function MedicineView({ medicine }: Props) {
+export default function MedicineView({ medicine, onRefresh }: Props) {
     const router = useRouter();
+
+    // Helper to get category name
+    const categoryName = medicine.categoryId?.name || medicine.categoryName || "—";
+    // Helper to get brand name
+    const brandName = medicine.brandId?.name || medicine.brandName || "—";
 
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <h1 className="text-2xl font-bold">Medicine Details</h1>
-                <Button variant="outline" onClick={() => router.back()}>
-                    Back
-                </Button>
+                <div className="flex gap-2">
+                    {onRefresh && (
+                        <Button variant="outline" size="sm" onClick={onRefresh}>
+                            <RefreshCcw className="h-4 w-4 mr-2" />
+                            Refresh
+                        </Button>
+                    )}
+                    <Button variant="outline" onClick={() => router.back()}>
+                        Back
+                    </Button>
+                </div>
             </div>
 
             <Card>
@@ -37,11 +52,26 @@ export default function MedicineView({ medicine }: Props) {
                         </div>
                         <div>
                             <p className="text-sm text-muted-foreground">Category</p>
-                            <p className="capitalize">{medicine.categoryName || "—"}</p>
+                            <p className="capitalize">{categoryName}</p>
+                            {medicine.categoryId?.description && (
+                                <p className="text-xs text-muted-foreground mt-1 capitalize">
+                                    {medicine.categoryId.description}
+                                </p>
+                            )}
                         </div>
                         <div>
                             <p className="text-sm text-muted-foreground">Brand</p>
-                            <p className="capitalize">{medicine.brandName || "—"}</p>
+                            <p className="capitalize">{brandName}</p>
+                            {medicine.brandId?.manufacturer && (
+                                <p className="text-xs text-muted-foreground capitalize">
+                                    Manufacturer: {medicine.brandId.manufacturer}
+                                </p>
+                            )}
+                            {medicine.brandId?.country && (
+                                <p className="text-xs text-muted-foreground capitalize">
+                                    Country: {medicine.brandId.country}
+                                </p>
+                            )}
                         </div>
                         <div>
                             <p className="text-sm text-muted-foreground">Dosage Form</p>
@@ -53,11 +83,15 @@ export default function MedicineView({ medicine }: Props) {
                         </div>
                         <div>
                             <p className="text-sm text-muted-foreground">Unit Price</p>
-                            <p>{medicine.unitPrice?.toFixed(2) || "—"}/=</p>
+                            <p>TK. {medicine.unitPrice?.toFixed(2) || "—"}/-</p>
                         </div>
                         <div>
                             <p className="text-sm text-muted-foreground">Units per Strip</p>
                             <p>{medicine.unitsPerStrip || "—"}</p>
+                        </div>
+                        <div>
+                            <p className="text-sm text-muted-foreground">Strip Price</p>
+                            <p>Tk. {medicine.stripPrice || "—"}/-</p>
                         </div>
                         <div>
                             <p className="text-sm text-muted-foreground">Tax Rate</p>

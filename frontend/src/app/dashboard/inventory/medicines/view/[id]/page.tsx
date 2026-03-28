@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useMedicineStore } from "@/store/medicine.store";
 import { Button } from "@/components/ui/button";
@@ -10,39 +10,35 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function ViewMedicinePage() {
     const { id } = useParams();
     const router = useRouter();
-    const { medicines, fetchMedicines, fetchMedicineById } = useMedicineStore();
+    const { fetchMedicineById } = useMedicineStore();
     const [medicine, setMedicine] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        const loadMedicine = async () => {
-            if (!id || Array.isArray(id)) {
-                setError("Invalid medicine ID");
-                setLoading(false);
-                return;
-            }
-
-            // Try from store first
-            let found = medicines.find((m) => m._id === id);
-            if (found) {
-                setMedicine(found);
-                setLoading(false);
-                return;
-            }
-
-            // If not, fetch by ID
-            const result = await fetchMedicineById(id as string);
-            if (result) {
-                setMedicine(result);
-            } else {
-                setError("Medicine not found");
-            }
+    const loadMedicine = useCallback(async () => {
+        if (!id || Array.isArray(id)) {
+            setError("Invalid medicine ID");
             setLoading(false);
-        };
+            return;
+        }
+        setLoading(true);
+        const result = await fetchMedicineById(id as string);
+        if (result) {
+            setMedicine(result);
+            setError(null);
+        } else {
+            setError("Medicine not found");
+        }
+        setLoading(false);
+    }, [id, fetchMedicineById]);
 
+    useEffect(() => {
         loadMedicine();
-    }, [id, medicines, fetchMedicineById]);
+    }, [loadMedicine]);
+
+    const handleRefresh = () => {
+        loadMedicine();
+    };
 
     if (loading) {
         return (
@@ -66,7 +62,7 @@ export default function ViewMedicinePage() {
 
     return (
         <div className="p-6">
-            <MedicineView medicine={medicine} />
+            <MedicineView medicine={medicine} onRefresh={handleRefresh} />
         </div>
     );
 }

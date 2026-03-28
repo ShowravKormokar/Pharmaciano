@@ -3,19 +3,30 @@ export interface MedicineItem {
     name: string;
     genericName?: string;
     categoryName?: string;
-    brandName?: string;
+    brandName?: string; 
     dosageForm?: string;
     strength?: string;
     unit?: string;
     unitPrice?: number;
     unitsPerStrip?: number;
-    stripPrice?: number; // calculated by backend? Not needed in form
+    stripPrice?: number;
     isPrescriptionRequired?: boolean;
     taxRate?: number;
     isActive: boolean;
     createdBy?: { name: string; email: string };
     createdAt?: string;
     updatedAt?: string;
+    categoryId?: {
+        _id?: string;
+        name: string;
+        description?: string;
+    };
+    brandId?: {
+        _id?: string;
+        name: string;
+        manufacturer?: string;
+        country?: string;
+    };
 }
 
 export interface MedicinesApiResponse {
