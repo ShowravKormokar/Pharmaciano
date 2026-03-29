@@ -1,9 +1,41 @@
+export interface OrganizationInfo {
+    _id: string;
+    name: string;
+}
+
+export interface BranchInfo {
+    _id: string;
+    name: string;
+}
+
+export interface WarehouseInfo {
+    _id: string;
+    name: string;
+}
+
+export interface CategoryInfo {
+    _id: string;
+    name: string;
+    description?: string;
+}
+
+export interface BrandInfo {
+    _id: string;
+    name: string;
+    manufacturer?: string;
+    country?: string;
+}
+
+export interface CreatedByInfo {
+    _id: string;
+    name: string;
+    email?: string;
+}
+
 export interface MedicineItem {
     _id: string;
     name: string;
     genericName?: string;
-    categoryName?: string;
-    brandName?: string; 
     dosageForm?: string;
     strength?: string;
     unit?: string;
@@ -13,20 +45,16 @@ export interface MedicineItem {
     isPrescriptionRequired?: boolean;
     taxRate?: number;
     isActive: boolean;
-    createdBy?: { name: string; email: string };
+    organizationId?: OrganizationInfo;
+    branchId?: BranchInfo;
+    warehouseId?: WarehouseInfo;
+    categoryId?: CategoryInfo;
+    brandId?: BrandInfo;
+    createdBy?: CreatedByInfo;
+    categoryName?: string;
+    brandName?: string;
     createdAt?: string;
     updatedAt?: string;
-    categoryId?: {
-        _id?: string;
-        name: string;
-        description?: string;
-    };
-    brandId?: {
-        _id?: string;
-        name: string;
-        manufacturer?: string;
-        country?: string;
-    };
 }
 
 export interface MedicinesApiResponse {

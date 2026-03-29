@@ -17,7 +17,7 @@ interface Props {
 export default function MedicineView({ medicine, onRefresh }: Props) {
     const router = useRouter();
 
-    // Helper to get category name
+    // Helper to get category name with fallback
     const categoryName = medicine.categoryId?.name || medicine.categoryName || "—";
     // Helper to get brand name
     const brandName = medicine.brandId?.name || medicine.brandName || "—";
@@ -43,24 +43,24 @@ export default function MedicineView({ medicine, onRefresh }: Props) {
                 <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <p className="text-sm text-muted-foreground">Name</p>
+                            <p className="text-sm text-primary">Name</p>
                             <p className="font-medium capitalize">{medicine.name}</p>
                         </div>
                         <div>
-                            <p className="text-sm text-muted-foreground">Generic Name</p>
+                            <p className="text-sm text-primary">Generic Name</p>
                             <p className="capitalize">{medicine.genericName || "—"}</p>
                         </div>
                         <div>
-                            <p className="text-sm text-muted-foreground">Category</p>
+                            <p className="text-sm text-primary">Category</p>
                             <p className="capitalize">{categoryName}</p>
                             {medicine.categoryId?.description && (
-                                <p className="text-xs text-muted-foreground mt-1 capitalize">
+                                <p className="text-xs text-muted-foreground mt-1">
                                     {medicine.categoryId.description}
                                 </p>
                             )}
                         </div>
                         <div>
-                            <p className="text-sm text-muted-foreground">Brand</p>
+                            <p className="text-sm text-primary">Brand</p>
                             <p className="capitalize">{brandName}</p>
                             {medicine.brandId?.manufacturer && (
                                 <p className="text-xs text-muted-foreground capitalize">
@@ -74,31 +74,31 @@ export default function MedicineView({ medicine, onRefresh }: Props) {
                             )}
                         </div>
                         <div>
-                            <p className="text-sm text-muted-foreground">Dosage Form</p>
+                            <p className="text-sm text-primary">Dosage Form</p>
                             <p className="capitalize">{medicine.dosageForm || "—"}</p>
                         </div>
                         <div>
-                            <p className="text-sm text-muted-foreground">Strength</p>
+                            <p className="text-sm text-primary">Strength</p>
                             <p>{medicine.strength ? `${medicine.strength} ${medicine.unit || ""}` : "—"}</p>
                         </div>
                         <div>
-                            <p className="text-sm text-muted-foreground">Unit Price</p>
+                            <p className="text-sm text-primary">Unit Price</p>
                             <p>TK. {medicine.unitPrice?.toFixed(2) || "—"}/-</p>
                         </div>
                         <div>
-                            <p className="text-sm text-muted-foreground">Units per Strip</p>
+                            <p className="text-sm text-primary">Units per Strip</p>
                             <p>{medicine.unitsPerStrip || "—"}</p>
                         </div>
                         <div>
-                            <p className="text-sm text-muted-foreground">Strip Price</p>
-                            <p>Tk. {medicine.stripPrice || "—"}/-</p>
+                            <p className="text-sm text-primary">Strip Price</p>
+                            <p>TK. {medicine.stripPrice || "—"}/-</p>
                         </div>
                         <div>
-                            <p className="text-sm text-muted-foreground">Tax Rate</p>
+                            <p className="text-sm text-primary">Tax Rate</p>
                             <p>{medicine.taxRate ? `${medicine.taxRate}%` : "—"}</p>
                         </div>
                         <div>
-                            <p className="text-sm text-muted-foreground">Prescription Required</p>
+                            <p className="text-sm text-primary">Prescription Required</p>
                             {medicine.isPrescriptionRequired ? (
                                 <Badge variant="destructive">Required</Badge>
                             ) : (
@@ -106,7 +106,7 @@ export default function MedicineView({ medicine, onRefresh }: Props) {
                             )}
                         </div>
                         <div>
-                            <p className="text-sm text-muted-foreground">Status</p>
+                            <p className="text-sm text-primary">Status</p>
                             <Badge variant={medicine.isActive ? "default" : "secondary"}>
                                 {medicine.isActive ? "Active" : "Inactive"}
                             </Badge>
@@ -114,18 +114,38 @@ export default function MedicineView({ medicine, onRefresh }: Props) {
                     </div>
 
                     <Separator />
+                    {/* Organization, Branch, Warehouse */}
+                    <div className="mt-4">
+                        <p className="text-sm font-semibold mb-2">Location</p>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <p className="text-sm text-primary">Organization</p>
+                                <p>{medicine.organizationId?.name || "—"}</p>
+                            </div>
+                            <div>
+                                <p className="text-sm text-primary">Branch</p>
+                                <p>{medicine.branchId?.name || "—"}</p>
+                            </div>
+                            <div>
+                                <p className="text-sm text-primary">Warehouse</p>
+                                <p>{medicine.warehouseId?.name || "—"}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <Separator />
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                         <div>
-                            <p className="text-muted-foreground">Created By</p>
+                            <p className="text-primary">Created By</p>
                             <p>{medicine.createdBy?.name || medicine.createdBy?.email || "System"}</p>
                         </div>
                         <div>
-                            <p className="text-muted-foreground">Created At</p>
+                            <p className="text-primary">Created At</p>
                             <p>{medicine.createdAt ? format(new Date(medicine.createdAt), "PPP p") : "N/A"}</p>
                         </div>
                         <div>
-                            <p className="text-muted-foreground">Last Updated</p>
+                            <p className="text-primary">Last Updated</p>
                             <p>{medicine.updatedAt ? format(new Date(medicine.updatedAt), "PPP p") : "N/A"}</p>
                         </div>
                     </div>

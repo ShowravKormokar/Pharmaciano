@@ -41,7 +41,7 @@ export default function MedicineTable({ medicines }: Props) {
                             <TableCell className="capitalize">{med.genericName || "—"}</TableCell>
                             {/* <TableCell>{med.categoryName || "—"}</TableCell>
                             <TableCell>{med.brandName || "—"}</TableCell> */}
-                            <TableCell>{med.dosageForm || "—"}</TableCell>
+                            <TableCell className="capitalize">{med.dosageForm || "—"}</TableCell>
                             <TableCell>{med.strength ? `${med.strength} ${med.unit || ""}` : "—"}</TableCell>
                             <TableCell>{med.unitPrice?.toFixed(2) || "—"}/=</TableCell>
                             <TableCell>
