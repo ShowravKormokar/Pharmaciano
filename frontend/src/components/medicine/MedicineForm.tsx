@@ -16,6 +16,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import { Info } from "lucide-react";
 
 interface Props {
     medicineId?: string;
@@ -48,18 +49,20 @@ export default function MedicineForm({ medicineId, onSuccess }: Props) {
                 <CardContent className="space-y-6">
                     {/* Basic Info */}
                     <div className="grid gap-4">
-                        <div>
-                            <Label className="pb-1 pl-1">Medicine Name <span className="text-red-500">*</span></Label>
+                        <div className="space-y-2">
+                            <Label htmlFor="name">Medicine Name <span className="text-red-500">*</span></Label>
                             <Input
+                                id="name"
                                 placeholder="Enter medicine name"
                                 value={form.name}
                                 onChange={(e) => setForm({ name: e.target.value })}
                             />
                         </div>
 
-                        <div>
-                            <Label className="pb-1 pl-1">Generic Name</Label>
+                        <div className="space-y-2">
+                            <Label htmlFor="genericName">Generic Name<span className="text-red-500">*</span></Label>
                             <Input
+                                id="genericName"
                                 placeholder="Enter generic name"
                                 value={form.genericName}
                                 onChange={(e) => setForm({ genericName: e.target.value })}
@@ -68,14 +71,14 @@ export default function MedicineForm({ medicineId, onSuccess }: Props) {
                     </div>
 
                     {/* Category + Brand */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <Label className="pb-1 pl-1">Category <span className="text-red-500">*</span></Label>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                            <Label htmlFor="category">Category <span className="text-red-500">*</span></Label>
                             <Select
                                 value={form.categoryName}
                                 onValueChange={(val) => setForm({ categoryName: val })}
                             >
-                                <SelectTrigger>
+                                <SelectTrigger id="category">
                                     <SelectValue placeholder="Select category" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -88,13 +91,13 @@ export default function MedicineForm({ medicineId, onSuccess }: Props) {
                             </Select>
                         </div>
 
-                        <div>
-                            <Label className="pb-1 pl-1">Brand <span className="text-red-500">*</span></Label>
+                        <div className="space-y-2">
+                            <Label htmlFor="brand">Brand <span className="text-red-500">*</span></Label>
                             <Select
                                 value={form.brandName}
                                 onValueChange={(val) => setForm({ brandName: val })}
                             >
-                                <SelectTrigger>
+                                <SelectTrigger id="brand">
                                     <SelectValue placeholder="Select brand" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -109,29 +112,31 @@ export default function MedicineForm({ medicineId, onSuccess }: Props) {
                     </div>
 
                     {/* Dosage */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <Label className="pb-1 pl-1">Dosage Form</Label>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                            <Label htmlFor="dosageForm">Dosage Form<span className="text-red-500">*</span></Label>
                             <Input
-                                placeholder="Tablet / Syrup / Capsule"
+                                id="dosageForm"
+                                placeholder="e.g., Tablet, Syrup, Capsule"
                                 value={form.dosageForm}
                                 onChange={(e) => setForm({ dosageForm: e.target.value })}
                             />
                         </div>
 
-                        <div className="flex gap-2">
-                            <div className="w-full">
-                                <Label className="pb-1 pl-1">Strength</Label>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="strength">Strength<span className="text-red-500">*</span></Label>
                                 <Input
-                                    placeholder="e.g. 500"
+                                    id="strength"
+                                    placeholder="e.g., 500"
                                     value={form.strength}
                                     onChange={(e) => setForm({ strength: e.target.value })}
                                 />
                             </div>
-
-                            <div className="w-full">
-                                <Label className="pb-1 pl-1">Unit</Label>
+                            <div className="space-y-2">
+                                <Label htmlFor="unit">Unit<span className="text-red-500">*</span></Label>
                                 <Input
+                                    id="unit"
                                     placeholder="mg / ml"
                                     value={form.unit}
                                     onChange={(e) => setForm({ unit: e.target.value })}
@@ -141,10 +146,11 @@ export default function MedicineForm({ medicineId, onSuccess }: Props) {
                     </div>
 
                     {/* Pricing */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <Label className="pb-1 pl-1">Unit Price (Tk) <span className="text-red-500">*</span></Label>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div className="space-y-2">
+                            <Label htmlFor="unitPrice">Unit Price (Tk) <span className="text-red-500">*</span></Label>
                             <Input
+                                id="unitPrice"
                                 type="number"
                                 step="0.01"
                                 placeholder="Enter price"
@@ -155,27 +161,42 @@ export default function MedicineForm({ medicineId, onSuccess }: Props) {
                             />
                         </div>
 
-                        <div>
-                            <Label className="pb-1 pl-1">Units per Strip</Label>
+                        <div className="space-y-2">
+                            <Label htmlFor="unitsPerStrip">Units per Strip</Label>
                             <Input
+                                id="unitsPerStrip"
                                 type="number"
-                                placeholder="e.g. 10"
+                                placeholder="e.g., 10"
                                 value={form.unitsPerStrip}
                                 onChange={(e) =>
                                     setForm({ unitsPerStrip: parseInt(e.target.value) || 0 })
                                 }
                             />
                         </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="stripPrice">Strip Price</Label>
+                            <Input
+                                id="stripPrice"
+                                type="number"
+                                placeholder="e.g., 10"
+                                value={form.stripPrice}
+                                onChange={(e) =>
+                                    setForm({ stripPrice: parseInt(e.target.value) || 0 })
+                                }
+                            />
+                        </div>
                     </div>
 
                     {/* Tax + Switches */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <Label className="pb-1 pl-1">Tax Rate (%)</Label>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                            <Label htmlFor="taxRate">Tax Rate (%)</Label>
                             <Input
+                                id="taxRate"
                                 type="number"
                                 step="0.01"
-                                placeholder="e.g. 5"
+                                placeholder="e.g., 5"
                                 value={form.taxRate}
                                 onChange={(e) =>
                                     setForm({ taxRate: parseFloat(e.target.value) || 0 })
@@ -183,7 +204,7 @@ export default function MedicineForm({ medicineId, onSuccess }: Props) {
                             />
                         </div>
 
-                        <div className="flex items-center justify-between border rounded-lg p-3">
+                        <div className="flex items-center justify-between border rounded-lg p-4">
                             <Label htmlFor="prescription">Prescription Required</Label>
                             <Switch
                                 id="prescription"
@@ -195,7 +216,7 @@ export default function MedicineForm({ medicineId, onSuccess }: Props) {
                         </div>
                     </div>
 
-                    <div className="flex items-center justify-between border rounded-lg p-3">
+                    <div className="flex items-center justify-between border rounded-lg p-4">
                         <Label htmlFor="isActive">Active Status</Label>
                         <Switch
                             id="isActive"
@@ -204,6 +225,12 @@ export default function MedicineForm({ medicineId, onSuccess }: Props) {
                                 setForm({ isActive: checked })
                             }
                         />
+                    </div>
+
+                    {/* Note: Organization, Branch, and Warehouse are automatically assigned by backend */}
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground mt-2">
+                        <Info className="h-4 w-4" />
+                        <span>Organization, branch, and warehouse are automatically assigned based on your session.</span>
                     </div>
                 </CardContent>
             </Card>

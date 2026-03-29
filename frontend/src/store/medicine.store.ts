@@ -24,6 +24,7 @@ interface MedicineState {
         unit: string;
         unitPrice: number;
         unitsPerStrip: number;
+        stripPrice: number;
         isPrescriptionRequired: boolean;
         taxRate: number;
         isActive: boolean;
@@ -54,6 +55,7 @@ export const useMedicineStore = create<MedicineState>()(
                 unit: "",
                 unitPrice: 0,
                 unitsPerStrip: 0,
+                stripPrice: 0,
                 isPrescriptionRequired: false,
                 taxRate: 0,
                 isActive: true,
@@ -74,6 +76,7 @@ export const useMedicineStore = create<MedicineState>()(
                         unit: "",
                         unitPrice: 0,
                         unitsPerStrip: 0,
+                        stripPrice: 0,
                         isPrescriptionRequired: false,
                         taxRate: 0,
                         isActive: true,
@@ -119,6 +122,7 @@ export const useMedicineStore = create<MedicineState>()(
                         unit,
                         unitPrice,
                         unitsPerStrip,
+                        stripPrice,
                         isPrescriptionRequired,
                         taxRate,
                         isActive,
@@ -136,6 +140,7 @@ export const useMedicineStore = create<MedicineState>()(
                         unit: unit || undefined,
                         unitPrice: unitPrice || 0,
                         unitsPerStrip: unitsPerStrip || 0,
+                        stripPrice: stripPrice || 0,
                         isPrescriptionRequired,
                         taxRate: taxRate || 0,
                         isActive,
@@ -169,6 +174,7 @@ export const useMedicineStore = create<MedicineState>()(
                         unit,
                         unitPrice,
                         unitsPerStrip,
+                        stripPrice,
                         isPrescriptionRequired,
                         taxRate,
                         isActive,
@@ -186,6 +192,7 @@ export const useMedicineStore = create<MedicineState>()(
                         unit: unit || undefined,
                         unitPrice: unitPrice || 0,
                         unitsPerStrip: unitsPerStrip || 0,
+                        stripPrice: stripPrice || 0,
                         isPrescriptionRequired,
                         taxRate: taxRate || 0,
                         isActive,
