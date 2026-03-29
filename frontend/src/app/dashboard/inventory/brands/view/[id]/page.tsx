@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useBrandStore } from "@/store/brand.store";
 import { Button } from "@/components/ui/button";
@@ -10,41 +10,37 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function ViewBrandPage() {
     const { id } = useParams();
     const router = useRouter();
-    const { brands, fetchBrands, fetchBrandById } = useBrandStore();
+    const { fetchBrandById } = useBrandStore();
     const [brand, setBrand] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        const loadBrand = async () => {
-            if (!id || Array.isArray(id)) {
-                setError("Invalid brand ID");
-                setLoading(false);
-                return;
-            }
-
-            // Try from store first
-            let found = brands.find((b) => b._id === id);
-            if (found) {
-                setBrand(found);
-                setLoading(false);
-                return;
-            }
-
-            // If not, fetch by ID
-            const result = await fetchBrandById(id as string);
-            if (result) {
-                setBrand(result);
-            } else {
-                setError("Brand not found");
-            }
+    const loadBrand = useCallback(async () => {
+        if (!id || Array.isArray(id)) {
+            setError("Invalid brand ID");
             setLoading(false);
-        };
+            return;
+        }
+        setLoading(true);
+        const result = await fetchBrandById(id as string);
+        if (result) {
+            setBrand(result);
+            setError(null);
+        } else {
+            setError("Brand not found");
+        }
+        setLoading(false);
+    }, [id, fetchBrandById]);
 
+    useEffect(() => {
         loadBrand();
-    }, [id, brands, fetchBrandById]);
+    }, [loadBrand]);
 
-    if (loading) {
+    const handleRefresh = () => {
+        loadBrand();
+    };
+
+    if (loading && !brand) {
         return (
             <div className="p-6 space-y-4">
                 <Skeleton className="h-8 w-1/3" />
@@ -66,7 +62,7 @@ export default function ViewBrandPage() {
 
     return (
         <div className="p-6">
-            <BrandView brand={brand} />
+            <BrandView brand={brand} loading={loading} onRefresh={handleRefresh} />
         </div>
     );
 }
