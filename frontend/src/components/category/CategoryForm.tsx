@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { Info } from "lucide-react";
 
 interface Props {
     categoryId?: string;
@@ -33,26 +34,47 @@ export default function CategoryForm({ categoryId, onSuccess }: Props) {
                 <CardHeader>
                     <CardTitle>Category Information</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                    <Input
-                        placeholder="Category Name"
-                        value={form.name}
-                        onChange={(e) => setForm({ name: e.target.value })}
-                    />
-                    <Textarea
-                        placeholder="Description (optional)"
-                        value={form.description}
-                        onChange={(e) => setForm({ description: e.target.value })}
-                        rows={3}
-                    />
-                    <div className="flex items-center space-x-2">
+
+                <CardContent className="space-y-6">
+
+                    {/* Name */}
+                    <div>
+                        <Label className="pb-1 pl-1">
+                            Category Name <span className="text-red-500">*</span>
+                        </Label>
+                        <Input
+                            placeholder="Enter category name"
+                            value={form.name}
+                            onChange={(e) => setForm({ name: e.target.value })}
+                        />
+                    </div>
+
+                    {/* Description */}
+                    <div>
+                        <Label className="pb-1 pl-1">Description</Label>
+                        <Textarea
+                            placeholder="Write short description..."
+                            value={form.description}
+                            onChange={(e) => setForm({ description: e.target.value })}
+                            rows={3}
+                        />
+                    </div>
+
+                    {/* Status */}
+                    <div className="flex items-center justify-between border rounded-lg p-3">
+                        <Label className="pb-1 pl-1" htmlFor="isActive">Active Status</Label>
                         <Switch
                             id="isActive"
                             checked={form.isActive}
                             onCheckedChange={(checked) => setForm({ isActive: checked })}
                         />
-                        <Label htmlFor="isActive">Active</Label>
                     </div>
+
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground mt-2">
+                        <Info className="h-4 w-4" />
+                        <span>Organization, branch, and warehouse are automatically assigned based on your session.</span>
+                    </div>
+
                 </CardContent>
             </Card>
 
