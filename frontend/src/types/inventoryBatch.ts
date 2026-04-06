@@ -1,19 +1,55 @@
 export interface InventoryBatchItem {
     _id: string;
-    medicineId?: { name: string } | string; // from list, medicineId is object with name
-    medicineName?: string; // for create/update
+
+    organizationId?: {
+        _id: string;
+        name: string;
+        address?: string;
+        contact?: {
+            phone?: string;
+            email?: string;
+        };
+    };
+
+    branchId?: {
+        _id: string;
+        name: string;
+        address?: string;
+        contact?: {
+            phone?: string;
+            email?: string;
+        };
+    };
+
+    warehouseId?: {
+        _id: string;
+        name: string;
+        location?: string;
+    };
+
+    medicineId?: {
+        _id: string;
+        name: string;
+        genericName?: string;
+        dosageForm?: string;
+        strength?: string;
+        unit?: string;
+        unitPrice?: number;
+    };
+
     batchNo: string;
     expiryDate: string;
     quantity: number;
     purchasePrice: number;
-    status: 'active' | 'expired' | 'low_stock';
-    orgName?: string;
-    branchName?: string;
-    warehouseName?: string;
-    organizationId?: string;
-    branchId?: string;
-    warehouseId?: string;
-    createdBy?: { name: string; email: string };
+
+    status: "active" | "expired" | "low_stock";
+
+    createdBy?: {
+        _id: string;
+        name: string;
+        email?: string;
+    };
+
     createdAt?: string;
     updatedAt?: string;
 }

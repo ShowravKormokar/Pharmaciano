@@ -9,7 +9,7 @@ export interface BranchItem {
     address: string;
     contact: BranchContact;
     orgName?: string;          // for create/update requests
-    organization?: {
+    organizationId?: {
         _id: string;
         name: string;
     };

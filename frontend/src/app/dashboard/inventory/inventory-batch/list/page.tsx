@@ -1,39 +1,44 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { useInventoryBatchStore } from "@/store/inventoryBatch.store";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { RefreshCcw, Package, Search } from "lucide-react";
+import { RefreshCcw, Package } from "lucide-react";
 import Link from "next/link";
 import InventoryBatchTable from "@/components/inventory-batch/InventoryBatchTable";
 import InventoryBatchTableSkeleton from "@/components/inventory-batch/InventoryBatchTableSkeleton";
 import InventoryBatchFilter from "@/components/inventory-batch/InventoryBatchFilter";
+import {
+    Pagination,
+    PaginationContent,
+    PaginationItem,
+    PaginationLink,
+    PaginationNext,
+    PaginationPrevious,
+} from "@/components/ui/pagination";
 
 export default function InventoryBatchListPage() {
-    const { batches, fetchBatches, loading } = useInventoryBatchStore();
-    const [searchTerm, setSearchTerm] = useState("");
-    const [filters, setFilters] = useState({ status: "all" });
+    const { batches, meta, loading, fetchBatches } = useInventoryBatchStore();
+    const [filters, setFilters] = useState({ status: "", medicineName: "", batchNo: "" });
+    const [page, setPage] = useState(1);
+    const limit = 10;
 
     useEffect(() => {
-        fetchBatches();
-    }, [fetchBatches]);
-
-    const filteredBatches = useMemo(() => {
-        return batches.filter((batch) => {
-            const medicineName = typeof batch.medicineId === 'object' ? batch.medicineId?.name : batch.medicineName;
-            const matchesSearch =
-                !searchTerm.trim() ||
-                medicineName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                batch.batchNo?.toLowerCase().includes(searchTerm.toLowerCase());
-
-            if (!matchesSearch) return false;
-
-            if (filters.status !== "all" && batch.status !== filters.status) return false;
-
-            return true;
+        fetchBatches({
+            page,
+            limit,
+            status: filters.status || undefined,
+            medicineName: filters.medicineName || undefined,
+            batchNo: filters.batchNo || undefined,
         });
-    }, [batches, searchTerm, filters]);
+    }, [fetchBatches, page, filters]);
+
+    const handleFilterChange = (newFilters: any) => {
+        setFilters(newFilters);
+        setPage(1); // reset to first page when filters change
+    };
+
+    const totalPages = meta ? Math.ceil(meta.count / limit) : 0;
 
     return (
         <div className="p-6 space-y-6">
@@ -51,27 +56,77 @@ export default function InventoryBatchListPage() {
                             Create Batch
                         </Button>
                     </Link>
-                    <Button size="sm" onClick={fetchBatches} disabled={loading}>
+                    <Button
+                        size="sm"
+                        onClick={() => fetchBatches({ page, limit, ...filters })}
+                        disabled={loading}
+                    >
                         <RefreshCcw className={`h-4 w-4 mr-2 ${loading ? "animate-spin" : ""}`} />
                         Refresh
                     </Button>
                 </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                <div className="relative w-full sm:w-64">
-                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input
-                        placeholder="Search batches..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="pl-8"
-                    />
-                </div>
-                <InventoryBatchFilter onFilterChange={setFilters} />
-            </div>
+            <InventoryBatchFilter onFilterChange={handleFilterChange} />
 
-            {loading ? <InventoryBatchTableSkeleton /> : <InventoryBatchTable batches={filteredBatches} />}
+            {loading ? (
+                <InventoryBatchTableSkeleton />
+            ) : (
+                <>
+                    <InventoryBatchTable batches={batches} />
+                    {totalPages > 1 && (
+                        <div className="flex justify-center mt-4">
+                            <Pagination>
+                                <PaginationContent>
+
+                                    {/* Previous */}
+                                    <PaginationItem>
+                                        <PaginationPrevious
+                                            href="#"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                if (page > 1) setPage(page - 1);
+                                            }}
+                                        />
+                                    </PaginationItem>
+
+                                    {/* Page Numbers */}
+                                    {Array.from({ length: totalPages }, (_, i) => {
+                                        const pageNumber = i + 1;
+
+                                        return (
+                                            <PaginationItem key={pageNumber}>
+                                                <PaginationLink
+                                                    href="#"
+                                                    isActive={page === pageNumber}
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        setPage(pageNumber);
+                                                    }}
+                                                >
+                                                    {pageNumber}
+                                                </PaginationLink>
+                                            </PaginationItem>
+                                        );
+                                    })}
+
+                                    {/* Next */}
+                                    <PaginationItem>
+                                        <PaginationNext
+                                            href="#"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                if (page < totalPages) setPage(page + 1);
+                                            }}
+                                        />
+                                    </PaginationItem>
+
+                                </PaginationContent>
+                            </Pagination>
+                        </div>
+                    )}
+                </>
+            )}
         </div>
     );
 }

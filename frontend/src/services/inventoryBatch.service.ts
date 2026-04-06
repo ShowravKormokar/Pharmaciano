@@ -1,16 +1,53 @@
 import { api } from "@/lib/api";
-import type { InventoryBatchesApiResponse, InventoryBatchApiResponse, BasicApiResponse } from "@/types/inventoryBatch";
+import type {
+    InventoryBatchItem,
+    InventoryBatchApiResponse,
+    BasicApiResponse,
+} from "@/types/inventoryBatch";
 
-export const fetchInventoryBatchesService = async (): Promise<InventoryBatchesApiResponse> => {
-    const res = await api.get<InventoryBatchesApiResponse>("/v1/inventory-batches");
+// Actual API response shape for list endpoint
+export interface InventoryBatchesRawResponse {
+    success: boolean;
+    message: string;
+    meta: {
+        page: number;
+        limit: number;
+        count: number;
+    };
+    total: number;
+    active: number;
+    expired: number;
+    data: InventoryBatchItem[];
+}
+
+// Parameter type for fetching batches
+export type FetchBatchesParams = {
+    page?: number;
+    limit?: number;
+    status?: string;
+    medicineName?: string;
+    batchNo?: string;
+};
+
+// Fetch list of inventory batches with optional filters and pagination
+export const fetchInventoryBatchesService = async (
+    params?: FetchBatchesParams
+): Promise<InventoryBatchesRawResponse> => {
+    const res = await api.get<InventoryBatchesRawResponse>("/v1/inventory-batches", {
+        params,
+    });
     return res.data;
 };
 
-export const fetchInventoryBatchByIdService = async (id: string): Promise<InventoryBatchApiResponse> => {
+// Single batch fetch
+export const fetchInventoryBatchByIdService = async (
+    id: string
+): Promise<InventoryBatchApiResponse> => {
     const res = await api.get<InventoryBatchApiResponse>(`/v1/inventory-batches/${id}`);
     return res.data;
 };
 
+// Create batch
 export const createInventoryBatchService = async (data: {
     medicineName: string;
     batchNo: string;
@@ -26,6 +63,7 @@ export const createInventoryBatchService = async (data: {
     return res.data;
 };
 
+// Update batch
 export const updateInventoryBatchService = async (
     id: string,
     data: {
@@ -44,7 +82,10 @@ export const updateInventoryBatchService = async (
     return res.data;
 };
 
-export const deleteInventoryBatchService = async (id: string): Promise<BasicApiResponse> => {
+// Delete batch
+export const deleteInventoryBatchService = async (
+    id: string
+): Promise<BasicApiResponse> => {
     const res = await api.delete<BasicApiResponse>(`/v1/inventory-batches/${id}`);
     return res.data;
 };

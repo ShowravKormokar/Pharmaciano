@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useInventoryBatchStore } from "@/store/inventoryBatch.store";
@@ -11,26 +11,11 @@ import { Package, Eye, PlusCircle } from "lucide-react";
 
 export default function InventoryBatchOverviewPage() {
     const router = useRouter();
-    const { batches, fetchBatches, loading } = useInventoryBatchStore();
-    const [metrics, setMetrics] = useState({ total: 0, active: 0, expired: 0, lowStock: 0 });
+    const { batches, total, active, expired, fetchBatches, loading } = useInventoryBatchStore();
 
     useEffect(() => {
-        fetchBatches();
+        fetchBatches({ page: 1, limit: 10 }); // fetch first page, but we mainly need totals
     }, [fetchBatches]);
-
-    useEffect(() => {
-        if (batches.length) {
-            const active = batches.filter((b) => b.status === "active").length;
-            const expired = batches.filter((b) => b.status === "expired").length;
-            const lowStock = batches.filter((b) => b.status === "low_stock").length;
-            setMetrics({
-                total: batches.length,
-                active,
-                expired,
-                lowStock,
-            });
-        }
-    }, [batches]);
 
     const recentBatches = [...batches]
         .sort((a, b) => {
@@ -50,30 +35,11 @@ export default function InventoryBatchOverviewPage() {
             </div>
 
             <div className="grid gap-4 md:grid-cols-4">
-                <MetricCard
-                    title="Total Batches"
-                    value={metrics.total}
-                    icon={<Package className="h-5 w-5" />}
-                    loading={loading}
-                />
-                <MetricCard
-                    title="Active"
-                    value={metrics.active}
-                    icon={<Package className="h-5 w-5 text-green-600" />}
-                    loading={loading}
-                />
-                <MetricCard
-                    title="Expired"
-                    value={metrics.expired}
-                    icon={<Package className="h-5 w-5 text-red-600" />}
-                    loading={loading}
-                />
-                <MetricCard
-                    title="Low Stock"
-                    value={metrics.lowStock}
-                    icon={<Package className="h-5 w-5 text-yellow-600" />}
-                    loading={loading}
-                />
+                <MetricCard title="Total Batches" value={total} icon={<Package className="h-5 w-5" />} loading={loading} />
+                <MetricCard title="Active" value={active} icon={<Package className="h-5 w-5 text-green-600" />} loading={loading} />
+                <MetricCard title="Expired" value={expired} icon={<Package className="h-5 w-5 text-red-600" />} loading={loading} />
+                <MetricCard title="Low Stock" value={0} icon={<Package className="h-5 w-5 text-yellow-600" />} loading={loading} />
+                {/* Low stock not provided by API, keep 0 or compute from batches if needed */}
             </div>
 
             <div className="flex flex-wrap gap-3">
@@ -111,7 +77,7 @@ export default function InventoryBatchOverviewPage() {
                                 >
                                     <div className="space-y-1">
                                         <p className="font-medium capitalize">
-                                            {typeof batch.medicineId === 'object' ? batch.medicineId?.name : batch.medicineName}
+                                            {typeof batch.medicineId === "object" ? batch.medicineId?.name : batch.medicineId}
                                         </p>
                                         <p className="text-sm text-muted-foreground">
                                             Batch: {batch.batchNo} | Qty: {batch.quantity}
@@ -119,21 +85,19 @@ export default function InventoryBatchOverviewPage() {
                                     </div>
                                     <div className="flex items-center gap-3">
                                         <span
-                                            className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${batch.status === 'active'
+                                            className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${batch.status === "active"
                                                 ? "bg-green-100 text-green-700"
-                                                : batch.status === 'expired'
+                                                : batch.status === "expired"
                                                     ? "bg-red-100 text-red-700"
                                                     : "bg-yellow-100 text-yellow-700"
                                                 }`}
                                         >
-                                            {batch.status === 'active' ? "Active" : batch.status === 'expired' ? "Expired" : "Low Stock"}
+                                            {batch.status === "active" ? "Active" : batch.status === "expired" ? "Expired" : "Low Stock"}
                                         </span>
                                         <Button
                                             variant="ghost"
                                             size="sm"
-                                            onClick={() =>
-                                                router.push(`/dashboard/inventory/inventory-batch/view/${batch._id}`)
-                                            }
+                                            onClick={() => router.push(`/dashboard/inventory/inventory-batch/view/${batch._id}`)}
                                         >
                                             View
                                         </Button>
@@ -158,11 +122,7 @@ function MetricCard({ title, value, icon, loading }: any) {
                 {icon}
             </CardHeader>
             <CardContent>
-                {loading ? (
-                    <Skeleton className="h-8 w-16" />
-                ) : (
-                    <div className="text-2xl font-bold">{value}</div>
-                )}
+                {loading ? <Skeleton className="h-8 w-16" /> : <div className="text-2xl font-bold">{value}</div>}
             </CardContent>
         </Card>
     );

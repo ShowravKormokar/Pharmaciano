@@ -21,6 +21,7 @@ export interface WarehouseItem {
     location: string;
     capacity: number;
     isActive: boolean;
+    organizationId?: string;
     branchName?: string;      // for list response
     branchId?: BranchInfo;     // for detailed response
     createdBy?: CreatedBy;
