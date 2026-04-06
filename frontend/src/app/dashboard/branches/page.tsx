@@ -28,7 +28,7 @@ export default function BranchOverviewPage() {
         if (branches.length) {
             const active = branches.filter((b) => b.isActive).length;
             const orgs = new Set(
-                branches.map((b) => b.organization?.name || b.orgName).filter(Boolean)
+                branches.map((b) => b.organizationId?.name || b.orgName).filter(Boolean)
             ).size;
             setMetrics({
                 total: branches.length,

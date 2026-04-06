@@ -31,7 +31,7 @@ export default function BranchActions({ branch }: Props) {
             name: branch.name,
             address: branch.address,
             contact: branch.contact,
-            orgName: branch.organization?.name || branch.orgName || "",
+            orgName: branch.organizationId?.name || branch.orgName || "",
             isActive: branch.isActive,
         });
         router.push(`/dashboard/branches/edit/${branch._id}`);

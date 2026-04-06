@@ -31,7 +31,7 @@ export default function BranchListPage() {
             if (!matchesSearch) return false;
 
             if (filters.orgName !== "all") {
-                const org = branch.organization?.name || branch.orgName;
+                const org = branch.organizationId?.name || branch.orgName;
                 if (org !== filters.orgName) return false;
             }
 

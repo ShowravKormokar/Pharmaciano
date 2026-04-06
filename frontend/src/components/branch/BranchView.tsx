@@ -57,7 +57,7 @@ export default function BranchView({ branch }: Props) {
 
                     <div>
                         <p className="text-sm text-muted-foreground">Organization</p>
-                        <p className="capitalize">{branch.organization?.name || branch.orgName || "N/A"}</p>
+                        <p className="capitalize">{branch.organizationId?.name || branch.orgName || "N/A"}</p>
                     </div>
 
                     <Separator />
