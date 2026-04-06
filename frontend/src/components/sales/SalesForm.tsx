@@ -291,7 +291,7 @@ export default function SalesForm({ saleId, onSuccess }: Props) {
                                                     const medName =
                                                         typeof b.medicineId === "object"
                                                             ? b.medicineId?.name
-                                                            : b.medicineName;
+                                                            : "N/A";
                                                     return medName === selectedMedicine.name;
                                                 })
                                                 .map((batch) => (
