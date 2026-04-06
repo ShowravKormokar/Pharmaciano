@@ -6,6 +6,7 @@ import {
     createInventoryBatchService,
     updateInventoryBatchService,
     deleteInventoryBatchService,
+    FetchBatchesParams, // now correctly exported
 } from "@/services/inventoryBatch.service";
 import type { InventoryBatchItem } from "@/types/inventoryBatch";
 import { toast } from "sonner";
@@ -14,6 +15,10 @@ interface InventoryBatchState {
     batches: InventoryBatchItem[];
     loading: boolean;
     error: string | null;
+    meta: { page: number; limit: number; count: number } | null;
+    total: number;
+    active: number;
+    expired: number;
     form: {
         medicineName: string;
         batchNo: string;
@@ -24,10 +29,9 @@ interface InventoryBatchState {
         branchName: string;
         warehouseName: string;
         status: string;
-        isActive: boolean; // backend uses status, but we'll keep isActive for consistency?
+        isActive: boolean;
     };
-
-    fetchBatches: () => Promise<void>;
+    fetchBatches: (params?: FetchBatchesParams) => Promise<void>;
     fetchBatchById: (id: string) => Promise<InventoryBatchItem | null>;
     createBatch: () => Promise<boolean>;
     updateBatch: (id: string) => Promise<boolean>;
@@ -42,6 +46,10 @@ export const useInventoryBatchStore = create<InventoryBatchState>()(
             batches: [],
             loading: false,
             error: null,
+            meta: null,
+            total: 0,
+            active: 0,
+            expired: 0,
             form: {
                 medicineName: "",
                 batchNo: "",
@@ -73,11 +81,17 @@ export const useInventoryBatchStore = create<InventoryBatchState>()(
                         isActive: true,
                     },
                 }),
-            fetchBatches: async () => {
+            fetchBatches: async (params = {}) => {
                 set({ loading: true, error: null });
                 try {
-                    const res = await fetchInventoryBatchesService();
-                    set({ batches: res.data.inventoryBatch });
+                    const res = await fetchInventoryBatchesService(params);
+                    set({
+                        batches: res.data,
+                        meta: res.meta,
+                        total: res.total,
+                        active: res.active,
+                        expired: res.expired,
+                    });
                 } catch (err: any) {
                     const msg = err?.response?.data?.message || "Failed to fetch batches";
                     set({ error: msg });
@@ -104,20 +118,10 @@ export const useInventoryBatchStore = create<InventoryBatchState>()(
                 set({ loading: true, error: null });
                 try {
                     const { medicineName, batchNo, expiryDate, quantity, purchasePrice, orgName, branchName, warehouseName, status } = get().form;
-                    if (!medicineName || !batchNo || !expiryDate || !quantity || !purchasePrice || !orgName || !branchName || !warehouseName) {
+                    if (!medicineName || !batchNo || !expiryDate || !quantity || !purchasePrice ) {
                         throw new Error("All fields are required");
                     }
-                    const payload = {
-                        medicineName,
-                        batchNo,
-                        expiryDate,
-                        quantity,
-                        purchasePrice,
-                        orgName,
-                        branchName,
-                        warehouseName,
-                        status,
-                    };
+                    const payload = { medicineName, batchNo, expiryDate, quantity, purchasePrice, orgName, branchName, warehouseName, status };
                     const res = await createInventoryBatchService(payload);
                     toast.success(res.message || "Batch created successfully", { duration: 3000 });
                     await get().fetchBatches();
@@ -141,17 +145,7 @@ export const useInventoryBatchStore = create<InventoryBatchState>()(
                     if (!medicineName || !batchNo || !expiryDate || !quantity || !purchasePrice || !orgName || !branchName || !warehouseName) {
                         throw new Error("All fields are required");
                     }
-                    const payload = {
-                        medicineName,
-                        batchNo,
-                        expiryDate,
-                        quantity,
-                        purchasePrice,
-                        orgName,
-                        branchName,
-                        warehouseName,
-                        status,
-                    };
+                    const payload = { medicineName, batchNo, expiryDate, quantity, purchasePrice, orgName, branchName, warehouseName, status };
                     const res = await updateInventoryBatchService(id, payload);
                     toast.success(res.message || "Batch updated successfully", { duration: 3000 });
                     await get().fetchBatches();
@@ -172,10 +166,7 @@ export const useInventoryBatchStore = create<InventoryBatchState>()(
                 try {
                     const res = await deleteInventoryBatchService(id);
                     toast.success(res.message || "Batch deleted successfully", { duration: 3000 });
-                    set((state) => ({
-                        batches: state.batches.filter((b) => b._id !== id),
-                        error: null,
-                    }));
+                    await get().fetchBatches();
                     return true;
                 } catch (err: any) {
                     const msg = err?.response?.data?.message || "Failed to delete batch";
