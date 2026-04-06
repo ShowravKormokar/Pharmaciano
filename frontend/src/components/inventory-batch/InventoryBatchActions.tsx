@@ -28,14 +28,14 @@ export default function InventoryBatchActions({ batch }: Props) {
 
     const handleEdit = () => {
         setForm({
-            medicineName: typeof batch.medicineId === 'object' ? batch.medicineId?.name || "" : batch.medicineName || "",
+            medicineName: typeof batch.medicineId === 'object' ? batch.medicineId?.name || "" : batch.medicineId || "",
             batchNo: batch.batchNo,
             expiryDate: batch.expiryDate ? new Date(batch.expiryDate).toISOString().split('T')[0] : "",
             quantity: batch.quantity,
             purchasePrice: batch.purchasePrice,
-            orgName: batch.orgName || "",
-            branchName: batch.branchName || "",
-            warehouseName: batch.warehouseName || "",
+            orgName: batch.organizationId?.name || "",
+            branchName: batch.branchId?.name || "",
+            warehouseName: batch.warehouseId?.name || "",
             status: batch.status,
             isActive: batch.status === 'active',
         });
