@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useInventoryBatchStore } from "@/store/inventoryBatch.store";
 import { useOrganizationStore } from "@/store/organization.store";
 import { useBranchStore } from "@/store/branch.store";
 import { useMedicineStore } from "@/store/medicine.store";
 import { useWarehouseStore } from "@/store/warehouse.store";
+import { useAuthStore } from "@/store/auth.store";
+import { isSuperAdmin } from "@/lib/isSuperAdmin";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -26,6 +28,8 @@ interface Props {
 
 export default function InventoryBatchForm({ batchId, onSuccess }: Props) {
     const { form, setForm, createBatch, updateBatch, resetForm } = useInventoryBatchStore();
+    const { user, isAuthenticated, loading } = useAuthStore();
+    const isSuper = isSuperAdmin(user?.email);
     const { organizations, fetchOrganizations } = useOrganizationStore();
     const { branches, fetchBranches } = useBranchStore();
     const { medicines, fetchMedicines } = useMedicineStore();
@@ -33,11 +37,53 @@ export default function InventoryBatchForm({ batchId, onSuccess }: Props) {
     const [submitting, setSubmitting] = useState(false);
 
     useEffect(() => {
-        fetchOrganizations();
-        fetchBranches();
+        if (isSuper) {
+            fetchOrganizations();
+            fetchBranches();
+            fetchWarehouses();
+        } else {
+            fetchWarehouses(); // needed for normal user filtering
+        }
+
         fetchMedicines();
-        fetchWarehouses();
-    }, [fetchOrganizations, fetchBranches, fetchMedicines, fetchWarehouses]);
+    }, [isSuper]);
+
+    const filteredBranches = useMemo(() => {
+        if (!isSuper) return [];
+
+        if (!form.orgName) return branches;
+
+        return branches.filter(
+            (b) => b.organizationId?.name?.toLowerCase() === form.orgName?.toLowerCase()
+        );
+    }, [branches, form.orgName, isSuper]);
+
+    const filteredWarehouses = useMemo(() => {
+        if (!isSuper && user) {
+            return warehouses.filter(
+                (w) =>
+                    w.branchId?.name === user.branchId?.name 
+                    // w.organizationId === user.organizationId?.name
+            );
+        }
+
+        if (form.branchName) {
+            return warehouses.filter(
+                (w) => w.branchId?.name === form.branchName
+            );
+        }
+
+        return warehouses;
+    }, [warehouses, form.branchName, isSuper, user]);
+
+    const handleOrgChange = (val: string) => {
+        setForm({ orgName: val, branchName: "", warehouseName: "" });
+    };
+
+    const handleBranchChange = (val: string) => {
+        setForm({ branchName: val, warehouseName: "" });
+    };
+
 
     const handleSubmit = async () => {
         setSubmitting(true);
@@ -54,55 +100,90 @@ export default function InventoryBatchForm({ batchId, onSuccess }: Props) {
                 <CardContent className="space-y-6">
 
                     {/* Organization Info */}
-                    <div className="space-y-4">
-                        <h3 className="text-sm font-semibold text-primary">
-                            Organization Details
-                        </h3>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <Label className="pb-1 pl-1">Organization <span className="text-red-500">*</span></Label>
-                                <Select
-                                    value={form.orgName}
-                                    onValueChange={(val) => setForm({ orgName: val })}
-                                >
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select organization" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {organizations.map((org) => (
-                                            <SelectItem key={org._id} value={org.name}>
-                                                {org.name}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
+                    {isSuper && (
+                        loading ? (
+                            <div className="space-y-3">
+                                <div className="h-10 bg-muted rounded-md animate-pulse" />
                             </div>
+                        ) : (
+                            <>
+                                <div className="space-y-4">
+                                    <h3 className="text-sm font-semibold text-primary">
+                                        Organization Details
+                                    </h3>
 
-                            <div>
-                                <Label className="pb-1 pl-1">Branch <span className="text-red-500">*</span></Label>
-                                <Select
-                                    value={form.branchName}
-                                    onValueChange={(val) => setForm({ branchName: val })}
-                                >
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select branch" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {branches.map((branch) => (
-                                            <SelectItem key={branch._id} value={branch.name}>
-                                                {branch.name}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                        </div>
-                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        {/* Organization Select */}
+                                        <div>
+                                            <Label className="pb-1 pl-1">
+                                                Organization <span className="text-red-500">*</span>
+                                            </Label>
+                                            {/* <Select
+                                            value={form.orgName}
+                                            onValueChange={(val) => setForm({ orgName: val })}
+                                            > */}
+                                            <Select
+                                                value={form.orgName}
+                                                onValueChange={handleOrgChange}
+                                            >
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select organization" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {organizations.map((org) => (
+                                                        <SelectItem key={org._id} value={org.name}>
+                                                            {org.name}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
 
-                    <Separator/>
+                                        {/* Branch Select */}
+                                        <div>
+                                            <Label className="pb-1 pl-1">
+                                                Branch <span className="text-red-500">*</span>
+                                            </Label>
+                                            {/* <Select
+                                                value={form.branchName}
+                                                onValueChange={(val) => setForm({ branchName: val })}
+                                                >
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select branch" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {branches.map((branch) => (
+                                                    <SelectItem key={branch._id} value={branch.name}>
+                                                        {branch.name}
+                                                    </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select> */}
+                                            <Select value={form.branchName} onValueChange={handleBranchChange}>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select branch" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {filteredBranches.map((branch) => (
+                                                        <SelectItem key={branch._id} value={branch.name}>
+                                                            {branch.name}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
 
-                    {/* Medicine & Storage */}
+
+                                    </div>
+                                </div>
+
+                                <Separator />
+                            </>
+                        )
+                    )}
+
+
+                    {/* Medicine */}
                     <div className="space-y-4">
                         <h3 className="text-sm font-semibold text-primary">
                             Medicine & Storage
@@ -127,9 +208,26 @@ export default function InventoryBatchForm({ batchId, onSuccess }: Props) {
                                     </SelectContent>
                                 </Select>
                             </div>
-
+                            {/* Warehouse Select */}
                             <div>
-                                <Label className="pb-1 pl-1">Warehouse <span className="text-red-500">*</span></Label>
+                                <Label className="pb-1 pl-1">
+                                    Warehouse <span className="text-red-500">*</span>
+                                </Label>
+                                {/* <Select
+                                                value={form.warehouseName}
+                                                onValueChange={(val) => setForm({ warehouseName: val })}
+                                                >
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select warehouse" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {warehouses.map((wh) => (
+                                                    <SelectItem key={wh._id} value={wh.name} className="capitalize">
+                                                        {wh.name}
+                                                    </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select> */}
                                 <Select
                                     value={form.warehouseName}
                                     onValueChange={(val) => setForm({ warehouseName: val })}
@@ -138,8 +236,8 @@ export default function InventoryBatchForm({ batchId, onSuccess }: Props) {
                                         <SelectValue placeholder="Select warehouse" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        {warehouses.map((wh) => (
-                                            <SelectItem key={wh._id} value={wh.name} className="capitalize">
+                                        {filteredWarehouses.map((wh) => (
+                                            <SelectItem key={wh._id} value={wh.name}>
                                                 {wh.name}
                                             </SelectItem>
                                         ))}
@@ -149,7 +247,7 @@ export default function InventoryBatchForm({ batchId, onSuccess }: Props) {
                         </div>
                     </div>
 
-                    <Separator/>
+                    <Separator />
 
                     {/* Batch Info */}
                     <div className="space-y-4">
@@ -252,6 +350,6 @@ export default function InventoryBatchForm({ batchId, onSuccess }: Props) {
                     </Button>
                 )}
             </div>
-        </div>
+        </div >
     );
 }
