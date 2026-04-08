@@ -5,7 +5,7 @@ import { toast } from "sonner";
 
 interface UniqueNamesState {
     data: UniqueNamesData | null;
-    loading: boolean;
+    unqNameloading: boolean;
     error: string | null;
     fetchUniqueNames: () => Promise<void>;
     getMedicineNames: () => string[];
@@ -19,19 +19,19 @@ interface UniqueNamesState {
 
 export const useUniqueNamesStore = create<UniqueNamesState>((set, get) => ({
     data: null,
-    loading: false,
+    unqNameloading: false,
     error: null,
 
     fetchUniqueNames: async () => {
         // Prevent multiple simultaneous calls
-        if (get().loading) return;
-        set({ loading: true, error: null });
+        if (get().unqNameloading) return;
+        set({ unqNameloading: true, error: null });
         try {
             const res = await fetchUniqueNamesService();
-            set({ data: res.data, loading: false });
+            set({ data: res.data, unqNameloading: false });
         } catch (err: any) {
             const errorMsg = err?.response?.data?.message || "Failed to fetch unique names";
-            set({ error: errorMsg, loading: false });
+            set({ error: errorMsg, unqNameloading: false });
             toast.error(errorMsg, { duration: 3000 });
         }
     },

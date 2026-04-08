@@ -6,6 +6,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { DashboardSidebar } from "@/components/dashboard/dashboard-sidebar";
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import { Spinner } from "@/components/ui/shadcn-io/spinner";
+import { useUniqueNamesStore } from "@/store/uniqueNames.store";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
     const {
@@ -16,13 +17,20 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         initializeAuth,
     } = useAuthStore();
 
+    const {
+        unqNameloading,
+        fetchUniqueNames
+    } = useUniqueNamesStore();
+
     // Initialize auth once
     useEffect(() => {
         initializeAuth();
-    }, [initializeAuth]);
+        fetchUniqueNames();
+    }, [initializeAuth, fetchUniqueNames]);
 
     const isReady =
         !loading &&
+        !unqNameloading &&
         isAuthenticated &&
         !!user &&
         Array.isArray(navigation) &&
