@@ -20,6 +20,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "../ui/separator";
+import { useUniqueNamesStore } from "@/store/uniqueNames.store";
 
 interface Props {
     batchId?: string;
@@ -32,9 +33,14 @@ export default function InventoryBatchForm({ batchId, onSuccess }: Props) {
     const isSuper = isSuperAdmin(user?.email);
     const { organizations, fetchOrganizations } = useOrganizationStore();
     const { branches, fetchBranches } = useBranchStore();
-    const { medicines, fetchMedicines } = useMedicineStore();
+    // const { medicines, fetchMedicines } = useMedicineStore();
     const { warehouses, fetchWarehouses } = useWarehouseStore();
     const [submitting, setSubmitting] = useState(false);
+    const {
+        data,
+        fetchUniqueNames,
+        getMedicineNames
+    } = useUniqueNamesStore();
 
     useEffect(() => {
         if (isSuper) {
@@ -43,10 +49,15 @@ export default function InventoryBatchForm({ batchId, onSuccess }: Props) {
             fetchWarehouses();
         } else {
             fetchWarehouses(); // needed for normal user filtering
+            // if (!data && !loading) {
+            //     fetchUniqueNames();
+            // } // fetch unique names for medicine select options
         }
 
-        fetchMedicines();
+        // fetchMedicines();
     }, [isSuper]);
+
+    const medicineNames = getMedicineNames();
 
     const filteredBranches = useMemo(() => {
         if (!isSuper) return [];
@@ -62,8 +73,8 @@ export default function InventoryBatchForm({ batchId, onSuccess }: Props) {
         if (!isSuper && user) {
             return warehouses.filter(
                 (w) =>
-                    w.branchId?.name === user.branchId?.name 
-                    // w.organizationId === user.organizationId?.name
+                    w.branchId?.name === user.branchId?.name &&
+                    w.organizationId === user.organizationId?.name
             );
         }
 
@@ -200,12 +211,19 @@ export default function InventoryBatchForm({ batchId, onSuccess }: Props) {
                                         <SelectValue placeholder="Select medicine" />
                                     </SelectTrigger>
                                     <SelectContent>
+                                        {medicineNames.map((name) => (
+                                            <SelectItem key={name} value={name}>
+                                                {name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                    {/* <SelectContent>
                                         {medicines.map((med) => (
                                             <SelectItem key={med._id} value={med.name} className="capitalize">
                                                 {med.name}
                                             </SelectItem>
                                         ))}
-                                    </SelectContent>
+                                    </SelectContent> */}
                                 </Select>
                             </div>
                             {/* Warehouse Select */}
