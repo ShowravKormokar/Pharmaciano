@@ -1,4 +1,3 @@
-// app/dashboard/sales/sales-list/page.tsx
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
@@ -6,74 +5,96 @@ import { useSaleStore } from "@/store/sale.store";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Download, Filter, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import SalesTable from "@/components/sales/SalesTable";
 import SalesTableSkeleton from "@/components/sales/SalesTableSkeleton";
-import SalesFilter from "@/components/sales/SalesFilter";
-import { format } from "date-fns";
 import SalesExport from "@/components/sales/SalesExport";
+import SalesFilter, { Filters } from "@/components/sales/SalesFilter";
 
 export default function SalesListPage() {
-    const { sales, fetchSales, loading } = useSaleStore();
+    const { sales, pagination, loading, fetchSales } = useSaleStore();
     const [searchTerm, setSearchTerm] = useState("");
-    const [filters, setFilters] = useState({ medicine: "", startDate: "", endDate: "" });
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 10;
+    const [filters, setFilters] = useState<Filters>({
+        medicine: "",
+        startDate: "",
+        endDate: "",
+        paymentMethod: "all",
+        organization: "all",
+        branch: "all",
+    });
+    const limit = 10;
 
-    // Fetch sales when medicine filter changes
+    // Debounced search (affects backend fetch)
     useEffect(() => {
-        fetchSales(filters.medicine || undefined);
-    }, [fetchSales, filters.medicine]);
+        const timer = setTimeout(() => {
+            setCurrentPage(1);
+            fetchSales(1, limit, searchTerm);
+        }, 500);
+        return () => clearTimeout(timer);
+    }, [searchTerm, fetchSales]);
 
-    // Apply search and date filters
+    // Fetch on page change
+    useEffect(() => {
+        fetchSales(currentPage, limit, searchTerm);
+    }, [currentPage, fetchSales, searchTerm]);
+
+    // Client‑side filtering (applied after fetch)
     const filteredSales = useMemo(() => {
         let result = [...sales];
-        if (searchTerm) {
-            const lower = searchTerm.toLowerCase();
-            result = result.filter(
-                (sale) =>
-                    sale.invoiceNo.toLowerCase().includes(lower) ||
-                    (sale.customerName?.toLowerCase().includes(lower))
+
+        if (filters.medicine.trim()) {
+            const med = filters.medicine.toLowerCase().replace(/\s+/g, "");
+
+            result = result.filter((sale) =>
+                sale.items.some((item) => {
+                    const name1 = item.medicineName?.toLowerCase().replace(/\s+/g, "") || "";
+                    const name2 = item.medicineId?.name?.toLowerCase().replace(/\s+/g, "") || "";
+
+                    return name1.includes(med) || name2.includes(med);
+                })
             );
         }
+
+        // Date range
         if (filters.startDate) {
             result = result.filter(
-                (sale) => new Date(sale.createdAt) >= new Date(filters.startDate)
+                sale => new Date(sale.createdAt) >= new Date(filters.startDate)
             );
         }
         if (filters.endDate) {
             result = result.filter(
-                (sale) => new Date(sale.createdAt) <= new Date(filters.endDate)
+                sale => new Date(sale.createdAt) <= new Date(filters.endDate)
             );
         }
+
+        // Payment method
+        if (filters.paymentMethod !== "all") {
+            result = result.filter(sale => sale.paymentMethod === filters.paymentMethod);
+        }
+
+        // Organization (only for super admin)
+        if (filters.organization !== "all") {
+            result = result.filter(
+                sale => sale.organizationId?.name === filters.organization
+            );
+        }
+
+        // Branch (only for super admin)
+        if (filters.branch !== "all") {
+            result = result.filter(sale => sale.branchId?.name === filters.branch);
+        }
+
         return result;
-    }, [sales, searchTerm, filters]);
+    }, [sales, filters]);
 
-    // Sort by date descending (most recent first)
-    const sortedSales = useMemo(() => {
-        return [...filteredSales].sort(
-            (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
-    }, [filteredSales]);
-
-    // Paginate
-    const totalPages = Math.ceil(sortedSales.length / itemsPerPage);
-    const paginatedSales = useMemo(() => {
-        const start = (currentPage - 1) * itemsPerPage;
-        return sortedSales.slice(start, start + itemsPerPage);
-    }, [sortedSales, currentPage]);
-
-    // Reset to first page when filters change
-    useEffect(() => {
-        setCurrentPage(1);
-    }, [searchTerm, filters]);
-
-    const totalAmount = filteredSales.reduce((sum, sale) => sum + sale.totalAmount, 0);
-
-    // Pagination controls
     const goToPage = (page: number) => {
-        if (page >= 1 && page <= totalPages) setCurrentPage(page);
+        if (page >= 1 && page <= Math.ceil(pagination.total / limit)) {
+            setCurrentPage(page);
+        }
     };
+
+    const totalPages = Math.ceil(pagination.total / limit);
 
     const renderPageNumbers = () => {
         const pages = [];
@@ -113,21 +134,14 @@ export default function SalesListPage() {
                 </div>
             </div>
 
-            {/* Filters and Search */}
+            {/* Search and Filters */}
             <Card>
-                <CardContent className="p-6">
-                    <div className="flex flex-col sm:flex-row gap-4">
-                        <div className="relative flex-1">
-                            <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                            <Input
-                                placeholder="Search by invoice ID, customer name..."
-                                className="pl-9"
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                            />
-                        </div>
-                        <SalesFilter onFilterChange={setFilters} />
-                    </div>
+                <CardContent className="p-6 space-y-4">
+                    <SalesFilter
+                        onFilterChange={setFilters}
+                        searchTerm={searchTerm}
+                        setSearchTerm={setSearchTerm}
+                    />
                 </CardContent>
             </Card>
 
@@ -139,8 +153,7 @@ export default function SalesListPage() {
                         <CardDescription>List of all sales transactions</CardDescription>
                     </div>
                     <div className="text-sm text-muted-foreground">
-                        Total: <span className="font-semibold text-foreground">{filteredSales.length}</span> sales |{" "}
-                        <span className="font-semibold text-foreground">TK. {totalAmount.toLocaleString()}/-</span>
+                        Total: <span className="font-semibold text-foreground">{pagination.total}</span> sales
                     </div>
                 </CardHeader>
                 <CardContent>
@@ -148,8 +161,7 @@ export default function SalesListPage() {
                         <SalesTableSkeleton />
                     ) : (
                         <>
-                            <SalesTable sales={paginatedSales} />
-                            {/* Pagination Controls */}
+                            <SalesTable sales={filteredSales} />
                             {totalPages > 1 && (
                                 <div className="flex justify-center items-center gap-2 mt-6">
                                     <Button
