@@ -10,6 +10,7 @@ import {
 } from "@/services/sale.service";
 import type { SaleItem, CreateSalePayload, UpdateSalePayload, CartItem } from "@/types/sale";
 import { toast } from "sonner";
+import { downloadBlob } from "@/utils/downloadBlob";
 
 interface SaleState {
     sales: SaleItem[];
@@ -219,23 +220,23 @@ export const useSaleStore = create<SaleState>()((set, get) => ({
     },
 
     generateInvoicePdf: async (id: string) => {
-        set({ loading: true });
         try {
             const blob = await generateInvoicePdfService(id);
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = `invoice_${id}.pdf`;
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-            window.URL.revokeObjectURL(url);
+
+            if (!(blob instanceof Blob)) {
+                throw new Error("Invalid file received");
+            }
+
+            downloadBlob(blob, `invoice_${id}.pdf`);
+
             toast.success("Invoice downloaded successfully");
         } catch (err: any) {
-            const msg = err?.response?.data?.message || "Failed to generate invoice";
+            const msg =
+                err?.response?.data?.message ||
+                err?.message ||
+                "Failed to generate invoice";
+
             toast.error(msg);
-        } finally {
-            set({ loading: false });
         }
     },
 
