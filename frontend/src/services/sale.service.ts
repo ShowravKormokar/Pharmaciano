@@ -36,9 +36,10 @@ export const deleteSaleService = async (id: string): Promise<BasicApiResponse> =
 };
 
 export const generateInvoicePdfService = async (id: string): Promise<Blob> => {
-    const res = await api.get(`/v1/sales/${id}/invoice`, {
+    const res = await api.get<Blob>(`/v1/sales/${id}/invoice`, {
         responseType: "blob",
         headers: { Accept: "application/pdf" },
     });
+
     return res.data;
 };
