@@ -63,10 +63,17 @@ export interface UpdateSalePayload {
 
 export interface SalesApiResponse {
     success: boolean;
-    length: number;
+    message: string;
+    total: number;
+    active: number;
+    expired: number;
+    meta: {
+        page: number;
+        limit: number;
+        count: number;
+    };
     data: {
-        filteredSales?: SaleItem[]; // when filtering by medicine
-        sale?: SaleItem;            // when fetching single
+        sales: SaleItem[];
     };
 }
 
