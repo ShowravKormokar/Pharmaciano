@@ -29,6 +29,12 @@ export default function SalesActions({ sale }: Props) {
         await deleteSale(sale._id);
     };
 
+    const { generateInvoicePdf } = useSaleStore();
+
+    const handleDownloadInvoice = async () => {
+        await generateInvoicePdf(sale._id);
+    };
+
     const handlePrint = () => {
         window.open(`/dashboard/sales/print/${sale._id}`, '_blank');
         //window.print()
@@ -63,6 +69,15 @@ export default function SalesActions({ sale }: Props) {
             >
                 <Printer className="h-4 w-4" />
             </Button>
+            {/* <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleDownloadInvoice}
+                title="Download Invoice (PDF)"
+                className="border-[0.1rem] rounded-md"
+            >
+                <Printer className="h-4 w-4" />
+            </Button> */}
             <AlertDialog>
                 <AlertDialogTrigger asChild>
                     <Button variant="destructive" size="sm" title="Delete">
