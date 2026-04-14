@@ -34,14 +34,11 @@ export default function InventoryBatchForm({ batchId, onSuccess }: Props) {
     const isSuper = isSuperAdmin(user?.email);
     const { organizations, fetchOrganizations } = useOrganizationStore();
     const { branches, fetchBranches } = useBranchStore();
-    // const { medicines, fetchMedicines } = useMedicineStore();
     const { warehouses, fetchWarehouses } = useWarehouseStore();
     const [submitting, setSubmitting] = useState(false);
     const [query, setQuery] = useState("");
     const {
-        data,
         unqNameloading,
-        fetchUniqueNames,
         getMedicineNames
     } = useUniqueNamesStore();
 
@@ -50,14 +47,8 @@ export default function InventoryBatchForm({ batchId, onSuccess }: Props) {
             fetchOrganizations();
             fetchBranches();
             fetchWarehouses();
-        } else {
-            fetchWarehouses(); // needed for normal user filtering
-            // if (!data && !loading) {
-            //     fetchUniqueNames();
-            // } // fetch unique names for medicine select options
-        }
-
-        // fetchMedicines();
+        };
+        fetchWarehouses();
     }, [isSuper]);
 
     const medicineNames = getMedicineNames();
