@@ -44,12 +44,15 @@ export default function InventoryBatchForm({ batchId, onSuccess }: Props) {
 
     useEffect(() => {
         if (isSuper) {
-            fetchOrganizations();
-            fetchBranches();
+            Promise.all([
+                fetchOrganizations(),
+                fetchBranches(),
+                fetchWarehouses()
+            ]);
+        } else {
             fetchWarehouses();
-        };
-        fetchWarehouses();
-    }, [isSuper]);
+        }
+    }, [isSuper, fetchOrganizations, fetchBranches, fetchWarehouses]);
 
     const medicineNames = getMedicineNames();
 
