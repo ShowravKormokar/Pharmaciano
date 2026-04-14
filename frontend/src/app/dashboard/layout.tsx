@@ -24,16 +24,23 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
     // Initialize auth once
     useEffect(() => {
-        initializeAuth();
-        fetchUniqueNames();
+
+        Promise.all([
+            initializeAuth(),
+            fetchUniqueNames()
+        ])
+
+        // .then(() => {
+        //     console.timeEnd("parallel-without-all");
+        //     // For performance comparison.
+        // });
+
     }, [initializeAuth, fetchUniqueNames]);
 
     const isReady =
         !loading &&
-        !unqNameloading &&
         isAuthenticated &&
         !!user &&
-        Array.isArray(navigation) &&
         navigation.length > 1;
 
     if (!isReady) {
