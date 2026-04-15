@@ -40,11 +40,33 @@ export function LogoutButton() {
         <Button
             variant="outline"
             disabled={isLoading}
-            className="w-full justify-start text-foreground hover:text-red-700 hover:bg-red-50 transition-colors cursor-pointer"
             onClick={handleLogout}
+            className="
+        group
+        flex items-center
+        overflow-hidden
+        w-9 hover:w-28
+        h-9
+        px-2
+        justify-start
+        transition-all duration-300 ease-in-out
+        text-foreground hover:text-red-700 hover:bg-red-50
+      "
         >
-            <LogOut className="h-4 w-4" />
-            <span className='text-sm'>{isLoading ? 'Logging out...' : 'Logout'}</span>
+            {/* ICON */}
+            <LogOut className="h-4 w-4 shrink-0" />
+
+            {/* TEXT */}
+            <span
+                className="
+          ml-2 text-sm whitespace-nowrap
+          opacity-0 -translate-x-2
+          group-hover:opacity-100 group-hover:translate-x-0
+          transition-all duration-300
+        "
+            >
+                {isLoading ? "Logging..." : "Logout"}
+            </span>
         </Button>
     )
 };

@@ -20,6 +20,8 @@ import { LogoutButton } from "./logout-button";
 import { isRouteActive, getBestMatch, normalizePath } from "@/utils/route-matcher";
 import { PermissionLink } from "../pbac/PermissionLink";
 import { useFilteredNavigation } from "@/hooks/useFilteredNavigation";
+import ProfilePortion from "./ProfilePortion";
+import ProfileSkeleton from "./ProfileSkeleton";
 
 type IconComponent = React.ElementType;
 
@@ -204,24 +206,21 @@ export function DashboardSidebar() {
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
-
-            <div className="mt-auto border-t px-4 py-2">
-                <div className="flex items-center justify-between gap-2">
-                    <div className="flex flex-col leading-tight">
-                        <span className="text-xs font-medium text-muted-foreground">
-                            Logged in as
-                        </span>
-                        <span className="text-xs font-semibold text-foreground capitalize">
-                            {authReady
-                                ? user?.name || user?.email || "User"
-                                : "—"}
-                        </span>
-                    </div>
-                    <div className="shrink-0">
-                        <LogoutButton />
-                    </div>
-                </div>
+            <div>
+                {
+                    authReady ? (
+                        <ProfilePortion
+                            name={user?.name}
+                            email={user?.email}
+                            roleId={user?.roleId?.name?.toUpperCase()}
+                            authReady={authReady}
+                        />
+                    ) : (
+                        <ProfileSkeleton />
+                    )
+                }
             </div>
+
         </Sidebar>
     );
 }
