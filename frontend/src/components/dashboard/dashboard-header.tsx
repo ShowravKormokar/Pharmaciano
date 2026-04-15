@@ -5,10 +5,34 @@ import { ModeToggle } from "@/components/ui/modeToggle";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuthStore } from "@/store/auth.store";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { Button } from "../ui/button";
+import { Bell, LayoutDashboard } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export function DashboardHeader() {
     const pathname = usePathname();
-    const { user, isAuthenticated } = useAuthStore();
+    const [notiCount, setNotiCount] = useState(3);
+    const [shake, setShake] = useState(false);
+
+    useEffect(() => {
+        if (notiCount === 0) return;
+
+        const interval = setInterval(() => {
+            setShake(true);
+
+            setTimeout(() => {
+                setShake(false);
+            }, 500); // shake duration
+        }, 1500);
+
+        return () => clearInterval(interval);
+    }, [notiCount]);
+
+    const handleNotificationClick = () => {
+        setNotiCount(0);
+        setShake(false);
+    };
 
 
     // Generate breadcrumb items from pathname
@@ -41,12 +65,85 @@ export function DashboardHeader() {
                 </nav>
             </div>
 
-            <div className="flex items-center gap-4">
-                <div>
-                    <span className="mt-0.5 inline-flex w-fit rounded-md bg-primary/10 px-2 py-0.5 text-[8px] lg:text-[11px] font-semibold text-primary">
-                        <a href="/dashboard/user-profile">{user?.roleId?.name?.toUpperCase()}</a>
-                    </span>
-                </div>
+            <div className="flex items-center gap-2">
+
+                {/* 🔹 Quick Navigation Dropdown */}
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="outline" size="sm" className="flex items-center gap-2">
+                            <LayoutDashboard className="h-4 w-4" />
+                            <span className="hidden sm:inline">Quick</span>
+                        </Button>
+                    </DropdownMenuTrigger>
+
+                    <DropdownMenuContent align="end" className="w-48">
+                        <DropdownMenuLabel>Quick Access</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+
+                        <DropdownMenuItem asChild>
+                            <Link href="/dashboard/sales/pos">POS</Link>
+                        </DropdownMenuItem>
+
+                        <DropdownMenuItem asChild>
+                            <Link href="/dashboard/sales/sales-list">Sales List</Link>
+                        </DropdownMenuItem>
+
+                        <DropdownMenuItem asChild>
+                            <Link href="/dashboard/inventory/medicines">Inventory</Link>
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* 🔔 Notification Dropdown */}
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="relative border bg-primary-foreground"
+                        >
+                            <Bell className="h-5 w-5" />
+
+                            {notiCount > 0 && (
+                                <span
+                                    className={`absolute -top-1 -right-1 text-[10px] bg-primary text-white rounded-full px-1.5 py-px ${shake ? "animate-shake-loop" : ""
+                                        }`}
+                                >
+                                    {notiCount}
+                                </span>
+                            )}
+                        </Button>
+                    </DropdownMenuTrigger>
+
+                    <DropdownMenuContent align="end" className="w-64">
+                        <DropdownMenuLabel className="flex justify-between items-center">Notifications
+                            <span
+                                onClick={handleNotificationClick}
+                                className="text-[0.7rem] text-ring cursor-pointer border px-1 rounded-lg"
+                            >
+                                Mark all as read
+                            </span>
+                        </DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+
+                        <DropdownMenuItem>
+                            Dummy notifications
+                        </DropdownMenuItem>
+
+                        <DropdownMenuItem>
+                            Notification system not ready yet
+                        </DropdownMenuItem>
+
+                        <DropdownMenuItem>
+                            Coming soon!
+                        </DropdownMenuItem>
+
+                        <DropdownMenuSeparator />
+
+                        <DropdownMenuItem className="text-center text-sm text-muted-foreground"> View all </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+
                 <ModeToggle />
             </div>
         </header>
