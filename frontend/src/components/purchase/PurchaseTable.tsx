@@ -53,7 +53,7 @@ export default function PurchaseTable({ purchases }: Props) {
                     {purchases.map((purchase) => (
                         <TableRow key={purchase._id}>
                             <TableCell className="font-medium">{purchase.purchaseNo}</TableCell>
-                            <TableCell>{purchase.supplierId.name}</TableCell>
+                            <TableCell className="capitalize">{purchase.supplierId.name}</TableCell>
                             <TableCell>{format(new Date(purchase.createdAt), "PP")}</TableCell>
                             <TableCell>TK. {purchase.totalAmount.toFixed(2)}/-</TableCell>
                             <TableCell>{getStatusBadge(purchase.status)}</TableCell>

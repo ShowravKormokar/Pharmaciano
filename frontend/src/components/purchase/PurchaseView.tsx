@@ -21,7 +21,7 @@ export default function PurchaseView({ purchase }: Props) {
             case 'approved': return <Badge variant="outline" className="bg-blue-100 text-blue-800">Approved</Badge>;
 
             case 'received': return <Badge variant="outline" className="bg-green-100 text-green-800">Received</Badge>;
-            
+
             default: return <Badge>{status}</Badge>;
         }
     };
@@ -37,9 +37,6 @@ export default function PurchaseView({ purchase }: Props) {
             </div>
 
             <Card>
-                <CardHeader>
-                    <CardTitle>Purchase Information</CardTitle>
-                </CardHeader>
 
                 <CardContent className="space-y-4">
 
@@ -58,25 +55,25 @@ export default function PurchaseView({ purchase }: Props) {
 
                         <div>
                             <p className="text-sm text-muted-foreground">Supplier</p>
-                            <p>{purchase.supplierId.name}</p>
-                            <p className="text-xs text-muted-foreground">
+                            <p className="capitalize">{purchase.supplierId.name}</p>
+                            <p className="text-xs text-muted-foreground capitalize">
                                 {purchase.supplierId.contactPerson} | {purchase.supplierId.phone}
                             </p>
                         </div>
 
                         <div>
                             <p className="text-sm text-muted-foreground">Warehouse</p>
-                            <p>{purchase.warehouseId.name}</p>
+                            <p className="capitalize">{purchase.warehouseId.name}</p>
                         </div>
 
                         <div>
                             <p className="text-sm text-muted-foreground">Organization</p>
-                            <p>{purchase.organizationId.name}</p>
+                            <p className="capitalize">{purchase.organizationId.name}</p>
                         </div>
 
                         <div>
                             <p className="text-sm text-muted-foreground">Branch</p>
-                            <p>{purchase.branchId.name}</p>
+                            <p className="capitalize">{purchase.branchId.name}</p>
                         </div>
 
                     </div>
@@ -94,7 +91,7 @@ export default function PurchaseView({ purchase }: Props) {
                                     className="flex justify-between items-center p-2 border rounded"
                                 >
                                     <div>
-                                        <p className="font-medium">{item.medicineName}</p>
+                                        <p className="font-medium capitalize">{item.medicineName}</p>
                                         <p className="text-xs text-muted-foreground">
                                             Qty: {item.quantity} | Price: {item.purchasePrice}
                                         </p>
@@ -158,7 +155,7 @@ export default function PurchaseView({ purchase }: Props) {
 
                         <div>
                             <p className="text-muted-foreground">Approved By</p>
-                            <p>{purchase.approvedBy?.name || "N/A"}</p>
+                            <p className="capitalize">{purchase.approvedBy?.name || "N/A"}</p>
                         </div>
 
                         <div>

@@ -11,7 +11,7 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { Search, Download } from "lucide-react";
+import { Search, Download, RefreshCcw } from "lucide-react";
 import PurchaseTable from "@/components/purchase/PurchaseTable";
 import PurchaseTableSkeleton from "@/components/purchase/PurchaseTableSkeleton";
 import PurchaseFilter from "@/components/purchase/PurchaseFilter";
@@ -19,6 +19,7 @@ import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { format } from "date-fns";
+import { toast } from "sonner";
 
 export default function PurchaseListPage() {
     const {
@@ -59,6 +60,10 @@ export default function PurchaseListPage() {
     const totalPages = Math.ceil(pagination.total / limit);
 
     const exportToCSV = () => {
+        if (!purchases.length) {
+            toast.error("No purchases to export");
+            return;
+        };
         const data = purchases.map((p) => ({
             "Purchase No": p.purchaseNo,
             Supplier: p.supplierId.name,
@@ -79,6 +84,11 @@ export default function PurchaseListPage() {
     };
 
     const exportToPDF = () => {
+        if (!purchases.length) {
+            toast.error("No purchases to export");
+            return;
+        };
+
         const doc = new jsPDF();
 
         doc.text("Purchase Report", 20, 10);
@@ -86,24 +96,20 @@ export default function PurchaseListPage() {
 
         const tableData = purchases.map((p) => [
             p.purchaseNo,
-            p.supplierId.name,
+            p.supplierId?.name || "-",
             format(new Date(p.createdAt), "PPP"),
-            p.totalAmount.toFixed(2),
+            p.totalAmount?.toFixed(2) || "0",
             p.status,
             p.paymentStatus,
         ]);
 
         autoTable(doc, {
-            head: [
-                ["Purchase No", "Supplier", "Date", "Amount", "Status", "Payment"],
-            ],
+            head: [["Purchase No", "Supplier", "Date", "Amount", "Status", "Payment"]],
             body: tableData,
             startY: 30,
         });
 
-        doc.save(
-            `purchases_${format(new Date(), "yyyy-MM-dd")}.pdf`
-        );
+        doc.save(`purchases_${format(new Date(), "yyyy-MM-dd")}.pdf`);
     };
 
     return (
@@ -121,14 +127,33 @@ export default function PurchaseListPage() {
                 </div>
 
                 <div className="flex gap-2">
-                    <Button variant="outline" onClick={exportToCSV}>
+                    <Button variant="outline" onClick={exportToCSV} disabled={!purchases.length || loading}>
                         <Download className="h-4 w-4 mr-2" />
                         CSV
                     </Button>
 
-                    <Button variant="outline" onClick={exportToPDF}>
+                    <Button variant="outline" onClick={exportToPDF} disabled={!purchases.length || loading}>
                         <Download className="h-4 w-4 mr-2" />
                         PDF
+                    </Button>
+                    <Button
+                        size="sm"
+                        onClick={() => {
+                            const params: any = { page: currentPage, limit };
+
+                            if (searchTerm) params.search = searchTerm;
+                            if (filters.status !== "all") params.status = filters.status;
+                            if (filters.paymentStatus !== "all")
+                                params.paymentStatus = filters.paymentStatus;
+                            if (filters.fromDate) params.fromDate = filters.fromDate;
+                            if (filters.toDate) params.toDate = filters.toDate;
+
+                            fetchPurchases(params);
+                        }}
+                        disabled={loading}
+                    >
+                        <RefreshCcw className={`h-4 w-4 mr-2 ${loading ? "animate-spin" : ""}`} />
+                        Refresh
                     </Button>
                 </div>
             </div>
@@ -157,7 +182,6 @@ export default function PurchaseListPage() {
 
                 <CardHeader className="flex flex-row items-center justify-between">
                     <div>
-                        <CardTitle>Purchases</CardTitle>
                         <CardDescription>
                             List of all purchase orders
                         </CardDescription>
