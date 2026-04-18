@@ -37,6 +37,7 @@ export default function InventoryBatchForm({ batchId, onSuccess }: Props) {
     const { warehouses, fetchWarehouses } = useWarehouseStore();
     const [submitting, setSubmitting] = useState(false);
     const [query, setQuery] = useState("");
+    const [selectedMedicine, setSelectedMedicine] = useState(form.medicineName || "");
     const {
         unqNameloading,
         getMedicineNames
@@ -83,6 +84,11 @@ export default function InventoryBatchForm({ batchId, onSuccess }: Props) {
 
         return warehouses;
     }, [warehouses, form.branchName, isSuper, user]);
+
+    // Sync local state with form
+    useEffect(() => {
+        setSelectedMedicine(form.medicineName || "");
+    }, [form.medicineName]);
 
     const filteredMedicines = useMemo(() => {
         if (!query) return medicineNames;
@@ -211,10 +217,12 @@ export default function InventoryBatchForm({ batchId, onSuccess }: Props) {
                                         <div className="h-10 bg-muted rounded-md animate-pulse" />
                                     ) : (
                                         <Combobox
-                                            value={form.medicineName || undefined}
+                                                value={query || selectedMedicine}
                                             onValueChange={(val) => {
-                                                setForm({ medicineName: val || "" });
-                                                setQuery(""); // optional: reset search after select
+                                                const newVal = val || "";
+                                                setSelectedMedicine(newVal);
+                                                setForm({ medicineName: newVal });
+                                                setQuery(newVal);
                                             }}
                                         >
                                             <ComboboxInput
@@ -222,7 +230,6 @@ export default function InventoryBatchForm({ batchId, onSuccess }: Props) {
                                                 value={query}
                                                 onChange={(e) => setQuery(e.target.value)}
                                             />
-
                                             <ComboboxContent>
                                                 <ComboboxList>
                                                     {filteredMedicines.map((name) => (
@@ -230,7 +237,6 @@ export default function InventoryBatchForm({ batchId, onSuccess }: Props) {
                                                             {name}
                                                         </ComboboxItem>
                                                     ))}
-
                                                     {filteredMedicines.length === 0 && (
                                                         <ComboboxEmpty>No medicine found.</ComboboxEmpty>
                                                     )}
