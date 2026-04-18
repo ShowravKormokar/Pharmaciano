@@ -29,44 +29,78 @@ export default function WarehouseForm({ warehouseId, onSuccess }: Props) {
     return (
         <div className="space-y-6">
             <Card>
-                <CardHeader>
-                    <CardTitle>Warehouse Information</CardTitle>
-                </CardHeader>
+
                 <CardContent className="space-y-4">
-                    <Input
-                        placeholder="Warehouse Name *"
-                        value={form.name}
-                        onChange={(e) => setForm({ name: e.target.value })}
-                    />
-                    <Input
-                        placeholder="Location *"
-                        value={form.location}
-                        onChange={(e) => setForm({ location: e.target.value })}
-                    />
-                    <Input
-                        type="number"
-                        placeholder="Capacity (optional)"
-                        value={form.capacity}
-                        onChange={(e) =>
-                            setForm({ capacity: parseInt(e.target.value) || 0 })
-                        }
-                    />
-                    <Input
-                        placeholder="Branch Name *"
-                        value={form.branchName}
-                        onChange={(e) => setForm({ branchName: e.target.value })}
-                    />
+
+                    {/* Warehouse Name */}
+                    <div>
+                        <Label className="text-primary pb-1 pl-1">
+                            Warehouse Name <span className="text-red-500">*</span>
+                        </Label>
+                        <Input
+                            placeholder="Enter warehouse name"
+                            value={form.name}
+                            onChange={(e) => setForm({ name: e.target.value })}
+                        />
+                    </div>
+
+                    {/* Location */}
+                    <div>
+                        <Label className="text-primary pb-1 pl-1">
+                            Location <span className="text-red-500">*</span>
+                        </Label>
+                        <Input
+                            placeholder="Enter location"
+                            value={form.location}
+                            onChange={(e) => setForm({ location: e.target.value })}
+                        />
+                    </div>
+
+                    {/* Capacity */}
+                    <div>
+                        <Label className="text-primary pb-1 pl-1">
+                            Capacity
+                        </Label>
+                        <Input
+                            type="number"
+                            placeholder="Enter capacity (optional)"
+                            value={form.capacity}
+                            onChange={(e) =>
+                                setForm({ capacity: parseInt(e.target.value) || 0 })
+                            }
+                        />
+                    </div>
+
+                    {/* Branch Name */}
+                    <div>
+                        <Label className="text-primary pb-1 pl-1">
+                            Branch Name <span className="text-red-500">*</span>
+                        </Label>
+                        <Input
+                            placeholder="Enter branch name"
+                            value={form.branchName}
+                            onChange={(e) => setForm({ branchName: e.target.value })}
+                        />
+                    </div>
+
+                    {/* Active Switch */}
                     <div className="flex items-center space-x-2">
                         <Switch
                             id="isActive"
                             checked={form.isActive}
-                            onCheckedChange={(checked) => setForm({ isActive: checked })}
+                            onCheckedChange={(checked) =>
+                                setForm({ isActive: checked })
+                            }
                         />
-                        <Label htmlFor="isActive">Active</Label>
+                        <Label htmlFor="isActive" className="text-primary">
+                            Active
+                        </Label>
                     </div>
+
                 </CardContent>
             </Card>
 
+            {/* Actions */}
             <div className="flex gap-3">
                 <Button
                     className="w-1/2"
@@ -79,6 +113,7 @@ export default function WarehouseForm({ warehouseId, onSuccess }: Props) {
                             ? "Update Warehouse"
                             : "Create Warehouse"}
                 </Button>
+
                 {!warehouseId && (
                     <Button
                         className="w-1/2"
