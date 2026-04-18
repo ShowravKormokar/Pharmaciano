@@ -54,9 +54,9 @@ export const createInventoryBatchService = async (data: {
     expiryDate: string;
     quantity: number;
     purchasePrice: number;
-    orgName: string;
-    branchName: string;
     warehouseName: string;
+    organizationName?: string;  // for super admin
+    branchName?: string;        // for super admin
     status?: string;
 }): Promise<BasicApiResponse> => {
     const res = await api.post<BasicApiResponse>("/v1/inventory-batches", data);
@@ -72,9 +72,9 @@ export const updateInventoryBatchService = async (
         expiryDate: string;
         quantity: number;
         purchasePrice: number;
-        orgName: string;
-        branchName: string;
         warehouseName: string;
+        organizationName?: string;   // for super admin
+        branchName?: string;         // for super admin
         status?: string;
     }
 ): Promise<BasicApiResponse> => {

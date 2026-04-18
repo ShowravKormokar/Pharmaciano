@@ -10,6 +10,8 @@ import {
 } from "@/services/inventoryBatch.service";
 import type { InventoryBatchItem } from "@/types/inventoryBatch";
 import { toast } from "sonner";
+import { useAuthStore } from "./auth.store";
+import { isSuperAdmin } from "@/lib/isSuperAdmin";
 
 interface InventoryBatchState {
     batches: InventoryBatchItem[];
@@ -118,10 +120,24 @@ export const useInventoryBatchStore = create<InventoryBatchState>()(
                 set({ loading: true, error: null });
                 try {
                     const { medicineName, batchNo, expiryDate, quantity, purchasePrice, orgName, branchName, warehouseName, status } = get().form;
-                    if (!medicineName || !batchNo || !expiryDate || !quantity || !purchasePrice ) {
+                    if (!medicineName || !batchNo || !expiryDate || !quantity || !purchasePrice) {
                         throw new Error("All fields are required");
                     }
-                    const payload = { medicineName, batchNo, expiryDate, quantity, purchasePrice, orgName, branchName, warehouseName, status };
+                    const { user } = useAuthStore.getState();
+                    const isSuper = isSuperAdmin(user?.email);
+                    const payload: any = {
+                        medicineName,
+                        batchNo,
+                        expiryDate,
+                        quantity,
+                        purchasePrice,
+                        warehouseName,
+                        status,
+                    };
+                    if (isSuper) {
+                        payload.organizationName = orgName;
+                        payload.branchName = branchName;
+                    }
                     const res = await createInventoryBatchService(payload);
                     toast.success(res.message || "Batch created successfully", { duration: 3000 });
                     await get().fetchBatches();
@@ -142,10 +158,31 @@ export const useInventoryBatchStore = create<InventoryBatchState>()(
                 set({ loading: true, error: null });
                 try {
                     const { medicineName, batchNo, expiryDate, quantity, purchasePrice, orgName, branchName, warehouseName, status } = get().form;
-                    if (!medicineName || !batchNo || !expiryDate || !quantity || !purchasePrice || !orgName || !branchName || !warehouseName) {
-                        throw new Error("All fields are required");
+                    if (!medicineName || !batchNo || !expiryDate || !quantity || !purchasePrice || !warehouseName) {
+                        throw new Error("Medicine, batch number, expiry date, quantity, purchase price and warehouse are required");
                     }
-                    const payload = { medicineName, batchNo, expiryDate, quantity, purchasePrice, orgName, branchName, warehouseName, status };
+
+                    const { user } = useAuthStore.getState();
+                    const isSuper = isSuperAdmin(user?.email);
+
+                    const payload: any = {
+                        medicineName,
+                        batchNo,
+                        expiryDate,
+                        quantity,
+                        purchasePrice,
+                        warehouseName,
+                        status,
+                    };
+
+                    if (isSuper) {
+                        if (!orgName || !branchName) {
+                            throw new Error("Organization and branch are required for super admin");
+                        }
+                        payload.organizationName = orgName;
+                        payload.branchName = branchName;
+                    }
+
                     const res = await updateInventoryBatchService(id, payload);
                     toast.success(res.message || "Batch updated successfully", { duration: 3000 });
                     await get().fetchBatches();
