@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useAuthStore } from "@/store/auth.store";
+import { isSuperAdmin } from "@/lib/isSuperAdmin";
 import { useSaleStore } from "@/store/sale.store";
 import { useMedicineStore } from "@/store/medicine.store";
 import { useInventoryBatchStore } from "@/store/inventoryBatch.store";
@@ -25,6 +27,9 @@ import {
 import { Search, Plus, Trash2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
+import { useOrganizationStore } from "@/store/organization.store";
+import { useBranchStore } from "@/store/branch.store";
+import { Skeleton } from "../ui/skeleton";
 
 interface Props {
     saleId?: string;
@@ -39,6 +44,8 @@ export default function SalesForm({ saleId, onSuccess }: Props) {
         discount,
         tax,
         paymentMethod,
+        organizationName,
+        branchName,
         addToCart,
         removeFromCart,
         updateCartQuantity,
@@ -49,9 +56,12 @@ export default function SalesForm({ saleId, onSuccess }: Props) {
         setPaymentMethod,
         createSale,
         updateSale,
+        setOrganizationName,
+        setBranchName,
     } = useSaleStore();
 
     const [submitting, setSubmitting] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const { updateCurrentDraft } = useDraftSaleStore();
     const { medicines, fetchMedicines } = useMedicineStore();
@@ -62,10 +72,34 @@ export default function SalesForm({ saleId, onSuccess }: Props) {
     const [selectedBatch, setSelectedBatch] = useState<any>(null);
     const [quantity, setQuantity] = useState(1);
 
+    const { organizations, fetchOrganizations } = useOrganizationStore();
+    const { branches, fetchBranches } = useBranchStore();
+    const [selectedOrg, setSelectedOrg] = useState("");
+    const [selectedBranch, setSelectedBranch] = useState("");
+    const { user } = useAuthStore();
+    const isSuper = isSuperAdmin(user?.email);
+
     useEffect(() => {
-        fetchMedicines();
-        fetchBatches();
-    }, [fetchMedicines, fetchBatches]);
+        const loadData = async () => {
+            setIsLoading(true);
+
+            try {
+                const promises = [fetchMedicines(), fetchBatches()];
+
+                if (isSuper) {
+                    promises.push(fetchOrganizations(), fetchBranches());
+                }
+
+                await Promise.all(promises);
+            } catch (err) {
+                console.error("Loading failed:", err);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        loadData();
+    }, [fetchMedicines, fetchBatches, fetchOrganizations, fetchBranches, isSuper]);
 
     const debouncedUpdate = useDebouncedCallback(() => {
         updateCurrentDraft();
@@ -185,21 +219,21 @@ export default function SalesForm({ saleId, onSuccess }: Props) {
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div>
-                            <Label className="pb-1 pl-1">Name</Label>
+                            <Label className="pb-1 pl-1">Name<span className="text-red-500">*</span></Label>
                             <Input
-                            placeholder="Customer Name *"
-                            value={customerName}
-                            onChange={(e) => setCustomer({ customerName: e.target.value })}
-                        />
+                                placeholder="Customer Name"
+                                value={customerName}
+                                onChange={(e) => setCustomer({ customerName: e.target.value })}
+                            />
                         </div>
-                        
+
                         <div>
-                            <Label className="pb-1 pl-1">Phone no.</Label>
-                        <Input
-                            placeholder="Customer Phone *"
-                            value={customerPhone}
-                            onChange={(e) => setCustomer({ customerPhone: e.target.value })}
-                        />
+                            <Label className="pb-1 pl-1">Phone no.<span className="text-red-500">*</span></Label>
+                            <Input
+                                placeholder="Customer Phone"
+                                value={customerPhone}
+                                onChange={(e) => setCustomer({ customerPhone: e.target.value })}
+                            />
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div>
@@ -211,7 +245,7 @@ export default function SalesForm({ saleId, onSuccess }: Props) {
                                     onChange={(e) => setDiscount(parseFloat(e.target.value) || 0)}
                                 />
                             </div>
-                            <div>
+                            <div className="hidden">
                                 <Label className="pb-1 pl-1">Tax (%)</Label>
                                 <Input
                                     type="number"
@@ -235,6 +269,61 @@ export default function SalesForm({ saleId, onSuccess }: Props) {
                                 </SelectContent>
                             </Select>
                         </div>
+
+                        {isSuper && (
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <Label className="pb-2">Organization <span className="text-red-500">*</span></Label>
+                                    {isLoading ? (
+                                        <Skeleton className="h-10 w-full rounded-md" />
+                                    ) : (
+                                        <Select
+                                            value={organizationName}
+                                            onValueChange={(val) => {
+                                                setOrganizationName(val);
+                                                setBranchName(""); // reset branch when org changes
+                                            }}
+                                        >
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Select organization" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {organizations.map((org) => (
+                                                    <SelectItem key={org._id} value={org.name}>
+                                                        {org.name}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    )}
+                                </div>
+                                <div>
+                                    <Label className="pb-2">Branch <span className="text-red-500">*</span></Label>
+                                    {isLoading ? (
+                                        <Skeleton className="h-10 w-full rounded-md" />
+                                    ) : (
+                                        <Select
+                                            value={branchName}
+                                            onValueChange={setBranchName}
+                                            disabled={!organizationName}
+                                        >
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Select branch" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {branches
+                                                    .filter((b) => b.organizationId?.name === organizationName)
+                                                    .map((branch) => (
+                                                        <SelectItem key={branch._id} value={branch.name}>
+                                                            {branch.name}
+                                                        </SelectItem>
+                                                    ))}
+                                            </SelectContent>
+                                        </Select>
+                                    )}
+                                </div>
+                            </div>
+                        )}
                     </CardContent>
                 </Card>
             </div>
@@ -328,20 +417,20 @@ export default function SalesForm({ saleId, onSuccess }: Props) {
                     <CardContent className="space-y-2">
                         <div className="flex justify-between">
                             <span>Subtotal:</span>
-                            <span>${calculateSubtotal().toFixed(2)}</span>
+                            <span>Tk {calculateSubtotal().toFixed(2)}/-</span>
                         </div>
                         <div className="flex justify-between text-muted-foreground">
                             <span>Discount ({discount}%):</span>
-                            <span>-${((calculateSubtotal() * discount) / 100).toFixed(2)}</span>
+                            <span>-Tk {((calculateSubtotal() * discount) / 100).toFixed(2)}/-</span>
                         </div>
                         <div className="flex justify-between text-muted-foreground">
                             <span>Tax ({tax}%):</span>
-                            <span>+${(((calculateSubtotal() - (calculateSubtotal() * discount) / 100) * tax) / 100).toFixed(2)}</span>
+                            <span>+Tk {(((calculateSubtotal() - (calculateSubtotal() * discount) / 100) * tax) / 100).toFixed(2)}/-</span>
                         </div>
                         <Separator />
                         <div className="flex justify-between font-bold">
                             <span>Total:</span>
-                            <span>${calculateTotal().toFixed(2)}</span>
+                            <span>Tk {calculateTotal().toFixed(2)}/-</span>
                         </div>
                         {/* ================= BUTTONS ================= */}
                         <div className="flex flex-col gap-3">

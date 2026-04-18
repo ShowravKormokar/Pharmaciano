@@ -11,6 +11,8 @@ import {
 import type { SaleItem, CreateSalePayload, UpdateSalePayload, CartItem } from "@/types/sale";
 import { toast } from "sonner";
 import { downloadBlob } from "@/utils/downloadBlob";
+import { useAuthStore } from "./auth.store";
+import { isSuperAdmin } from "@/lib/isSuperAdmin";
 
 interface SaleState {
     sales: SaleItem[];
@@ -22,6 +24,8 @@ interface SaleState {
         total: number;
         count: number;
     };
+    organizationName: string;
+    branchName: string;
 
     // POS cart (unchanged)
     cart: Array<{
@@ -38,6 +42,8 @@ interface SaleState {
 
     fetchSales: (page?: number, limit?: number, search?: string) => Promise<void>;
     fetchSaleById: (id: string) => Promise<SaleItem | null>;
+    setOrganizationName: (name: string) => void;
+    setBranchName: (name: string) => void;
     createSale: () => Promise<boolean>;
     updateSale: (id: string) => Promise<boolean>;
     deleteSale: (id: string) => Promise<boolean>;
@@ -67,6 +73,8 @@ export const useSaleStore = create<SaleState>()((set, get) => ({
         total: 0,
         count: 0,
     },
+    organizationName: "",
+    branchName: "",
     cart: [],
     customerName: "",
     customerPhone: "",
@@ -111,13 +119,55 @@ export const useSaleStore = create<SaleState>()((set, get) => ({
         }
     },
 
+    setOrganizationName: (name) => set({ organizationName: name }),
+    setBranchName: (name) => set({ branchName: name }),
+
+    resetForm: () => set({
+        cart: [],
+        customerName: "",
+        customerPhone: "",
+        discount: 0,
+        tax: 0,
+        paymentMethod: "cash",
+        organizationName: "",
+        branchName: "",
+    }),
+
+    loadSaleIntoForm: (sale) => set({
+        cart: sale.items.map(item => ({
+            medicineName: item.medicineName,
+            batchNo: item.batchNo,
+            quantity: item.quantity,
+            sellingPrice: item.sellingPrice,
+        })),
+        customerName: sale.customerName || "",
+        customerPhone: sale.customerPhone || "",
+        discount: sale.discount,
+        tax: sale.tax,
+        paymentMethod: sale.paymentMethod,
+        organizationName: sale.organizationId?.name || "",
+        branchName: sale.branchId?.name || "",
+    }),
+
     createSale: async () => {
         set({ loading: true, error: null });
         try {
-            const { cart, customerName, customerPhone, discount, tax, paymentMethod } = get();
-            if (cart.length === 0) {
-                throw new Error("Cart is empty");
-            }
+            const {
+                cart,
+                customerName,
+                customerPhone,
+                discount,
+                tax,
+                paymentMethod,
+                organizationName,
+                branchName,
+            } = get();
+
+            const { user } = useAuthStore.getState();
+            const isSuper = isSuperAdmin(user?.email);
+
+            if (cart.length === 0) throw new Error("Cart is empty");
+
             const payload: CreateSalePayload = {
                 customerName: customerName || undefined,
                 customerPhone: customerPhone || undefined,
@@ -131,9 +181,19 @@ export const useSaleStore = create<SaleState>()((set, get) => ({
                     sellingPrice: item.sellingPrice,
                 })),
             };
+
+            if (isSuper) {
+                if (!organizationName || !branchName) {
+                    throw new Error("Organization and branch are required for super admin");
+                }
+                payload.organizationName = organizationName;
+                payload.branchName = branchName;
+            }
+
             const res = await createSaleService(payload);
             toast.success(res.message || "Sale created successfully", { duration: 3000 });
-            get().clearCart(); // reset cart after successful sale
+            get().clearCart();
+            get().resetForm();
             return true;
         } catch (err: any) {
             const msg = err?.response?.data?.message || err.message || "Failed to create sale";
@@ -150,7 +210,20 @@ export const useSaleStore = create<SaleState>()((set, get) => ({
     updateSale: async (id) => {
         set({ loading: true, error: null });
         try {
-            const { cart, customerName, customerPhone, discount, tax, paymentMethod } = get();
+            const {
+                cart,
+                customerName,
+                customerPhone,
+                discount,
+                tax,
+                paymentMethod,
+                organizationName,
+                branchName,
+            } = get();
+
+            const { user } = useAuthStore.getState();
+            const isSuper = isSuperAdmin(user?.email);
+
             const payload: UpdateSalePayload = {
                 customerName: customerName || undefined,
                 customerPhone: customerPhone || undefined,
@@ -164,6 +237,15 @@ export const useSaleStore = create<SaleState>()((set, get) => ({
                     sellingPrice: item.sellingPrice,
                 })),
             };
+
+            if (isSuper) {
+                if (!organizationName || !branchName) {
+                    throw new Error("Organization and branch are required for super admin");
+                }
+                payload.organizationName = organizationName;
+                payload.branchName = branchName;
+            }
+
             const res = await updateSaleService(id, payload);
             toast.success(res.message || "Sale updated successfully", { duration: 3000 });
             return true;
@@ -176,31 +258,6 @@ export const useSaleStore = create<SaleState>()((set, get) => ({
             set({ loading: false });
         }
     },
-
-    resetForm: () =>
-        set({
-            cart: [],
-            customerName: "",
-            customerPhone: "",
-            discount: 0,
-            tax: 0,
-            paymentMethod: "cash",
-        }),
-
-    loadSaleIntoForm: (sale: SaleItem) =>
-        set({
-            cart: sale.items.map(item => ({
-                medicineName: item.medicineName,
-                batchNo: item.batchNo,
-                quantity: item.quantity,
-                sellingPrice: item.sellingPrice,
-            })),
-            customerName: sale.customerName || "",
-            customerPhone: sale.customerPhone || "",
-            discount: sale.discount,
-            tax: sale.tax,
-            paymentMethod: sale.paymentMethod,
-        }),
 
     deleteSale: async (id) => {
         try {

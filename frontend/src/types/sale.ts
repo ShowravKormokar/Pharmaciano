@@ -39,6 +39,8 @@ export interface CreateSalePayload {
     discount: number;
     tax: number;
     paymentMethod: string;
+    organizationName?: string;
+    branchName?: string;
     items: Array<{
         medicineName: string;
         batchNo: string;
@@ -53,6 +55,8 @@ export interface UpdateSalePayload {
     discount?: number;
     tax?: number;
     paymentMethod?: string;
+    organizationName?: string;
+    branchName?: string;
     items?: Array<{
         medicineName: string;
         batchNo: string;
@@ -101,8 +105,6 @@ export interface DraftSale {
         sellingPrice: number;
     }>;
 }
-
-// types/sale.ts
 
 export interface CartItem {
     medicineName: string;
