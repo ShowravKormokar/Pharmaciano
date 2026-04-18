@@ -39,64 +39,123 @@ export default function OrganizationForm({ organizationId, onSuccess }: Props) {
     return (
         <div className="space-y-6">
             <Card>
-                <CardHeader>
-                    <CardTitle>Organization Information</CardTitle>
-                </CardHeader>
+
                 <CardContent className="space-y-4">
-                    <Input
-                        placeholder="Organization Name *"
-                        value={form.name}
-                        onChange={(e) => setForm({ name: e.target.value })}
-                    />
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <Input
-                            placeholder="Trade License No"
-                            value={form.tradeLicenseNo}
-                            onChange={(e) => setForm({ tradeLicenseNo: e.target.value })}
-                        />
-                        <Input
-                            placeholder="Drug License No"
-                            value={form.drugLicenseNo}
-                            onChange={(e) => setForm({ drugLicenseNo: e.target.value })}
-                        />
-                        <Input
-                            placeholder="VAT Registration No"
-                            value={form.vatRegistrationNo}
-                            onChange={(e) => setForm({ vatRegistrationNo: e.target.value })}
-                        />
-                    </div>
-
-                    <Textarea
-                        placeholder="Address"
-                        value={form.address}
-                        onChange={(e) => setForm({ address: e.target.value })}
-                        rows={2}
-                    />
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <Input
-                            placeholder="Contact Phone *"
-                            value={form.contactPhone}
-                            onChange={(e) => setForm({ contactPhone: e.target.value })}
-                        />
-                        <Input
-                            type="email"
-                            placeholder="Contact Email *"
-                            value={form.contactEmail}
-                            onChange={(e) => setForm({ contactEmail: e.target.value })}
-                        />
-                    </div>
-
+                    {/* Organization Name */}
                     <div>
-                        <Label>Subscription Plan *</Label>
+                        <Label className="text-primary pb-1 pl-1">
+                            Organization Name <span className="text-red-500">*</span>
+                        </Label>
+                        <Input
+                            placeholder="Enter organization name"
+                            value={form.name}
+                            onChange={(e) => setForm({ name: e.target.value })}
+                        />
+                    </div>
+
+                    {/* License Info */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+                        <div>
+                            <Label className="text-primary pb-1 pl-1">
+                                Trade License No
+                            </Label>
+                            <Input
+                                placeholder="Enter trade license no"
+                                value={form.tradeLicenseNo}
+                                onChange={(e) =>
+                                    setForm({ tradeLicenseNo: e.target.value })
+                                }
+                            />
+                        </div>
+
+                        <div>
+                            <Label className="text-primary pb-1 pl-1">
+                                Drug License No
+                            </Label>
+                            <Input
+                                placeholder="Enter drug license no"
+                                value={form.drugLicenseNo}
+                                onChange={(e) =>
+                                    setForm({ drugLicenseNo: e.target.value })
+                                }
+                            />
+                        </div>
+
+                        <div>
+                            <Label className="text-primary pb-1 pl-1">
+                                VAT Registration No
+                            </Label>
+                            <Input
+                                placeholder="Enter VAT registration no"
+                                value={form.vatRegistrationNo}
+                                onChange={(e) =>
+                                    setForm({ vatRegistrationNo: e.target.value })
+                                }
+                            />
+                        </div>
+                    </div>
+
+                    {/* Address */}
+                    <div>
+                        <Label className="text-primary pb-1 pl-1">
+                            Address<span className="text-red-500">*</span>
+                        </Label>
+                        <Textarea
+                            placeholder="Enter address"
+                            value={form.address}
+                            onChange={(e) => setForm({ address: e.target.value })}
+                            rows={2}
+                        />
+                    </div>
+
+                    {/* Contact Info */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                        <div>
+                            <Label className="text-primary pb-1 pl-1">
+                                Contact Phone <span className="text-red-500">*</span>
+                            </Label>
+                            <Input
+                                placeholder="Enter phone number"
+                                value={form.contactPhone}
+                                onChange={(e) =>
+                                    setForm({ contactPhone: e.target.value })
+                                }
+                            />
+                        </div>
+
+                        <div>
+                            <Label className="text-primary pb-1 pl-1">
+                                Contact Email <span className="text-red-500">*</span>
+                            </Label>
+                            <Input
+                                type="email"
+                                placeholder="Enter email"
+                                value={form.contactEmail}
+                                onChange={(e) =>
+                                    setForm({ contactEmail: e.target.value })
+                                }
+                            />
+                        </div>
+                    </div>
+
+                    {/* Subscription Plan */}
+                    <div>
+                        <Label className="text-primary pb-1 pl-1">
+                            Subscription Plan <span className="text-red-500">*</span>
+                        </Label>
                         <Select
                             value={form.subscriptionPlan}
-                            onValueChange={(val) => setForm({ subscriptionPlan: val })}
+                            onValueChange={(val) =>
+                                setForm({ subscriptionPlan: val })
+                            }
                         >
                             <SelectTrigger>
                                 <SelectValue placeholder="Select plan" />
                             </SelectTrigger>
+
                             <SelectContent>
                                 <SelectItem value="FREE">Free</SelectItem>
                                 <SelectItem value="BASIC">Basic</SelectItem>
@@ -106,17 +165,24 @@ export default function OrganizationForm({ organizationId, onSuccess }: Props) {
                         </Select>
                     </div>
 
+                    {/* Active */}
                     <div className="flex items-center space-x-2">
                         <Switch
                             id="isActive"
                             checked={form.isActive}
-                            onCheckedChange={(checked) => setForm({ isActive: checked })}
+                            onCheckedChange={(checked) =>
+                                setForm({ isActive: checked })
+                            }
                         />
-                        <Label htmlFor="isActive">Active</Label>
+                        <Label htmlFor="isActive" className="text-primary">
+                            Active
+                        </Label>
                     </div>
+
                 </CardContent>
             </Card>
 
+            {/* Actions */}
             <div className="flex gap-3">
                 <Button
                     className="w-1/2"
@@ -129,6 +195,7 @@ export default function OrganizationForm({ organizationId, onSuccess }: Props) {
                             ? "Update Organization"
                             : "Create Organization"}
                 </Button>
+
                 {!organizationId && (
                     <Button
                         className="w-1/2"
