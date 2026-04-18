@@ -47,36 +47,69 @@ export default function BranchForm({ branchId, onSuccess }: Props) {
     return (
         <div className="space-y-6">
             <Card>
-                <CardHeader>
-                    <CardTitle>Branch Information</CardTitle>
-                </CardHeader>
                 <CardContent className="space-y-4">
-                    <Input
-                        placeholder="Branch Name *"
-                        value={form.name}
-                        onChange={(e) => setForm({ name: e.target.value })}
-                    />
-                    <Textarea
-                        placeholder="Address *"
-                        value={form.address}
-                        onChange={(e) => setForm({ address: e.target.value })}
-                        rows={2}
-                    />
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                    {/* Branch Name */}
+                    <div>
+                        <Label className="text-primary pb-1 pl-1">
+                            Branch Name <span className="text-red-500">*</span>
+                        </Label>
                         <Input
-                            placeholder="Phone *"
-                            value={form.contact.phone}
-                            onChange={(e) => handleContactChange("phone", e.target.value)}
-                        />
-                        <Input
-                            type="email"
-                            placeholder="Email *"
-                            value={form.contact.email}
-                            onChange={(e) => handleContactChange("email", e.target.value)}
+                            placeholder="Enter branch name"
+                            value={form.name}
+                            onChange={(e) => setForm({ name: e.target.value })}
                         />
                     </div>
+
+                    {/* Address */}
                     <div>
-                        <Label>Organization *</Label>
+                        <Label className="text-primary pb-1 pl-1">
+                            Address <span className="text-red-500">*</span>
+                        </Label>
+                        <Textarea
+                            placeholder="Enter address"
+                            value={form.address}
+                            onChange={(e) => setForm({ address: e.target.value })}
+                            rows={2}
+                        />
+                    </div>
+
+                    {/* Contact Info */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                        <div>
+                            <Label className="text-primary pb-1 pl-1">
+                                Phone <span className="text-red-500">*</span>
+                            </Label>
+                            <Input
+                                placeholder="Enter phone number"
+                                value={form.contact.phone}
+                                onChange={(e) =>
+                                    handleContactChange("phone", e.target.value)
+                                }
+                            />
+                        </div>
+
+                        <div>
+                            <Label className="text-primary pb-1 pl-1">
+                                Email <span className="text-red-500">*</span>
+                            </Label>
+                            <Input
+                                type="email"
+                                placeholder="Enter email"
+                                value={form.contact.email}
+                                onChange={(e) =>
+                                    handleContactChange("email", e.target.value)
+                                }
+                            />
+                        </div>
+                    </div>
+
+                    {/* Organization */}
+                    <div>
+                        <Label className="text-primary pb-1 pl-1">
+                            Organization <span className="text-red-500">*</span>
+                        </Label>
                         <Select
                             value={form.orgName}
                             onValueChange={(val) => setForm({ orgName: val })}
@@ -84,6 +117,7 @@ export default function BranchForm({ branchId, onSuccess }: Props) {
                             <SelectTrigger>
                                 <SelectValue placeholder="Select organization" />
                             </SelectTrigger>
+
                             <SelectContent>
                                 {organizations.map((org) => (
                                     <SelectItem key={org._id} value={org.name}>
@@ -93,17 +127,25 @@ export default function BranchForm({ branchId, onSuccess }: Props) {
                             </SelectContent>
                         </Select>
                     </div>
+
+                    {/* Active Switch */}
                     <div className="flex items-center space-x-2">
                         <Switch
                             id="isActive"
                             checked={form.isActive}
-                            onCheckedChange={(checked) => setForm({ isActive: checked })}
+                            onCheckedChange={(checked) =>
+                                setForm({ isActive: checked })
+                            }
                         />
-                        <Label htmlFor="isActive">Active</Label>
+                        <Label htmlFor="isActive" className="text-primary">
+                            Active
+                        </Label>
                     </div>
+
                 </CardContent>
             </Card>
 
+            {/* Actions */}
             <div className="flex gap-3">
                 <Button
                     className="w-1/2"
@@ -116,6 +158,7 @@ export default function BranchForm({ branchId, onSuccess }: Props) {
                             ? "Update Branch"
                             : "Create Branch"}
                 </Button>
+
                 {!branchId && (
                     <Button
                         className="w-1/2"
