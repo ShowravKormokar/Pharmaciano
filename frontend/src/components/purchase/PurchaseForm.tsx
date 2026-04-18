@@ -1,17 +1,36 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { usePurchaseStore } from "@/store/purchase.store";
 import { useSupplierStore } from "@/store/supplier.store";
 import { useWarehouseStore } from "@/store/warehouse.store";
-import { useMedicineStore } from "@/store/medicine.store";
+import { useOrganizationStore } from "@/store/organization.store";
+import { useBranchStore } from "@/store/branch.store";
+import { useUniqueNamesStore } from "@/store/uniqueNames.store";
 import { useAuthStore } from "@/store/auth.store";
 import { isSuperAdmin } from "@/lib/isSuperAdmin";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+
+import {
+    Combobox,
+    ComboboxContent,
+    ComboboxEmpty,
+    ComboboxInput,
+    ComboboxItem,
+    ComboboxList,
+} from "@/components/ui/combobox";
+
 import { Plus, Trash2 } from "lucide-react";
 
 interface Props {
@@ -20,35 +39,92 @@ interface Props {
 }
 
 export default function PurchaseForm({ purchaseId, onSuccess }: Props) {
-    const { form, setForm, createPurchase, updatePurchase, resetForm } = usePurchaseStore();
+    const { form, setForm, createPurchase, updatePurchase, resetForm } =
+        usePurchaseStore();
+
     const { suppliers, fetchSuppliers } = useSupplierStore();
     const { warehouses, fetchWarehouses } = useWarehouseStore();
-    const { medicines, fetchMedicines } = useMedicineStore();
+    const { organizations, fetchOrganizations } = useOrganizationStore();
+    const { branches, fetchBranches } = useBranchStore();
+
+    const { getMedicineNames, unqNameloading } = useUniqueNamesStore();
+
     const { user } = useAuthStore();
     const isSuper = isSuperAdmin(user?.email);
+
     const [submitting, setSubmitting] = useState(false);
 
+    const [supplierQuery, setSupplierQuery] = useState("");
+    const [medicineQuery, setMedicineQuery] = useState("");
+
+    // FETCH
     useEffect(() => {
         fetchSuppliers();
         fetchWarehouses();
-        fetchMedicines();
-    }, [fetchSuppliers, fetchWarehouses, fetchMedicines]);
+        fetchOrganizations();
+        fetchBranches();
+    }, [fetchSuppliers, fetchWarehouses, fetchOrganizations, fetchBranches]);
 
-    const addItem = () => setForm({ items: [...form.items, { medicineName: "", quantity: 1 }] });
+    // FILTER
+    const filteredBranches = useMemo(() => {
+        if (!form.organizationName) return branches;
+        return branches.filter(
+            (b) =>
+                b.organizationId?.name?.toLowerCase() ===
+                form.organizationName?.toLowerCase()
+        );
+    }, [branches, form.organizationName]);
+
+    const filteredWarehouses = useMemo(() => {
+        if (form.branchName) {
+            return warehouses.filter(
+                (w) => w.branchId?.name === form.branchName
+            );
+        }
+        return warehouses;
+    }, [warehouses, form.branchName]);
+
+    const medicineNames = getMedicineNames();
+
+    const filteredMedicines = useMemo(() => {
+        if (!medicineQuery) return medicineNames;
+        return medicineNames.filter((m) =>
+            m.toLowerCase().includes(medicineQuery.toLowerCase())
+        );
+    }, [medicineNames, medicineQuery]);
+
+    const filteredSuppliers = useMemo(() => {
+        if (!supplierQuery) return suppliers;
+        return suppliers.filter((s) =>
+            s.name.toLowerCase().includes(supplierQuery.toLowerCase())
+        );
+    }, [suppliers, supplierQuery]);
+
+    // ITEMS
+    const addItem = () =>
+        setForm({
+            items: [...form.items, { medicineName: "", quantity: 1 }],
+        });
+
     const removeItem = (index: number) => {
         const newItems = [...form.items];
         newItems.splice(index, 1);
         setForm({ items: newItems });
     };
+
     const updateItem = (index: number, field: string, value: any) => {
         const newItems = [...form.items];
         newItems[index] = { ...newItems[index], [field]: value };
         setForm({ items: newItems });
     };
 
+    // SUBMIT
     const handleSubmit = async () => {
         setSubmitting(true);
-        const success = purchaseId ? await updatePurchase(purchaseId) : await createPurchase();
+        const success = purchaseId
+            ? await updatePurchase(purchaseId)
+            : await createPurchase();
+
         if (success && onSuccess) setTimeout(onSuccess, 1500);
         setSubmitting(false);
     };
@@ -56,75 +132,118 @@ export default function PurchaseForm({ purchaseId, onSuccess }: Props) {
     return (
         <div className="space-y-6">
             <Card>
-                <CardHeader>
-                    <CardTitle>Purchase Information</CardTitle>
-                </CardHeader>
 
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-6">
 
-                    {/* Organization + Branch */}
+                    {/* ORG + BRANCH */}
                     {isSuper && (
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
                             <div>
                                 <Label className="text-primary pl-1 pb-1">
-                                    Organization Name <span className="text-red-500">*</span>
+                                    Organization <span className="text-red-500">*</span>
                                 </Label>
-                                <Input
+                                <Select
                                     value={form.organizationName}
-                                    onChange={(e) => setForm({ organizationName: e.target.value })}
-                                    placeholder="Enter organization name"
-                                />
+                                    onValueChange={(val) =>
+                                        setForm({
+                                            organizationName: val,
+                                            branchName: "",
+                                            warehouseName: "",
+                                        })
+                                    }
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select organization" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {organizations.map((org) => (
+                                            <SelectItem key={org._id} value={org.name}>
+                                                {org.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
                             </div>
 
                             <div>
                                 <Label className="text-primary pl-1 pb-1">
-                                    Branch Name <span className="text-red-500">*</span>
+                                    Branch <span className="text-red-500">*</span>
                                 </Label>
-                                <Input
+                                <Select
                                     value={form.branchName}
-                                    onChange={(e) => setForm({ branchName: e.target.value })}
-                                    placeholder="Enter branch name"
-                                />
+                                    onValueChange={(val) =>
+                                        setForm({ branchName: val, warehouseName: "" })
+                                    }
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select branch" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {filteredBranches.map((b) => (
+                                            <SelectItem key={b._id} value={b.name}>
+                                                {b.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
                             </div>
                         </div>
                     )}
 
-                    {/* Supplier + Warehouse */}
-                    <div className="grid grid-cols-2 gap-4">
+                    {/* SUPPLIER + WAREHOUSE */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                        {/* Supplier Combobox */}
                         <div>
                             <Label className="text-primary pl-1 pb-1">
                                 Supplier <span className="text-red-500">*</span>
                             </Label>
-                            <Select
+
+                            <Combobox
                                 value={form.supplier}
-                                onValueChange={(val) => setForm({ supplier: val })}
+                                onValueChange={(val) =>
+                                    setForm({ supplier: val || "" })
+                                }
                             >
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Select supplier" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {suppliers.map((s) => (
-                                        <SelectItem key={s._id} value={s.name}>
-                                            {s.name}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                                <ComboboxInput
+                                    placeholder="Search supplier"
+                                    value={supplierQuery}
+                                    onChange={(e) => setSupplierQuery(e.target.value)}
+                                />
+                                <ComboboxContent>
+                                    <ComboboxList>
+                                        {filteredSuppliers.length > 0 ? (
+                                            filteredSuppliers.map((s) => (
+                                                <ComboboxItem key={s._id} value={s.name}>
+                                                    {s.name}
+                                                </ComboboxItem>
+                                            ))
+                                        ) : (
+                                            <ComboboxEmpty>No supplier found</ComboboxEmpty>
+                                        )}
+                                    </ComboboxList>
+                                </ComboboxContent>
+                            </Combobox>
                         </div>
 
+                        {/* Warehouse */}
                         <div>
                             <Label className="text-primary pl-1 pb-1">
                                 Warehouse <span className="text-red-500">*</span>
                             </Label>
+
                             <Select
                                 value={form.warehouseName}
-                                onValueChange={(val) => setForm({ warehouseName: val })}
+                                onValueChange={(val) =>
+                                    setForm({ warehouseName: val })
+                                }
                             >
                                 <SelectTrigger>
                                     <SelectValue placeholder="Select warehouse" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    {warehouses.map((w) => (
+                                    {filteredWarehouses.map((w) => (
                                         <SelectItem key={w._id} value={w.name}>
                                             {w.name}
                                         </SelectItem>
@@ -134,8 +253,8 @@ export default function PurchaseForm({ purchaseId, onSuccess }: Props) {
                         </div>
                     </div>
 
-                    {/* Items */}
-                    <div className="space-y-2">
+                    {/* ITEMS */}
+                    <div className="space-y-3">
                         <Label className="text-primary pl-1 pb-1">
                             Items <span className="text-red-500">*</span>
                         </Label>
@@ -143,30 +262,45 @@ export default function PurchaseForm({ purchaseId, onSuccess }: Props) {
                         {form.items.map((item, idx) => (
                             <div key={idx} className="flex gap-2 items-end">
 
+                                {/* Medicine Combobox */}
                                 <div className="flex-1">
-                                    <Select
-                                        value={item.medicineName}
-                                        onValueChange={(val) =>
-                                            updateItem(idx, "medicineName", val)
-                                        }
-                                    >
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Medicine" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {medicines.map((m) => (
-                                                <SelectItem key={m._id} value={m.name}>
-                                                    {m.name}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
+                                    {unqNameloading ? (
+                                        <div className="h-10 bg-muted animate-pulse rounded-md" />
+                                    ) : (
+                                        <Combobox
+                                            value={item.medicineName}
+                                            onValueChange={(val) =>
+                                                updateItem(idx, "medicineName", val)
+                                            }
+                                        >
+                                            <ComboboxInput
+                                                placeholder="Search medicine"
+                                                value={medicineQuery}
+                                                onChange={(e) =>
+                                                    setMedicineQuery(e.target.value)
+                                                }
+                                            />
+                                            <ComboboxContent>
+                                                <ComboboxList>
+                                                    {filteredMedicines.length > 0 ?
+                                                        (filteredMedicines.map((m) => (
+                                                            <ComboboxItem key={m} value={m}>
+                                                                {m}
+                                                            </ComboboxItem>)
+                                                        )) : (
+                                                            <ComboboxEmpty>
+                                                                No medicine found
+                                                            </ComboboxEmpty>
+                                                        )}
+                                                </ComboboxList>
+                                            </ComboboxContent>
+                                        </Combobox>
+                                    )}
                                 </div>
 
                                 <div className="w-24">
                                     <Input
                                         type="number"
-                                        placeholder="Qty"
                                         value={item.quantity}
                                         onChange={(e) =>
                                             updateItem(
@@ -273,7 +407,7 @@ export default function PurchaseForm({ purchaseId, onSuccess }: Props) {
                 </CardContent>
             </Card>
 
-            {/* Actions */}
+            {/* ACTION */}
             <div className="flex gap-3">
                 <Button
                     className="w-1/2"
@@ -290,15 +424,13 @@ export default function PurchaseForm({ purchaseId, onSuccess }: Props) {
                 {!purchaseId && (
                     <Button
                         className="w-1/2"
-                        type="button"
                         variant="outline"
                         onClick={resetForm}
-                        disabled={submitting}
                     >
                         Reset
                     </Button>
                 )}
             </div>
-        </div>
+        </div >
     );
 }
