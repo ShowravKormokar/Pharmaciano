@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function proxy(req: NextRequest) {
-    const PUBLIC_ROUTES = ["/login", "/register", "/forgot-password"];
+    const PUBLIC_ROUTES = ["/login", "/register", "/forgot-pass"];
     const DEFAULT_AUTHENTICATED_REDIRECT = "/dashboard";
     const DEFAULT_UNAUTHENTICATED_REDIRECT = "/login";
 

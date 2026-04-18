@@ -131,7 +131,7 @@ export default function LoginForm({ formData, setFormData }: Props) {
                                 Password
                             </Label>
                             <Link
-                                href="#"
+                                href="/forgot-pass"
                                 className="text-sm text-primary hover:text-primary/80 transition-colors"
                             >
                                 Forgot password?
@@ -165,7 +165,7 @@ export default function LoginForm({ formData, setFormData }: Props) {
                     </div>
 
                     {/* Remember Me */}
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-2 hidden">
                         <Checkbox
                             id="remember"
                             checked={rememberMe}

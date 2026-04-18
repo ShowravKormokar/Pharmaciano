@@ -41,7 +41,7 @@ export function DemoCredentials({ onFillCredentials }: Props) {
             {/* Footer */}
             <div className="text-center">
                 <p className="text-sm text-muted-foreground">
-                    © 2024 Pharmacino ERP. All rights reserved.
+                    © 2026 Pharmacino ERP. All rights reserved.
                 </p>
             </div>
         </div>
