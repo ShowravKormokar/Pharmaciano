@@ -71,6 +71,7 @@ export const navigation: NavItem[] = [
         icon: ShoppingCart,
         id: "purchase",
         children: [
+            { label: "Overview", icon: Terminal, href: "/dashboard/purchase", permission: "purchase:view" },
             { label: "New Purchase", icon: PlusCircle, href: "/dashboard/purchase/new-purchase", permission: "purchase:create" },
             { label: "Purchase List", icon: ListOrdered, href: "/dashboard/purchase/purchase-list", permission: "purchase:read" },
             { label: "Purchase Return", icon: RotateCcw, href: "/dashboard/purchase/purchase-return-list", permission: "purchase:return" },
