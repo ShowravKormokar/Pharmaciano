@@ -101,8 +101,8 @@ export default function SupplierOverviewPage() {
                                     className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/20"
                                 >
                                     <div className="space-y-1">
-                                        <p className="font-medium">{supplier.name}</p>
-                                        <p className="text-sm text-muted-foreground">
+                                        <p className="font-medium capitalize">{supplier.name}</p>
+                                        <p className="text-sm text-muted-foreground capitalize">
                                             {supplier.contactPerson ? `${supplier.contactPerson} • ` : ""}
                                             {supplier.phone || supplier.email || "No contact"}
                                         </p>

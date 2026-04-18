@@ -30,48 +30,93 @@ export default function SupplierForm({ supplierId, onSuccess }: Props) {
     return (
         <div className="space-y-6">
             <Card>
-                <CardHeader>
-                    <CardTitle>Supplier Information</CardTitle>
-                </CardHeader>
+
                 <CardContent className="space-y-4">
-                    <Input
-                        placeholder="Supplier Name *"
-                        value={form.name}
-                        onChange={(e) => setForm({ name: e.target.value })}
-                    />
-                    <Input
-                        placeholder="Contact Person"
-                        value={form.contactPerson}
-                        onChange={(e) => setForm({ contactPerson: e.target.value })}
-                    />
-                    <Input
-                        placeholder="Phone"
-                        value={form.phone}
-                        onChange={(e) => setForm({ phone: e.target.value })}
-                    />
-                    <Input
-                        type="email"
-                        placeholder="Email"
-                        value={form.email}
-                        onChange={(e) => setForm({ email: e.target.value })}
-                    />
-                    <Textarea
-                        placeholder="Address"
-                        value={form.address}
-                        onChange={(e) => setForm({ address: e.target.value })}
-                        rows={3}
-                    />
+
+                    {/* Supplier Name */}
+                    <div>
+                        <Label className="text-primary pb-1 pl-1">
+                            Supplier Name <span className="text-red-500">*</span>
+                        </Label>
+                        <Input
+                            placeholder="Enter supplier name"
+                            value={form.name}
+                            onChange={(e) => setForm({ name: e.target.value })}
+                        />
+                    </div>
+
+                    {/* Contact Person */}
+                    <div>
+                        <Label className="text-primary pb-1 pl-1">
+                            Contact Person
+                        </Label>
+                        <Input
+                            placeholder="Enter contact person name"
+                            value={form.contactPerson}
+                            onChange={(e) =>
+                                setForm({ contactPerson: e.target.value })
+                            }
+                        />
+                    </div>
+
+                    {/* Phone */}
+                    <div>
+                        <Label className="text-primary pb-1 pl-1">
+                            Phone
+                        </Label>
+                        <Input
+                            placeholder="Enter phone number"
+                            value={form.phone}
+                            onChange={(e) => setForm({ phone: e.target.value })}
+                        />
+                    </div>
+
+                    {/* Email */}
+                    <div>
+                        <Label className="text-primary pb-1 pl-1">
+                            Email
+                        </Label>
+                        <Input
+                            type="email"
+                            placeholder="Enter email address"
+                            value={form.email}
+                            onChange={(e) => setForm({ email: e.target.value })}
+                        />
+                    </div>
+
+                    {/* Address */}
+                    <div>
+                        <Label className="text-primary pb-1 pl-1">
+                            Address
+                        </Label>
+                        <Textarea
+                            placeholder="Enter supplier address"
+                            value={form.address}
+                            onChange={(e) =>
+                                setForm({ address: e.target.value })
+                            }
+                            rows={3}
+                        />
+                    </div>
+
+                    {/* Active */}
                     <div className="flex items-center space-x-2">
                         <Switch
                             id="isActive"
                             checked={form.isActive}
-                            onCheckedChange={(checked) => setForm({ isActive: checked })}
+                            onCheckedChange={(checked) =>
+                                setForm({ isActive: checked })
+                            }
                         />
-                        <Label htmlFor="isActive">Active</Label>
+                        <Label htmlFor="isActive" className="text-primary">
+                            Active
+                        </Label>
                     </div>
+
                 </CardContent>
             </Card>
 
+            {/* Actions */}
             <div className="flex gap-3">
                 <Button
                     className="w-1/2"
@@ -84,6 +129,7 @@ export default function SupplierForm({ supplierId, onSuccess }: Props) {
                             ? "Update Supplier"
                             : "Create Supplier"}
                 </Button>
+
                 {!supplierId && (
                     <Button
                         className="w-1/2"
