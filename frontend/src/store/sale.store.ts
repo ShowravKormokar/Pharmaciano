@@ -44,8 +44,8 @@ interface SaleState {
     fetchSaleById: (id: string) => Promise<SaleItem | null>;
     setOrganizationName: (name: string) => void;
     setBranchName: (name: string) => void;
-    createSale: () => Promise<boolean>;
-    updateSale: (id: string) => Promise<boolean>;
+    createSale: () => Promise<{ success: boolean; id?: string; invoiceNo?: string }>;
+    updateSale: (id: string) => Promise<{ success: boolean }>;
     deleteSale: (id: string) => Promise<boolean>;
     generateInvoicePdf: (id: string) => Promise<void>;
     resetForm: () => void;
@@ -149,6 +149,66 @@ export const useSaleStore = create<SaleState>()((set, get) => ({
         branchName: sale.branchId?.name || "",
     }),
 
+    // createSale: async () => {
+    //     set({ loading: true, error: null });
+    //     try {
+    //         const {
+    //             cart,
+    //             customerName,
+    //             customerPhone,
+    //             discount,
+    //             tax,
+    //             paymentMethod,
+    //             organizationName,
+    //             branchName,
+    //         } = get();
+
+    //         const { user } = useAuthStore.getState();
+    //         const isSuper = isSuperAdmin(user?.email);
+
+    //         if (cart.length === 0) throw new Error("Cart is empty");
+
+    //         const payload: CreateSalePayload = {
+    //             customerName: customerName || undefined,
+    //             customerPhone: customerPhone || undefined,
+    //             discount,
+    //             tax,
+    //             paymentMethod,
+    //             items: cart.map((item) => ({
+    //                 medicineName: item.medicineName,
+    //                 batchNo: item.batchNo,
+    //                 quantity: item.quantity,
+    //                 sellingPrice: item.sellingPrice,
+    //             })),
+    //         };
+
+    //         if (isSuper) {
+    //             if (!organizationName || !branchName) {
+    //                 throw new Error("Organization and branch are required for super admin");
+    //             }
+    //             payload.organizationName = organizationName;
+    //             payload.branchName = branchName;
+    //         }
+
+    //         const res = await createSaleService(payload);
+    //         toast.success(res.message || "Sale created successfully", { duration: 3000 });
+    //         get().clearCart();
+    //         get().resetForm();
+    //         return true;
+    //     } catch (err: any) {
+    //         const msg = err?.response?.data?.message || err.message || "Failed to create sale";
+    //         const errors = err?.response?.data?.errors;
+    //         const fullMsg = errors ? `${msg} - ${errors.map((e: any) => e.message).join(", ")}` : msg;
+    //         set({ error: fullMsg });
+    //         toast.error(fullMsg, { duration: 3000 });
+    //         return false;
+    //     } finally {
+    //         set({ loading: false });
+    //     }
+    // },
+
+    // store/sale.store.ts – only the changed parts
+
     createSale: async () => {
         set({ loading: true, error: null });
         try {
@@ -194,14 +254,14 @@ export const useSaleStore = create<SaleState>()((set, get) => ({
             toast.success(res.message || "Sale created successfully", { duration: 3000 });
             get().clearCart();
             get().resetForm();
-            return true;
+            return { success: true, id: res.id, invoiceNo: res.invoiceNo };
         } catch (err: any) {
             const msg = err?.response?.data?.message || err.message || "Failed to create sale";
             const errors = err?.response?.data?.errors;
             const fullMsg = errors ? `${msg} - ${errors.map((e: any) => e.message).join(", ")}` : msg;
             set({ error: fullMsg });
             toast.error(fullMsg, { duration: 3000 });
-            return false;
+            return { success: false };
         } finally {
             set({ loading: false });
         }
@@ -248,12 +308,12 @@ export const useSaleStore = create<SaleState>()((set, get) => ({
 
             const res = await updateSaleService(id, payload);
             toast.success(res.message || "Sale updated successfully", { duration: 3000 });
-            return true;
+            return { success: true };
         } catch (err: any) {
             const msg = err?.response?.data?.message || err.message || "Failed to update sale";
             set({ error: msg });
             toast.error(msg, { duration: 3000 });
-            return false;
+            return { success: false };
         } finally {
             set({ loading: false });
         }

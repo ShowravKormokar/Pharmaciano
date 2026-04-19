@@ -30,6 +30,7 @@ import { toast } from "sonner";
 import { useOrganizationStore } from "@/store/organization.store";
 import { useBranchStore } from "@/store/branch.store";
 import { Skeleton } from "../ui/skeleton";
+import SaleSuccessModal from "./SaleSuccessModal";
 
 interface Props {
     saleId?: string;
@@ -74,8 +75,9 @@ export default function SalesForm({ saleId, onSuccess }: Props) {
 
     const { organizations, fetchOrganizations } = useOrganizationStore();
     const { branches, fetchBranches } = useBranchStore();
-    const [selectedOrg, setSelectedOrg] = useState("");
-    const [selectedBranch, setSelectedBranch] = useState("");
+    const [successModalOpen, setSuccessModalOpen] = useState(false);
+    const [completedSale, setCompletedSale] = useState<any>(null);
+    const { fetchSaleById } = useSaleStore();
     const { user } = useAuthStore();
     const isSuper = isSuperAdmin(user?.email);
 
@@ -143,11 +145,28 @@ export default function SalesForm({ saleId, onSuccess }: Props) {
         setSearchMedicine("");
     };
 
+    // const handleSubmit = async () => {
+    //     setSubmitting(true);
+    //     const success = saleId ? await updateSale(saleId) : await createSale();
+    //     if (success && onSuccess) {
+    //         setTimeout(onSuccess, 1500);
+    //     }
+    //     setSubmitting(false);
+    // };
     const handleSubmit = async () => {
         setSubmitting(true);
-        const success = saleId ? await updateSale(saleId) : await createSale();
-        if (success && onSuccess) {
-            setTimeout(onSuccess, 1500);
+        const result = saleId ? await updateSale(saleId) : await createSale();
+        if (result.success) {
+            if (!saleId && 'id' in result && result.id) {
+                const saleData = await fetchSaleById(result.id as string);
+                if (saleData) {
+                    setCompletedSale(saleData);
+                    setSuccessModalOpen(true);
+                }
+            }
+            if (onSuccess) {
+                setTimeout(onSuccess, 1500);
+            }
         }
         setSubmitting(false);
     };
@@ -478,6 +497,11 @@ export default function SalesForm({ saleId, onSuccess }: Props) {
                         </div>
                     </CardContent>
                 </Card>
+                <SaleSuccessModal
+                    sale={completedSale}
+                    open={successModalOpen}
+                    onOpenChange={setSuccessModalOpen}
+                />
             </div>
         </div>
     );

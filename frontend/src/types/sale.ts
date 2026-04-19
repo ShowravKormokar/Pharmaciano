@@ -117,4 +117,5 @@ export interface BasicApiResponse {
     success: boolean;
     message: string;
     id?: string;
+    invoiceNo?: string;
 }
