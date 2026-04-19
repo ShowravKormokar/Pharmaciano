@@ -56,6 +56,7 @@ export default function PurchaseForm({ purchaseId, onSuccess }: Props) {
 
     const [supplierQuery, setSupplierQuery] = useState("");
     const [medicineQuery, setMedicineQuery] = useState("");
+    const [medicineQueries, setMedicineQueries] = useState<Record<number, string>>({});
 
     // FETCH
     useEffect(() => {
@@ -86,12 +87,12 @@ export default function PurchaseForm({ purchaseId, onSuccess }: Props) {
 
     const medicineNames = getMedicineNames();
 
-    const filteredMedicines = useMemo(() => {
-        if (!medicineQuery) return medicineNames;
+    const getFilteredMedicines = (query: string) => {
+        if (!query) return medicineNames;
         return medicineNames.filter((m) =>
-            m.toLowerCase().includes(medicineQuery.toLowerCase())
+            m.toLowerCase().includes(query.toLowerCase())
         );
-    }, [medicineNames, medicineQuery]);
+    };
 
     const filteredSuppliers = useMemo(() => {
         if (!supplierQuery) return suppliers;
@@ -202,9 +203,10 @@ export default function PurchaseForm({ purchaseId, onSuccess }: Props) {
 
                             <Combobox
                                 value={form.supplier}
-                                onValueChange={(val) =>
-                                    setForm({ supplier: val || "" })
-                                }
+                                onValueChange={(val) => {
+                                    setForm({ supplier: val || "" });
+                                    setSupplierQuery(val || "");
+                                }}
                             >
                                 <ComboboxInput
                                     placeholder="Search supplier"
@@ -259,68 +261,86 @@ export default function PurchaseForm({ purchaseId, onSuccess }: Props) {
                             Items <span className="text-red-500">*</span>
                         </Label>
 
-                        {form.items.map((item, idx) => (
-                            <div key={idx} className="flex gap-2 items-end">
+                        {form.items.map((item, idx) => {
+                            const query = medicineQueries[idx] || "";
+                            const filteredMedicines = getFilteredMedicines(query);
 
-                                {/* Medicine Combobox */}
-                                <div className="flex-1">
-                                    {unqNameloading ? (
-                                        <div className="h-10 bg-muted animate-pulse rounded-md" />
-                                    ) : (
-                                        <Combobox
-                                            value={item.medicineName}
-                                            onValueChange={(val) =>
-                                                updateItem(idx, "medicineName", val)
-                                            }
-                                        >
-                                            <ComboboxInput
-                                                placeholder="Search medicine"
-                                                value={medicineQuery}
-                                                onChange={(e) =>
-                                                    setMedicineQuery(e.target.value)
-                                                }
-                                            />
-                                            <ComboboxContent>
-                                                <ComboboxList>
-                                                    {filteredMedicines.length > 0 ?
-                                                        (filteredMedicines.map((m) => (
-                                                            <ComboboxItem key={m} value={m}>
-                                                                {m}
-                                                            </ComboboxItem>)
-                                                        )) : (
+                            return (
+                                <div key={idx} className="flex gap-2 items-end">
+
+                                    {/* Medicine Combobox */}
+                                    <div className="flex-1">
+                                        {unqNameloading ? (
+                                            <div className="h-10 bg-muted animate-pulse rounded-md" />
+                                        ) : (
+                                            <Combobox
+                                                value={item.medicineName}
+                                                onValueChange={(val) => {
+                                                    updateItem(idx, "medicineName", val || "");
+
+                                                    // 🔥 set selected value to input
+                                                    setMedicineQueries((prev) => ({
+                                                        ...prev,
+                                                        [idx]: val || "",
+                                                    }));
+                                                }}
+                                            >
+                                                <ComboboxInput
+                                                    placeholder="Search medicine"
+                                                    value={query}
+                                                    onChange={(e) =>
+                                                        setMedicineQueries((prev) => ({
+                                                            ...prev,
+                                                            [idx]: e.target.value,
+                                                        }))
+                                                    }
+                                                />
+
+                                                <ComboboxContent>
+                                                    <ComboboxList>
+                                                        {filteredMedicines.length > 0 ? (
+                                                            filteredMedicines.map((m) => (
+                                                                <ComboboxItem key={m} value={m}>
+                                                                    {m}
+                                                                </ComboboxItem>
+                                                            ))
+                                                        ) : (
                                                             <ComboboxEmpty>
                                                                 No medicine found
                                                             </ComboboxEmpty>
                                                         )}
-                                                </ComboboxList>
-                                            </ComboboxContent>
-                                        </Combobox>
-                                    )}
-                                </div>
+                                                    </ComboboxList>
+                                                </ComboboxContent>
+                                            </Combobox>
+                                        )}
+                                    </div>
 
-                                <div className="w-24">
-                                    <Input
-                                        type="number"
-                                        value={item.quantity}
-                                        onChange={(e) =>
-                                            updateItem(
-                                                idx,
-                                                "quantity",
-                                                parseInt(e.target.value) || 0
-                                            )
-                                        }
-                                    />
-                                </div>
+                                    {/* Quantity */}
+                                    <div className="w-24">
+                                        <Input
+                                            type="number"
+                                            value={item.quantity}
+                                            onChange={(e) =>
+                                                updateItem(
+                                                    idx,
+                                                    "quantity",
+                                                    parseInt(e.target.value) || 0
+                                                )
+                                            }
+                                        />
+                                    </div>
 
-                                <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => removeItem(idx)}
-                                >
-                                    <Trash2 className="h-4 w-4" />
-                                </Button>
-                            </div>
-                        ))}
+                                    {/* Remove */}
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => removeItem(idx)}
+                                    >
+                                        <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                </div>
+                            );
+                        })}
 
                         <Button
                             type="button"
