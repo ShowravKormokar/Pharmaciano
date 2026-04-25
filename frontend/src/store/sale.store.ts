@@ -29,6 +29,7 @@ interface SaleState {
 
     // POS cart (unchanged)
     cart: Array<{
+        medicineId?: string;
         medicineName: string;
         batchNo: string;
         quantity: number;
@@ -149,66 +150,6 @@ export const useSaleStore = create<SaleState>()((set, get) => ({
         branchName: sale.branchId?.name || "",
     }),
 
-    // createSale: async () => {
-    //     set({ loading: true, error: null });
-    //     try {
-    //         const {
-    //             cart,
-    //             customerName,
-    //             customerPhone,
-    //             discount,
-    //             tax,
-    //             paymentMethod,
-    //             organizationName,
-    //             branchName,
-    //         } = get();
-
-    //         const { user } = useAuthStore.getState();
-    //         const isSuper = isSuperAdmin(user?.email);
-
-    //         if (cart.length === 0) throw new Error("Cart is empty");
-
-    //         const payload: CreateSalePayload = {
-    //             customerName: customerName || undefined,
-    //             customerPhone: customerPhone || undefined,
-    //             discount,
-    //             tax,
-    //             paymentMethod,
-    //             items: cart.map((item) => ({
-    //                 medicineName: item.medicineName,
-    //                 batchNo: item.batchNo,
-    //                 quantity: item.quantity,
-    //                 sellingPrice: item.sellingPrice,
-    //             })),
-    //         };
-
-    //         if (isSuper) {
-    //             if (!organizationName || !branchName) {
-    //                 throw new Error("Organization and branch are required for super admin");
-    //             }
-    //             payload.organizationName = organizationName;
-    //             payload.branchName = branchName;
-    //         }
-
-    //         const res = await createSaleService(payload);
-    //         toast.success(res.message || "Sale created successfully", { duration: 3000 });
-    //         get().clearCart();
-    //         get().resetForm();
-    //         return true;
-    //     } catch (err: any) {
-    //         const msg = err?.response?.data?.message || err.message || "Failed to create sale";
-    //         const errors = err?.response?.data?.errors;
-    //         const fullMsg = errors ? `${msg} - ${errors.map((e: any) => e.message).join(", ")}` : msg;
-    //         set({ error: fullMsg });
-    //         toast.error(fullMsg, { duration: 3000 });
-    //         return false;
-    //     } finally {
-    //         set({ loading: false });
-    //     }
-    // },
-
-    // store/sale.store.ts – only the changed parts
-
     createSale: async () => {
         set({ loading: true, error: null });
         try {
@@ -235,6 +176,7 @@ export const useSaleStore = create<SaleState>()((set, get) => ({
                 tax,
                 paymentMethod,
                 items: cart.map((item) => ({
+                    medicineId: item.medicineId,
                     medicineName: item.medicineName,
                     batchNo: item.batchNo,
                     quantity: item.quantity,
@@ -291,6 +233,7 @@ export const useSaleStore = create<SaleState>()((set, get) => ({
                 tax,
                 paymentMethod,
                 items: cart.map((item) => ({
+                    medicineId: item.medicineId,
                     medicineName: item.medicineName,
                     batchNo: item.batchNo,
                     quantity: item.quantity,
@@ -377,6 +320,7 @@ export const useSaleStore = create<SaleState>()((set, get) => ({
             };
         });
     },
+
     removeFromCart: (batchNo) => {
         set((state) => ({
             cart: state.cart.filter((i) => i.batchNo !== batchNo),

@@ -132,6 +132,7 @@ export default function SalesForm({ saleId, onSuccess }: Props) {
         }
         addToCart(
             {
+                medicineId: selectedMedicine._id,
                 medicineName: selectedMedicine.name,
                 batchNo: selectedBatch.batchNo,
                 sellingPrice: selectedMedicine.unitPrice,
@@ -145,14 +146,6 @@ export default function SalesForm({ saleId, onSuccess }: Props) {
         setSearchMedicine("");
     };
 
-    // const handleSubmit = async () => {
-    //     setSubmitting(true);
-    //     const success = saleId ? await updateSale(saleId) : await createSale();
-    //     if (success && onSuccess) {
-    //         setTimeout(onSuccess, 1500);
-    //     }
-    //     setSubmitting(false);
-    // };
     const handleSubmit = async () => {
         setSubmitting(true);
         const result = saleId ? await updateSale(saleId) : await createSale();

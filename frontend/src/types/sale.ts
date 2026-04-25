@@ -42,6 +42,7 @@ export interface CreateSalePayload {
     organizationName?: string;
     branchName?: string;
     items: Array<{
+        medicineId?: string;
         medicineName: string;
         batchNo: string;
         quantity: number;
@@ -58,6 +59,7 @@ export interface UpdateSalePayload {
     organizationName?: string;
     branchName?: string;
     items?: Array<{
+        medicineId?: string;
         medicineName: string;
         batchNo: string;
         quantity: number;
