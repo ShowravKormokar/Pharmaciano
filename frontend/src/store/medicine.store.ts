@@ -9,6 +9,8 @@ import {
 } from "@/services/medicine.service";
 import type { MedicineItem } from "@/types/medicine";
 import { toast } from "sonner";
+import { useAuthStore } from "./auth.store";
+import { isSuperAdmin } from "@/lib/isSuperAdmin";
 
 interface MedicineState {
     medicines: MedicineItem[];
@@ -28,6 +30,7 @@ interface MedicineState {
         isPrescriptionRequired: boolean;
         taxRate: number;
         isActive: boolean;
+        organizationName: string;
     };
 
     fetchMedicines: () => Promise<void>;
@@ -59,6 +62,7 @@ export const useMedicineStore = create<MedicineState>()(
                 isPrescriptionRequired: false,
                 taxRate: 0,
                 isActive: true,
+                organizationName: "",
             },
             setForm: (data) =>
                 set((state) => ({
@@ -80,6 +84,7 @@ export const useMedicineStore = create<MedicineState>()(
                         isPrescriptionRequired: false,
                         taxRate: 0,
                         isActive: true,
+                        organizationName: "",
                     },
                 }),
             fetchMedicines: async () => {
@@ -126,11 +131,11 @@ export const useMedicineStore = create<MedicineState>()(
                         isPrescriptionRequired,
                         taxRate,
                         isActive,
+                        organizationName,
                     } = get().form;
-                    if (!name) {
-                        throw new Error("Medicine name is required");
-                    }
-                    const payload = {
+                    if (!name) throw new Error("Medicine name is required");
+
+                    const payload: any = {
                         name,
                         genericName: genericName || undefined,
                         categoryName: categoryName || undefined,
@@ -145,6 +150,13 @@ export const useMedicineStore = create<MedicineState>()(
                         taxRate: taxRate || 0,
                         isActive,
                     };
+
+                    const { user } = useAuthStore.getState();
+                    const isSuper = isSuperAdmin(user?.email);
+                    if (isSuper && organizationName) {
+                        payload.organizationName = organizationName;
+                    }
+
                     const res = await createMedicineService(payload);
                     toast.success(res.message || "Medicine created successfully", { duration: 3000 });
                     await get().fetchMedicines();
@@ -161,6 +173,7 @@ export const useMedicineStore = create<MedicineState>()(
                     set({ loading: false });
                 }
             },
+
             updateMedicine: async (id: string) => {
                 set({ loading: true, error: null });
                 try {
@@ -178,11 +191,11 @@ export const useMedicineStore = create<MedicineState>()(
                         isPrescriptionRequired,
                         taxRate,
                         isActive,
+                        organizationName,
                     } = get().form;
-                    if (!name) {
-                        throw new Error("Medicine name is required");
-                    }
-                    const payload = {
+                    if (!name) throw new Error("Medicine name is required");
+
+                    const payload: any = {
                         name,
                         genericName: genericName || undefined,
                         categoryName: categoryName || undefined,
@@ -197,6 +210,13 @@ export const useMedicineStore = create<MedicineState>()(
                         taxRate: taxRate || 0,
                         isActive,
                     };
+
+                    const { user } = useAuthStore.getState();
+                    const isSuper = isSuperAdmin(user?.email);
+                    if (isSuper && organizationName) {
+                        payload.organizationName = organizationName;
+                    }
+
                     const res = await updateMedicineService(id, payload);
                     toast.success(res.message || "Medicine updated successfully", { duration: 3000 });
                     await get().fetchMedicines();

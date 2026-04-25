@@ -55,6 +55,7 @@ export interface MedicineItem {
     brandName?: string;
     createdAt?: string;
     updatedAt?: string;
+    organizationName?: string;
 }
 
 export interface MedicinesApiResponse {

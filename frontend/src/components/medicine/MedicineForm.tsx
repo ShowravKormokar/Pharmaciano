@@ -6,7 +6,7 @@ import { useCategoryStore } from "@/store/category.store";
 import { useBrandStore } from "@/store/brand.store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import {
@@ -17,6 +17,9 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Info } from "lucide-react";
+import { useAuthStore } from "@/store/auth.store";
+import { isSuperAdmin } from "@/lib/isSuperAdmin";
+import { useUniqueNamesStore } from "@/store/uniqueNames.store";
 
 interface Props {
     medicineId?: string;
@@ -27,12 +30,20 @@ export default function MedicineForm({ medicineId, onSuccess }: Props) {
     const { form, setForm, createMedicine, updateMedicine, resetForm } = useMedicineStore();
     const { categories, fetchCategories } = useCategoryStore();
     const { brands, fetchBrands } = useBrandStore();
+    const { unqNameloading, getOrganizationNames, fetchUniqueNames, data } = useUniqueNamesStore();
+    const { user } = useAuthStore();
+    const isSuper = isSuperAdmin(user?.email);
     const [submitting, setSubmitting] = useState(false);
+
+    const organizationNames = getOrganizationNames();
 
     useEffect(() => {
         fetchCategories();
         fetchBrands();
-    }, [fetchCategories, fetchBrands]);
+        if (isSuper && !data && !unqNameloading) {
+            fetchUniqueNames();
+        }
+    }, [fetchCategories, fetchBrands, fetchUniqueNames, isSuper, data, unqNameloading]);
 
     const handleSubmit = async () => {
         setSubmitting(true);
@@ -42,7 +53,6 @@ export default function MedicineForm({ medicineId, onSuccess }: Props) {
         }
         setSubmitting(false);
     };
-
     return (
         <div className="space-y-6">
             <Card>
@@ -227,11 +237,42 @@ export default function MedicineForm({ medicineId, onSuccess }: Props) {
                         />
                     </div>
 
-                    {/* Note: Organization, Branch, and Warehouse are automatically assigned by backend */}
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground mt-2">
-                        <Info className="h-4 w-4" />
-                        <span>Organization, branch, and warehouse are automatically assigned based on your session.</span>
-                    </div>
+                    {/* Organization selection (only for super admin) */}
+                    {isSuper && (
+                        <div className="space-y-2">
+                            <Label htmlFor="organization">Organization <span className="text-red-500">*</span></Label>
+                            {unqNameloading ? (
+                                <div className="h-10 w-full rounded-md bg-muted animate-pulse" />
+                            ) : (
+                                <Select
+                                    value={form.organizationName}
+                                    onValueChange={(val) => setForm({ organizationName: val })}
+                                >
+                                    <SelectTrigger id="organization">
+                                        <SelectValue placeholder="Select organization" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {organizationNames.map((name) => (
+                                            <SelectItem key={name} value={name}>
+                                                {name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            )}
+                        </div>
+                    )}
+
+                    {/* Existing fields (name, generic name, category, brand, dosage etc.) */}
+                    {/* ... rest of your form fields ... */}
+
+                    {/* Note for normal users */}
+                    {!isSuper && (
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground mt-2">
+                            <Info className="h-4 w-4" />
+                            <span>Organization, branch, and warehouse are automatically assigned based on your session.</span>
+                        </div>
+                    )}
                 </CardContent>
             </Card>
 
