@@ -9,6 +9,8 @@ import {
 } from "@/services/brand.service";
 import type { BrandItem } from "@/types/brand";
 import { toast } from "sonner";
+import { useAuthStore } from "./auth.store";
+import { isSuperAdmin } from "@/lib/isSuperAdmin";
 
 interface BrandState {
     brands: BrandItem[];
@@ -20,6 +22,7 @@ interface BrandState {
         manufacturer: string;
         country: string;
         isActive: boolean;
+        organizationName: string;
     };
 
     fetchBrands: () => Promise<void>;
@@ -43,6 +46,7 @@ export const useBrandStore = create<BrandState>()(
                 manufacturer: "",
                 country: "",
                 isActive: true,
+                organizationName: "",
             },
 
             setForm: (data) =>
@@ -52,7 +56,7 @@ export const useBrandStore = create<BrandState>()(
 
             resetForm: () =>
                 set({
-                    form: { name: "", manufacturer: "", country: "", isActive: true },
+                    form: { name: "", manufacturer: "", country: "", isActive: true, organizationName: "" },
                 }),
 
             fetchBrands: async () => {
@@ -87,24 +91,25 @@ export const useBrandStore = create<BrandState>()(
             createBrand: async () => {
                 set({ loading: true, error: null });
                 try {
-                    const { name, manufacturer, country } = get().form;
+                    const { name, manufacturer, country, isActive, organizationName } = get().form;
                     if (!name || !manufacturer || !country) {
                         throw new Error("All fields are required");
                     }
-                    const payload = { name, manufacturer, country };
+                    const payload: any = { name, manufacturer, country, isActive };
+                    const { user } = useAuthStore.getState();
+                    const isSuper = isSuperAdmin(user?.email);
+                    if (isSuper && organizationName) {
+                        payload.organizationName = organizationName;
+                    }
                     const res = await createBrandService(payload);
-                    toast.success(res.message || "Brand created successfully", {
-                        duration: 3000,
-                    });
+                    toast.success(res.message || "Brand created successfully", { duration: 3000 });
                     await get().fetchBrands();
                     get().resetForm();
                     return true;
                 } catch (err: any) {
                     const msg = err?.response?.data?.message || err.message || "Failed to create brand";
                     set({ error: msg });
-                    toast.error(msg, {
-                        duration: 3000,
-                    });
+                    toast.error(msg, { duration: 3000 });
                     return false;
                 } finally {
                     set({ loading: false });
@@ -114,30 +119,30 @@ export const useBrandStore = create<BrandState>()(
             updateBrand: async (id: string) => {
                 set({ loading: true, error: null });
                 try {
-                    const { name, manufacturer, country } = get().form;
+                    const { name, manufacturer, country, isActive, organizationName } = get().form;
                     if (!name || !manufacturer || !country) {
                         throw new Error("All fields are required");
                     }
-                    const payload = { name, manufacturer, country };
+                    const payload: any = { name, manufacturer, country, isActive };
+                    const { user } = useAuthStore.getState();
+                    const isSuper = isSuperAdmin(user?.email);
+                    if (isSuper && organizationName) {
+                        payload.organizationName = organizationName;
+                    }
                     const res = await updateBrandService(id, payload);
-                    toast.success(res.message || "Brand updated successfully", {
-                        duration: 3000,
-                    });
+                    toast.success(res.message || "Brand updated successfully", { duration: 3000 });
                     await get().fetchBrands();
                     get().resetForm();
                     return true;
                 } catch (err: any) {
                     const msg = err?.response?.data?.message || err.message || "Failed to update brand";
                     set({ error: msg });
-                    toast.error(msg, {
-                        duration: 3000,
-                    });
+                    toast.error(msg, { duration: 3000 });
                     return false;
                 } finally {
                     set({ loading: false });
                 }
             },
-
             deleteBrand: async (id: string) => {
                 try {
                     const res = await deleteBrandService(id);

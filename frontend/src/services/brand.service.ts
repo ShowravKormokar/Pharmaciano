@@ -16,6 +16,8 @@ export const createBrandService = async (
         name: string;
         manufacturer: string;
         country: string;
+        isActive?: boolean;
+        organizationName?: string;
     }
 ): Promise<BrandApiResponse> => {
     const res = await api.post<BrandApiResponse>("/v1/brands", data);
@@ -28,6 +30,8 @@ export const updateBrandService = async (
         name: string;
         manufacturer: string;
         country: string;
+        isActive?: boolean;
+        organizationName?: string;
     }
 ): Promise<BrandApiResponse> => {
     const res = await api.put<BrandApiResponse>(`/v1/brands/${id}`, data);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useBrandStore } from "@/store/brand.store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,6 +8,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Info } from "lucide-react";
+import { useAuthStore } from "@/store/auth.store";
+import { isSuperAdmin } from "@/lib/isSuperAdmin";
+import { useUniqueNamesStore } from "@/store/uniqueNames.store";
+import {
+    Select,
+    SelectTrigger,
+    SelectValue,
+    SelectContent,
+    SelectItem,
+} from "@/components/ui/select";
+
 
 interface Props {
     brandId?: string;
@@ -16,14 +27,22 @@ interface Props {
 
 export default function BrandForm({ brandId, onSuccess }: Props) {
     const { form, setForm, createBrand, updateBrand, resetForm } = useBrandStore();
+    const { getOrganizationNames, fetchUniqueNames, data, unqNameloading } = useUniqueNamesStore();
+    const { user } = useAuthStore();
+    const isSuper = isSuperAdmin(user?.email);
     const [submitting, setSubmitting] = useState(false);
+
+    const organizationNames = getOrganizationNames();
+
+    useEffect(() => {
+        if (isSuper && !data && !unqNameloading) {
+            fetchUniqueNames();
+        }
+    }, [isSuper, data, unqNameloading, fetchUniqueNames]);
 
     const handleSubmit = async () => {
         setSubmitting(true);
-        const success = brandId
-            ? await updateBrand(brandId)
-            : await createBrand();
-
+        const success = brandId ? await updateBrand(brandId) : await createBrand();
         if (success && onSuccess) {
             setTimeout(onSuccess, 1500);
         }
@@ -91,11 +110,41 @@ export default function BrandForm({ brandId, onSuccess }: Props) {
                         />
                     </div>
 
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground mt-2">
-                        <Info className="h-4 w-4" />
-                        <span>Organization, branch, and warehouse are automatically assigned based on your session.</span>
-                    </div>
+                    {/* Organization selection for super admin */}
+                    {isSuper ? (
+                        <div className="space-y-2">
+                            <Label>
+                                Organization <span className="text-red-500">*</span>
+                            </Label>
+                            {unqNameloading ? (
+                                <div className="h-10 w-full rounded-md bg-muted animate-pulse" />
+                            ) : (
+                                <Select
+                                    value={form.organizationName}
+                                    onValueChange={(val) =>
+                                        setForm({ ...form, organizationName: val })
+                                    }
 
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select organization" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {organizationNames.map((name) => (
+                                            <SelectItem key={name} value={name}>
+                                                {name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            )}
+                        </div>
+                    ) : (
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground mt-2">
+                            <Info className="h-4 w-4" />
+                            <span>Organization is automatically assigned based on your session.</span>
+                        </div>
+                    )}
 
                 </CardContent>
             </Card>

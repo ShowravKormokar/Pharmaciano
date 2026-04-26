@@ -36,6 +36,7 @@ export interface BrandItem {
     createdBy?: CreatedByInfo;
     createdAt?: string;
     updatedAt?: string;
+    organizationName?: string;
 }
 
 export interface BrandsApiResponse {
