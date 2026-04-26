@@ -36,7 +36,8 @@ export default function MedicineListPage() {
             const matchesSearch =
                 !searchTerm.trim() ||
                 med.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                med.genericName?.toLowerCase().includes(searchTerm.toLowerCase());
+                med.genericName?.toLowerCase().includes(searchTerm.toLowerCase())||
+                med.barcode?.includes(searchTerm);
 
             if (!matchesSearch) return false;
 

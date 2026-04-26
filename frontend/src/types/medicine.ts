@@ -36,6 +36,7 @@ export interface MedicineItem {
     _id: string;
     name: string;
     genericName?: string;
+    barcode?: string;
     dosageForm?: string;
     strength?: string;
     unit?: string;

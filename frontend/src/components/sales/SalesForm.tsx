@@ -113,7 +113,9 @@ export default function SalesForm({ saleId, onSuccess }: Props) {
 
     // Filter medicines based on search
     const filteredMedicines = medicines.filter((med) =>
-        med.name.toLowerCase().includes(searchMedicine.toLowerCase())
+        med.name.toLowerCase().includes(searchMedicine.toLowerCase()) ||
+        med.barcode?.includes(searchMedicine) ||
+        med.genericName?.toLowerCase().includes(searchMedicine.toLowerCase())
     );
 
     const handleAddToCart = () => {
