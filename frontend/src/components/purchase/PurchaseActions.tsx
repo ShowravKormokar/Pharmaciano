@@ -12,12 +12,13 @@ import {
     AlertDialogAction,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Eye, Pencil, Trash2, CheckCircle, PackageCheck } from "lucide-react";
+import { Eye, Pencil, Trash2, CheckCircle, PackageCheck, DollarSign } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { usePurchaseStore } from "@/store/purchase.store";
 import { PurchaseItem } from "@/types/purchase";
 import { useState } from "react";
 import ReceivePurchaseModal from "./ReceivePurchaseModal";
+import PaySupplierModal from "./PaySupplierModal";
 
 interface Props {
     purchase: PurchaseItem;
@@ -27,6 +28,7 @@ export default function PurchaseActions({ purchase }: Props) {
     const router = useRouter();
     const { approvePurchase, deletePurchase } = usePurchaseStore();
     const [receiveModalOpen, setReceiveModalOpen] = useState(false);
+    const [payModalOpen, setPayModalOpen] = useState(false);
 
     const handleApprove = async () => {
         await approvePurchase(purchase._id);
@@ -52,6 +54,11 @@ export default function PurchaseActions({ purchase }: Props) {
                         <PackageCheck className="h-4 w-4" />
                     </Button>
                 )}
+                {purchase.status !== 'cancelled' && purchase.dueAmount > 0 && (
+                    <Button variant="ghost" size="sm" onClick={() => setPayModalOpen(true)} title="Pay Due" className="border-[0.1rem] rounded-md">
+                        <DollarSign className="h-4 w-4" />
+                    </Button>
+                )}
                 <Button variant="ghost" size="sm" onClick={() => router.push(`/dashboard/purchase/edit/${purchase._id}`)} title="Edit" className="border-[0.1rem] rounded-md">
                     <Pencil className="h-4 w-4" />
                 </Button>
@@ -74,6 +81,7 @@ export default function PurchaseActions({ purchase }: Props) {
                 </AlertDialog>
             </div>
             <ReceivePurchaseModal purchase={purchase} open={receiveModalOpen} onOpenChange={setReceiveModalOpen} />
+            <PaySupplierModal purchase={purchase} open={payModalOpen} onOpenChange={setPayModalOpen} />
         </>
     );
-};
+}

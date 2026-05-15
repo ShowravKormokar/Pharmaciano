@@ -50,3 +50,8 @@ export const deletePurchaseService = async (id: string): Promise<BasicApiRespons
     const res = await api.delete<BasicApiResponse>(`/v1/purchases/${id}`);
     return res.data;
 };
+
+export const paySupplierService = async (id: string, amount: number): Promise<BasicApiResponse> => {
+    const res = await api.post<BasicApiResponse>(`/v1/purchases/${id}/pay-supplier`, { amount });
+    return res.data;
+};

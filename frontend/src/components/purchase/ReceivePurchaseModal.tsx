@@ -96,4 +96,4 @@ export default function ReceivePurchaseModal({ purchase, open, onOpenChange }: P
             </DialogContent>
         </Dialog>
     );
-};
+}

@@ -8,6 +8,7 @@ import {
     approvePurchaseService,
     receivePurchaseService,
     deletePurchaseService,
+    paySupplierService,
 } from "@/services/purchase.service";
 import type { PurchaseItem, CreatePurchasePayload, UpdatePurchasePayload, ReceivePurchasePayload } from "@/types/purchase";
 import { toast } from "sonner";
@@ -38,6 +39,7 @@ interface PurchaseState {
     approvePurchase: (id: string) => Promise<boolean>;
     receivePurchase: (id: string, data: ReceivePurchasePayload) => Promise<boolean>;
     deletePurchase: (id: string) => Promise<boolean>;
+    paySupplier: (id: string, amount: number) => Promise<boolean>;
     setForm: (data: Partial<PurchaseState["form"]>) => void;
     resetForm: () => void;
 }
@@ -209,6 +211,21 @@ export const usePurchaseStore = create<PurchaseState>()(
                     const msg = err?.response?.data?.message || "Failed to delete purchase";
                     toast.error(msg, { duration: 3000 });
                     return false;
+                }
+            },
+            paySupplier: async (id: string, amount: number) => {
+                set({ loading: true });
+                try {
+                    const res = await paySupplierService(id, amount);
+                    toast.success(res.message || "Payment recorded successfully", { duration: 3000 });
+                    await get().fetchPurchases(); // refresh list
+                    return true;
+                } catch (err: any) {
+                    const msg = err?.response?.data?.message || "Failed to record payment";
+                    toast.error(msg, { duration: 3000 });
+                    return false;
+                } finally {
+                    set({ loading: false });
                 }
             },
         }),
