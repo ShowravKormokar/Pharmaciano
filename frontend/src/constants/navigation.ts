@@ -125,11 +125,12 @@ export const navigation: NavItem[] = [
         icon: Wallet,
         id: "accounting",
         children: [
-            { label: "Chart of Accounts", icon: List, href: "/dashboard/accounting/chart-of-accounts", permission: "accounting:read" },
+            { label: "Overview", icon: Terminal, href: "/dashboard/accounting", permission: "accounting:read" },
+            { label: "Chart of Accounts", icon: List, href: "/dashboard/accounting/list", permission: "accounting:read" },
             { label: "Journal Entries", icon: Scroll, href: "/dashboard/accounting/journal", permission: "accounting:manage" },
-            { label: "General Ledger", icon: FileText, href: "/dashboard/accounting/ledger", permission: "accounting:read" },
-            { label: "Expenses", icon: WalletCards, href: "/dashboard/accounting/expenses", permission: "accounting:manage" },
-            { label: "Transfers", icon: ArrowLeftRight, href: "/dashboard/accounting/transfers", permission: "accounting:transfer" },
+            // { label: "General Ledger", icon: FileText, href: "/dashboard/accounting/ledger", permission: "accounting:read" },
+            // { label: "Expenses", icon: WalletCards, href: "/dashboard/accounting/expenses", permission: "accounting:manage" },
+            // { label: "Transfers", icon: ArrowLeftRight, href: "/dashboard/accounting/transfers", permission: "accounting:transfer" },
         ],
     },
 
