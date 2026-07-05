@@ -35,6 +35,7 @@
     "react-dom": "^19.2.3",
     "react-to-print": "^3.3.0",
     "react-transition-group": "^4.4.5",
+    "recharts": "^3.9.2",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.3.1",
     "use-debounce": "^10.1.0",
