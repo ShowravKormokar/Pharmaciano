@@ -1,127 +1,138 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useForecastStore } from "@/store/aiForecast.store";
-import { Button } from "@/components/ui/button";
+import { useEffect, useMemo } from "react";
+import { TrendingUp } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { RefreshCcw } from "lucide-react";
+import { useForecastStore } from "@/store/aiForecast.store";
+import AiSectionHeader from "@/components/ai/AiSectionHeader";
 import ForecastFilter from "@/components/ai/ForecastFilter";
 import ForecastTable from "@/components/ai/ForecastTable";
-import ForecastSkeleton from "@/components/ai/ForecastSkeleton";
-import { format } from "date-fns";
+import ForecastTableSkeleton, { KpiSkeleton, ChartsSkeleton } from "@/components/ai/ForecastSkeleton";
+import ForecastEmptyState from "@/components/ai/ForecastEmptyState";
+import ForecastErrorState from "@/components/ai/ForecastErrorState";
+import ForecastSummaryCards from "@/components/ai/ForecastSummaryCards";
+import ForecastMetaBar from "@/components/ai/ForecastMetaBar";
+import DemandStatusChart from "@/components/ai/DemandStatusChart";
+import StockHealthChart from "@/components/ai/StockHealthChart";
+import TopDemandChart from "@/components/ai/TopDemandChart";
+import {
+    summarizeForecast,
+    demandStatusDistribution,
+    stockHealthDistribution,
+    topPredictedDemand,
+} from "@/components/ai/forecastAnalytics";
+
 
 export default function DemandPredictionPage() {
-    const { forecasts, meta, pagination, loading, fetchForecast, filters } = useForecastStore();
-    const router = useRouter();
+    const {
+        allForecasts,
+        meta,
+        totalRecords,
+        truncated,
+        loading,
+        errorType,
+        errorMessage,
+        lastUpdated,
+        filters,
+        fetchForecast,
+        resetFilters,
+    } = useForecastStore();
 
     useEffect(() => {
         fetchForecast();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const goToPage = (page: number) => {
-        if (page >= 1 && page <= pagination.totalPages) {
-            fetchForecast({ ...filters, page });
-        }
+    const summary = useMemo(() => summarizeForecast(allForecasts), [allForecasts]);
+    const demandData = useMemo(() => demandStatusDistribution(allForecasts), [allForecasts]);
+    const stockData = useMemo(() => stockHealthDistribution(allForecasts), [allForecasts]);
+    const topDemandData = useMemo(() => topPredictedDemand(allForecasts, 6), [allForecasts]);
+
+    const handleRetry = () => fetchForecast(filters);
+    const handleClearAndRetry = () => {
+        resetFilters();
+        fetchForecast({
+            medicineName: undefined,
+            barcode: undefined,
+            fromDate: undefined,
+            toDate: undefined,
+            organizationId: undefined,
+            branchId: undefined,
+        });
     };
 
     return (
-        <div className="p-6 space-y-6">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-3xl font-bold">Demand Prediction</h1>
-                    <p className="text-muted-foreground mt-1">
-                        AI-powered sales forecasting for medicines
-                    </p>
-                </div>
-                <Button
-                    onClick={() => fetchForecast({ ...filters })}
-                    disabled={loading}
-                    variant="outline"
-                >
-                    <RefreshCcw className={`h-4 w-4 mr-2 ${loading ? "animate-spin" : ""}`} />
-                    Refresh
-                </Button>
-            </div>
+        <div className="space-y-6 p-6">
+            <AiSectionHeader
+                icon={TrendingUp}
+                title="Demand Prediction"
+                subtitle="AI-powered sales forecasting for medicine batches, based on sales history, current stock and expiry."
+                onRefresh={handleRetry}
+                refreshing={loading}
+            />
 
-            {/* Meta Info */}
-            {meta && !loading && (
-                <Card>
-                    <CardContent className="py-4 flex flex-wrap gap-6 text-sm">
-                        <div>
-                            <span className="font-medium">Analyzed Period:</span>{" "}
-                            {format(new Date(meta.analyzedFrom), "PPP")} – {format(new Date(meta.analyzedTo), "PPP")}
-                        </div>
-                        {meta.organizationId && (
-                            <div>
-                                <span className="font-medium">Organization ID:</span> {meta.organizationId}
-                            </div>
-                        )}
-                        {meta.branchId && (
-                            <div>
-                                <span className="font-medium">Branch ID:</span> {meta.branchId}
-                            </div>
-                        )}
-                        <div>
-                            <span className="font-medium">Filter Applied:</span> {meta.filterApplied}
-                        </div>
-                    </CardContent>
-                </Card>
-            )}
-
-            {/* Filters */}
             <Card>
                 <CardContent className="p-6">
                     <ForecastFilter />
                 </CardContent>
             </Card>
 
-            {/* Results */}
-            <Card>
-                <CardHeader className="flex flex-row items-center justify-between">
-                    <CardTitle>Forecast Results</CardTitle>
-                    <div className="text-sm text-muted-foreground">
-                        {pagination.totalRecords > 0 && (
-                            <span>
-                                Showing {((pagination.currentPage - 1) * pagination.limit) + 1}–
-                                {Math.min(pagination.currentPage * pagination.limit, pagination.totalRecords)} of {pagination.totalRecords} records
-                            </span>
-                        )}
+            {meta && !loading && !errorType && (
+                <ForecastMetaBar meta={meta} lastUpdated={lastUpdated} truncated={truncated} />
+            )}
+
+            {loading && (
+                <>
+                    <KpiSkeleton />
+                    <ChartsSkeleton />
+                    <Card>
+                        <CardContent className="p-6">
+                            <ForecastTableSkeleton />
+                        </CardContent>
+                    </Card>
+                </>
+            )}
+
+            {!loading && errorType === "not_found" && (
+                <Card>
+                    <CardContent>
+                        <ForecastEmptyState
+                            message={errorMessage ?? "Try widening the date range or clearing filters."}
+                            onClearFilters={handleClearAndRetry}
+                        />
+                    </CardContent>
+                </Card>
+            )}
+
+            {!loading && errorType === "server_error" && (
+                <Card>
+                    <CardContent>
+                        <ForecastErrorState message={errorMessage ?? "Please try again."} onRetry={handleRetry} />
+                    </CardContent>
+                </Card>
+            )}
+
+            {!loading && !errorType && allForecasts.length > 0 && (
+                <>
+                    <ForecastSummaryCards summary={summary} />
+
+                    <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+                        <DemandStatusChart data={demandData} />
+                        <StockHealthChart data={stockData} />
+                        <TopDemandChart data={topDemandData} />
                     </div>
-                </CardHeader>
-                <CardContent>
-                    {loading ? (
-                        <ForecastSkeleton />
-                    ) : (
-                        <>
-                            <ForecastTable forecasts={forecasts} />
-                            {pagination.totalPages > 1 && (
-                                <div className="flex justify-center items-center gap-2 mt-6">
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={() => goToPage(pagination.currentPage - 1)}
-                                        disabled={pagination.currentPage === 1}
-                                    >
-                                        Previous
-                                    </Button>
-                                    <span className="text-sm">
-                                        Page {pagination.currentPage} of {pagination.totalPages}
-                                    </span>
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={() => goToPage(pagination.currentPage + 1)}
-                                        disabled={pagination.currentPage === pagination.totalPages}
-                                    >
-                                        Next
-                                    </Button>
-                                </div>
-                            )}
-                        </>
-                    )}
-                </CardContent>
-            </Card>
+
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between">
+                            <CardTitle>Forecast Details</CardTitle>
+                            <span className="text-sm text-muted-foreground">{totalRecords} total records analyzed</span>
+                        </CardHeader>
+                        <CardContent>
+                            <ForecastTable items={allForecasts} />
+                        </CardContent>
+                    </Card>
+                </>
+            )}
         </div>
     );
 }
