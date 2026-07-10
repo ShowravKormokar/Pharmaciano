@@ -37,13 +37,6 @@ export function DemoCredentials({ onFillCredentials }: Props) {
                     </div>
                 </div>
             </div>
-
-            {/* Footer */}
-            <div className="text-center">
-                <p className="text-sm text-muted-foreground">
-                    © 2026 Pharmacino ERP. All rights reserved.
-                </p>
-            </div>
         </div>
     );
 }

@@ -23,6 +23,12 @@ export default function LoginPage() {
                 <div className="w-full max-w-md space-y-6">
                     <LoginForm formData={formData} setFormData={setFormData} />
                     <DemoCredentials onFillCredentials={handleFillCredentials} />
+                    {/* Footer */}
+                    <div className="text-center">
+                        <p className="text-sm text-muted-foreground">
+                            © 2026 Pharmacino ERP. All rights reserved.
+                        </p>
+                    </div>
                 </div>
             </div>
 
