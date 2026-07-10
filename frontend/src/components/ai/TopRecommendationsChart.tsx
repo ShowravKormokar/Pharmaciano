@@ -12,7 +12,7 @@ const COLORS = ["#3b82f6", "#8b5cf6", "#ec4899", "#f59e0b", "#22c55e"];
 export default function TopRecommendationsChart({ recommendations }: Props) {
     const data = recommendations.slice(0, 5).map((item, index) => ({
         name: item.medicine_name.length > 15 ? item.medicine_name.slice(0, 15) + "…" : item.medicine_name,
-        predictedSales: item.predicted_sales_next_30_days,
+        predictedSales: item.predicted_total_sales_next_30_days,
         currentStock: item.current_stock,
         color: COLORS[index % COLORS.length],
     }));

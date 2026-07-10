@@ -5,13 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
-import { FilterX } from "lucide-react";
+import { FilterX, Search, Loader2 } from "lucide-react";
 import { useAuthStore } from "@/store/auth.store";
 import { isSuperAdmin } from "@/lib/isSuperAdmin";
 import { useOrganizationStore } from "@/store/organization.store";
@@ -19,138 +19,175 @@ import { useBranchStore } from "@/store/branch.store";
 import { useForecastStore } from "@/store/aiForecast.store";
 
 export default function ForecastFilter() {
-    const { user } = useAuthStore();
-    const isSuper = isSuperAdmin(user?.email);
-    const { organizations, fetchOrganizations } = useOrganizationStore();
-    const { branches, fetchBranches } = useBranchStore();
-    const { filters, setFilters, resetFilters, fetchForecast } = useForecastStore();
+  const { user } = useAuthStore();
+  const isSuper = isSuperAdmin(user?.email);
+  const { organizations, fetchOrganizations } = useOrganizationStore();
+  const { branches, fetchBranches } = useBranchStore();
+  const { filters, loading, fetchForecast, resetFilters } = useForecastStore();
 
-    const [medicineName, setMedicineName] = useState(filters.medicineName || "");
-    const [barcode, setBarcode] = useState(filters.barcode || "");
-    const [fromDate, setFromDate] = useState(filters.fromDate || "");
-    const [toDate, setToDate] = useState(filters.toDate || "");
-    const [orgId, setOrgId] = useState(filters.organizationId || "all");
-    const [branchId, setBranchId] = useState(filters.branchId || "all");
+  const [medicineName, setMedicineName] = useState(filters.medicineName || "");
+  const [barcode, setBarcode] = useState(filters.barcode || "");
+  const [fromDate, setFromDate] = useState(filters.fromDate || "");
+  const [toDate, setToDate] = useState(filters.toDate || "");
+  const [orgId, setOrgId] = useState(filters.organizationId || "all");
+  const [branchId, setBranchId] = useState(filters.branchId || "all");
 
-    useEffect(() => {
-        if (isSuper) {
-            fetchOrganizations();
-            fetchBranches();
-        }
-    }, [isSuper, fetchOrganizations, fetchBranches]);
+  useEffect(() => {
+    if (isSuper) {
+      fetchOrganizations();
+      fetchBranches();
+    }
+  }, [isSuper, fetchOrganizations, fetchBranches]);
 
-    const applyFilters = () => {
-        const newFilters: any = {
-            medicineName: medicineName || undefined,
-            barcode: barcode || undefined,
-            fromDate: fromDate || undefined,
-            toDate: toDate || undefined,
-            page: 1,
-        };
-        if (isSuper) {
-            newFilters.organizationId = orgId !== "all" ? orgId : undefined;
-            newFilters.branchId = branchId !== "all" ? branchId : undefined;
-        }
-        setFilters(newFilters);
-        fetchForecast(newFilters);
+  // Reset the branch selection whenever the org changes so it can't point
+  // to a branch that no longer belongs to the selected org.
+  const handleOrgChange = (value: string) => {
+    setOrgId(value);
+    setBranchId("all");
+  };
+
+  const dateRangeInvalid = Boolean(fromDate && toDate && fromDate > toDate);
+
+  const applyFilters = () => {
+    if (dateRangeInvalid) return;
+    const newFilters: any = {
+      medicineName: medicineName.trim() || undefined,
+      barcode: barcode.trim() || undefined,
+      fromDate: fromDate || undefined,
+      toDate: toDate || undefined,
     };
+    if (isSuper) {
+      newFilters.organizationId = orgId !== "all" ? orgId : undefined;
+      newFilters.branchId = branchId !== "all" ? branchId : undefined;
+    }
+    fetchForecast(newFilters);
+  };
 
-    const clearFilters = () => {
-        setMedicineName("");
-        setBarcode("");
-        setFromDate("");
-        setToDate("");
-        setOrgId("all");
-        setBranchId("all");
-        resetFilters();
-        fetchForecast({ page: 1, limit: 10 });
-    };
+  const clearFilters = () => {
+    setMedicineName("");
+    setBarcode("");
+    setFromDate("");
+    setToDate("");
+    setOrgId("all");
+    setBranchId("all");
+    resetFilters();
+    fetchForecast({
+      medicineName: undefined,
+      barcode: undefined,
+      fromDate: undefined,
+      toDate: undefined,
+      organizationId: undefined,
+      branchId: undefined,
+    });
+  };
 
-    const hasFilters = medicineName || barcode || fromDate || toDate || (orgId !== "all") || (branchId !== "all");
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") applyFilters();
+  };
 
-    return (
-        <div className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div>
-                    <Label className="text-xs">Medicine Name</Label>
-                    <Input
-                        placeholder="Search by name"
-                        value={medicineName}
-                        onChange={(e) => setMedicineName(e.target.value)}
-                    />
-                </div>
-                <div>
-                    <Label className="text-xs">Barcode</Label>
-                    <Input
-                        placeholder="Search by barcode"
-                        value={barcode}
-                        onChange={(e) => setBarcode(e.target.value)}
-                    />
-                </div>
-                <div>
-                    <Label className="text-xs">From Date</Label>
-                    <Input
-                        type="date"
-                        value={fromDate}
-                        onChange={(e) => setFromDate(e.target.value)}
-                    />
-                </div>
-                <div>
-                    <Label className="text-xs">To Date</Label>
-                    <Input
-                        type="date"
-                        value={toDate}
-                        onChange={(e) => setToDate(e.target.value)}
-                    />
-                </div>
-                {isSuper && (
-                    <>
-                        <div>
-                            <Label className="text-xs">Organization</Label>
-                            <Select value={orgId} onValueChange={setOrgId}>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="All" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="all">All</SelectItem>
-                                    {organizations.map((org) => (
-                                        <SelectItem key={org._id} value={org._id}>
-                                            {org.name}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div>
-                            <Label className="text-xs">Branch</Label>
-                            <Select value={branchId} onValueChange={setBranchId}>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="All" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="all">All</SelectItem>
-                                    {branches
-                                        .filter((b) => !orgId || orgId === "all" || b.organizationId?._id === orgId)
-                                        .map((branch) => (
-                                            <SelectItem key={branch._id} value={branch._id}>
-                                                {branch.name}
-                                            </SelectItem>
-                                        ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-                    </>
-                )}
-            </div>
-            <div className="flex gap-2">
-                <Button onClick={applyFilters}>Apply Filters</Button>
-                {hasFilters && (
-                    <Button variant="outline" onClick={clearFilters}>
-                        <FilterX className="h-4 w-4 mr-2" />
-                        Clear
-                    </Button>
-                )}
-            </div>
+  const hasFilters =
+    medicineName || barcode || fromDate || toDate || orgId !== "all" || branchId !== "all";
+
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div>
+          <Label className="text-xs">Medicine Name</Label>
+          <Input
+            placeholder="Search by name"
+            value={medicineName}
+            onChange={(e) => setMedicineName(e.target.value)}
+            onKeyDown={handleKeyDown}
+          />
         </div>
-    );
+        <div>
+          <Label className="text-xs">Barcode</Label>
+          <Input
+            placeholder="Search by barcode"
+            value={barcode}
+            onChange={(e) => setBarcode(e.target.value)}
+            onKeyDown={handleKeyDown}
+          />
+        </div>
+        <div>
+          <Label className="text-xs">From Date</Label>
+          <Input
+            type="date"
+            value={fromDate}
+            max={toDate || undefined}
+            onChange={(e) => setFromDate(e.target.value)}
+          />
+        </div>
+        <div>
+          <Label className="text-xs">To Date</Label>
+          <Input
+            type="date"
+            value={toDate}
+            min={fromDate || undefined}
+            onChange={(e) => setToDate(e.target.value)}
+          />
+        </div>
+
+        {isSuper && (
+          <>
+            <div>
+              <Label className="text-xs">Organization</Label>
+              <Select value={orgId} onValueChange={handleOrgChange}>
+                <SelectTrigger>
+                  <SelectValue placeholder="All" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Organizations</SelectItem>
+                  {organizations.map((org) => (
+                    <SelectItem key={org._id} value={org._id}>
+                      {org.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label className="text-xs">Branch</Label>
+              <Select value={branchId} onValueChange={setBranchId}>
+                <SelectTrigger>
+                  <SelectValue placeholder="All" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Branches</SelectItem>
+                  {branches
+                    .filter((b) => !orgId || orgId === "all" || b.organizationId?._id === orgId)
+                    .map((branch) => (
+                      <SelectItem key={branch._id} value={branch._id}>
+                        {branch.name}
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </>
+        )}
+      </div>
+
+      {dateRangeInvalid && (
+        <p className="text-sm text-red-600">"From Date" must be on or before "To Date".</p>
+      )}
+
+      <div className="flex flex-wrap gap-2">
+        <Button onClick={applyFilters} disabled={loading || dateRangeInvalid}>
+          {loading ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <Search className="mr-2 h-4 w-4" />
+          )}
+          Apply Filters
+        </Button>
+        {hasFilters && (
+          <Button variant="outline" onClick={clearFilters} disabled={loading}>
+            <FilterX className="mr-2 h-4 w-4" />
+            Clear
+          </Button>
+        )}
+      </div>
+    </div>
+  );
 }
