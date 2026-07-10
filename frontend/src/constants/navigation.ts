@@ -155,9 +155,9 @@ export const navigation: NavItem[] = [
         id: "ai",
         children: [
             { label: "Demand Prediction", icon: TrendingUp, href: "/dashboard/ai/demand-prediction", permission: "ai:predict" },
-            { label: "Stock Recommendations", icon: Activity, href: "/dashboard/ai/stock-recommendation", permission: "ai:recommend" },
-            { label: "Trending Products", icon: TrendingUp, href: "/dashboard/ai/trending-products", permission: "ai:read" },
-            { label: "Business Insights", icon: Brain, href: "/dashboard/ai/insights", permission: "ai:read" },
+            // { label: "Stock Recommendations", icon: Activity, href: "/dashboard/ai/stock-recommendation", permission: "ai:recommend" },
+            // { label: "Trending Products", icon: TrendingUp, href: "/dashboard/ai/trending-products", permission: "ai:read" },
+            // { label: "Business Insights", icon: Brain, href: "/dashboard/ai/insights", permission: "ai:read" },
         ],
     },
 
