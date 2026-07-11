@@ -13,6 +13,6 @@ export const fetchForecastService = async (
     const res = await api.get<ForecastApiResponse>("/v1/ai-forecasting", {
         params,
         signal,
-    });
+    } as any);
     return res.data;
 };
