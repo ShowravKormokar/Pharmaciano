@@ -169,12 +169,13 @@ export const useSaleStore = create<SaleState>()((set, get) => ({
 
             if (cart.length === 0) throw new Error("Cart is empty");
 
+            // In createSale:
             const payload: CreateSalePayload = {
                 customerName: customerName || undefined,
                 customerPhone: customerPhone || undefined,
                 discount,
                 tax,
-                paymentMethod,
+                paymentMethod: { type: paymentMethod },  // send as object
                 items: cart.map((item) => ({
                     medicineId: item.medicineId,
                     medicineName: item.medicineName,
@@ -231,7 +232,7 @@ export const useSaleStore = create<SaleState>()((set, get) => ({
                 customerPhone: customerPhone || undefined,
                 discount,
                 tax,
-                paymentMethod,
+                paymentMethod: { type: paymentMethod },
                 items: cart.map((item) => ({
                     medicineId: item.medicineId,
                     medicineName: item.medicineName,
