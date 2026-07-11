@@ -18,6 +18,20 @@ interface Props {
 }
 
 export default function SalesTable({ sales }: Props) {
+    // Helper to safely render payment method (string or object)
+    const renderPaymentMethod = (payment: any): string => {
+        if (!payment) return "N/A";
+        if (typeof payment === "string") return payment;
+        if (typeof payment === "object") {
+            // If object has 'type' and 'provider', combine them
+            if (payment.type) {
+                return payment.provider ? `${payment.type} (${payment.provider})` : payment.type;
+            }
+            return JSON.stringify(payment);
+        }
+        return String(payment);
+    };
+
     return (
         <div className="rounded-xl border shadow-sm overflow-x-auto">
             <Table>
@@ -40,7 +54,7 @@ export default function SalesTable({ sales }: Props) {
                             <TableCell>TK. {sale.totalAmount.toFixed(2)}/-</TableCell>
                             <TableCell>
                                 <Badge variant="outline" className="capitalize">
-                                    {sale.paymentMethod}
+                                    {renderPaymentMethod(sale.paymentMethod)}
                                 </Badge>
                             </TableCell>
                             <TableCell className="text-right">

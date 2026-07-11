@@ -2,7 +2,7 @@
 
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { TopDemandDatum } from "./forecastAnalytics";
+import { TopDemandDatum } from "./forecastAnalytics";
 
 export default function TopDemandChart({ data }: { data: TopDemandDatum[] }) {
   return (
@@ -21,13 +21,13 @@ export default function TopDemandChart({ data }: { data: TopDemandDatum[] }) {
               <CartesianGrid strokeDasharray="3 3" horizontal={false} />
               <XAxis type="number" fontSize={12} />
               <YAxis type="category" dataKey="name" tick={{ fontSize: 12 }} width={100} />
-              {/* <Tooltip
-                formatter={(value: number, name: string) => [
-                  `${value.toLocaleString()} units`,
+              <Tooltip
+                formatter={(value: any, name: any) => [
+                  `${(value ?? 0).toLocaleString()} units`,
                   name === "predicted" ? "Predicted Sales" : "Current Stock",
                 ]}
-                labelFormatter={(_, payload) => payload?.[0]?.payload?.fullName ?? ""}
-              /> */}
+                labelFormatter={(_: any, payload: any) => payload?.[0]?.payload?.fullName ?? ""}
+              />
               <Legend formatter={(v) => (v === "predicted" ? "Predicted Sales" : "Current Stock")} />
               <Bar dataKey="predicted" fill="#2563eb" radius={[0, 4, 4, 0]} />
               <Bar dataKey="stock" fill="#94a3b8" radius={[0, 4, 4, 0]} />

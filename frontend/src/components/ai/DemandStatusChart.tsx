@@ -38,12 +38,9 @@ export default function DemandStatusChart({ data }: { data: ChartDatum[] }) {
                   <Cell key={entry.name} fill={COLORS[entry.name] ?? "#cbd5e1"} />
                 ))}
               </Pie>
-              {/* <Tooltip
-                formatter={(value: number | string | undefined, name: string) => {
-                  const v = typeof value === "number" ? value : Number(value) || 0;
-                  return [`${v} batches`, name];
-                }}
-              /> */}
+              <Tooltip
+                formatter={(value: any, name: any) => [`${value ?? 0} batches`, name]}
+              />
               <Legend />
             </PieChart>
           </ResponsiveContainer>

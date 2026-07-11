@@ -55,6 +55,19 @@ export default function JournalForm({ journalId, onSuccess }: Props) {
     // Filter accounts for dropdowns
     const accountOptions = accounts.map(acc => ({ id: acc._id, name: `${acc.name} (${acc.code})` }));
 
+    // Helper to safely extract name and id from string or object
+    const getItemName = (item: any): string => {
+        if (typeof item === 'string') return item;
+        if (item && typeof item === 'object' && 'name' in item) return item.name;
+        return String(item);
+    };
+
+    const getItemId = (item: any): string => {
+        if (typeof item === 'string') return item;
+        if (item && typeof item === 'object' && '_id' in item) return item._id;
+        return String(item);
+    };
+
     return (
         <div className="space-y-6">
             <Card>
@@ -78,9 +91,15 @@ export default function JournalForm({ journalId, onSuccess }: Props) {
                                                 <SelectValue placeholder="Select organization" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                {organizationNames.map((name) => (
-                                                    <SelectItem key={name} value={name}>{name}</SelectItem>
-                                                ))}
+                                                {organizationNames.map((item) => {
+                                                    const name = getItemName(item);
+                                                    const id = getItemId(item);
+                                                    return (
+                                                        <SelectItem key={id} value={name}>
+                                                            {name}
+                                                        </SelectItem>
+                                                    );
+                                                })}
                                             </SelectContent>
                                         </Select>
                                     )}
@@ -98,9 +117,15 @@ export default function JournalForm({ journalId, onSuccess }: Props) {
                                                 <SelectValue placeholder="Select branch" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                {branchNames.map((name) => (
-                                                    <SelectItem key={name} value={name}>{name}</SelectItem>
-                                                ))}
+                                                {branchNames.map((item) => {
+                                                    const name = getItemName(item);
+                                                    const id = getItemId(item);
+                                                    return (
+                                                        <SelectItem key={id} value={name}>
+                                                            {name}
+                                                        </SelectItem>
+                                                    );
+                                                })}
                                             </SelectContent>
                                         </Select>
                                     )}

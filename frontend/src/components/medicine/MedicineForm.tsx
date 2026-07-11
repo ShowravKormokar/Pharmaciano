@@ -35,7 +35,7 @@ export default function MedicineForm({ medicineId, onSuccess }: Props) {
     const isSuper = isSuperAdmin(user?.email);
     const [submitting, setSubmitting] = useState(false);
 
-    const organizationNames = getOrganizationNames();
+    const organizationNames = getOrganizationNames() as Array<string | { _id: string; name: string }>;
 
     useEffect(() => {
         fetchCategories();
@@ -252,11 +252,16 @@ export default function MedicineForm({ medicineId, onSuccess }: Props) {
                                         <SelectValue placeholder="Select organization" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        {organizationNames.map((name) => (
-                                            <SelectItem key={name} value={name}>
-                                                {name}
-                                            </SelectItem>
-                                        ))}
+                                        {organizationNames.map((item) => {
+                                            // Handle both string and object cases
+                                            const name = typeof item === 'string' ? item : item.name;
+                                            const id = typeof item === 'string' ? item : item._id;
+                                            return (
+                                                <SelectItem key={id} value={name}>
+                                                    {name}
+                                                </SelectItem>
+                                            );
+                                        })}
                                     </SelectContent>
                                 </Select>
                             )}

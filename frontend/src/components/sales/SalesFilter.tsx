@@ -52,6 +52,19 @@ export default function SalesFilter({
         if (isSuper && !data) fetchUniqueNames();
     }, [isSuper, data, fetchUniqueNames]);
 
+    // Helper to safely extract name from object or string
+    const getName = (item: any): string => {
+        if (typeof item === 'string') return item;
+        if (item && typeof item === 'object' && 'name' in item) return item.name;
+        return String(item);
+    };
+
+    const getKey = (item: any): string => {
+        if (typeof item === 'string') return item;
+        if (item && typeof item === 'object' && '_id' in item) return item._id;
+        return String(item);
+    };
+
     const organizationOptions = useMemo(
         () => (isSuper ? getOrganizationNames() : []),
         [isSuper, getOrganizationNames]
@@ -162,8 +175,8 @@ export default function SalesFilter({
                                 <SelectContent>
                                     <SelectItem value="all">All</SelectItem>
                                     {organizationOptions.map((org) => (
-                                        <SelectItem key={org} value={org}>
-                                            {org}
+                                        <SelectItem key={getKey(org)} value={getName(org)}>
+                                            {getName(org)}
                                         </SelectItem>
                                     ))}
                                 </SelectContent>
@@ -179,8 +192,8 @@ export default function SalesFilter({
                                 <SelectContent>
                                     <SelectItem value="all">All</SelectItem>
                                     {branchOptions.map((br) => (
-                                        <SelectItem key={br} value={br}>
-                                            {br}
+                                        <SelectItem key={getKey(br)} value={getName(br)}>
+                                            {getName(br)}
                                         </SelectItem>
                                     ))}
                                 </SelectContent>
@@ -198,4 +211,4 @@ export default function SalesFilter({
             </div>
         </div>
     );
-};
+}

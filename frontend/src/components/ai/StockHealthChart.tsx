@@ -2,7 +2,7 @@
 
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { ChartDatum } from "./forecastAnalytics";
+import { ChartDatum } from "./forecastAnalytics";
 
 const COLORS: Record<string, string> = {
   "Out of Stock": "#dc2626",
@@ -40,7 +40,9 @@ export default function StockHealthChart({ data }: { data: ChartDatum[] }) {
                   <Cell key={entry.name} fill={COLORS[entry.name] ?? "#cbd5e1"} />
                 ))}
               </Pie>
-              {/* <Tooltip formatter={(value: number, name: string) => [`${value} batches`, name]} /> */}
+              <Tooltip
+                formatter={(value: any, name: any) => [`${value ?? 0} batches`, name]}
+              />
               <Legend />
             </PieChart>
           </ResponsiveContainer>

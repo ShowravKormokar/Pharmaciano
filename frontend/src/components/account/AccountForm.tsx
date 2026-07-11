@@ -55,6 +55,7 @@ export default function AccountForm({ accountId, onSuccess }: Props) {
                     <CardTitle>Account Information</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
+                    {/* Organization selection (only for super admin) – keep only this block */}
                     {isSuper && (
                         <div className="space-y-2">
                             <Label>Organization <span className="text-red-500">*</span></Label>
@@ -69,11 +70,23 @@ export default function AccountForm({ accountId, onSuccess }: Props) {
                                         <SelectValue placeholder="Select organization" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        {organizationNames.map((name) => (
-                                            <SelectItem key={name} value={name}>
-                                                {name}
-                                            </SelectItem>
-                                        ))}
+                                        {Array.isArray(organizationNames) &&
+                                            organizationNames.map((item: any) => {
+                                                // Safely extract name and id
+                                                const name =
+                                                    typeof item === "string"
+                                                        ? item
+                                                        : (item as Record<string, any>)?.name || "";
+                                                const id =
+                                                    typeof item === "string"
+                                                        ? item
+                                                        : (item as Record<string, any>)?._id || "";
+                                                return (
+                                                    <SelectItem key={id} value={name}>
+                                                        {name}
+                                                    </SelectItem>
+                                                );
+                                            })}
                                     </SelectContent>
                                 </Select>
                             )}
@@ -126,6 +139,7 @@ export default function AccountForm({ accountId, onSuccess }: Props) {
                         <Label htmlFor="isActive">Active</Label>
                     </div>
 
+                    {/* Note for normal users */}
                     {!isSuper && (
                         <div className="flex items-center gap-2 text-sm text-muted-foreground mt-2">
                             <Info className="h-4 w-4" />

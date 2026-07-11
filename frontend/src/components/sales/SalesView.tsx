@@ -15,6 +15,19 @@ interface Props {
 export default function SalesView({ sale }: Props) {
     const router = useRouter();
 
+    // Helper to render payment method (string or object)
+    const renderPaymentMethod = (payment: any): string => {
+        if (!payment) return "N/A";
+        if (typeof payment === "string") return payment;
+        if (typeof payment === "object") {
+            if (payment.type) {
+                return payment.provider ? `${payment.type} (${payment.provider})` : payment.type;
+            }
+            return JSON.stringify(payment);
+        }
+        return String(payment);
+    };
+
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
@@ -46,7 +59,7 @@ export default function SalesView({ sale }: Props) {
                         <div>
                             <p className="text-sm text-muted-foreground">Payment Method</p>
                             <Badge variant="outline" className="capitalize">
-                                {sale.paymentMethod}
+                                {renderPaymentMethod(sale.paymentMethod)}
                             </Badge>
                         </div>
                     </div>
@@ -97,4 +110,4 @@ export default function SalesView({ sale }: Props) {
             </Card>
         </div>
     );
-};
+}

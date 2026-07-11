@@ -10,32 +10,45 @@ interface Props {
 export default function SalesInvoicePrint({ sale }: Props) {
     const invoiceDisplay = sale.invoiceNo || `INV-${sale._id.slice(-5)}`;
 
+    // Helper to render payment method (string or object)
+    const renderPaymentMethod = (payment: any): string => {
+        if (!payment) return "N/A";
+        if (typeof payment === "string") return payment;
+        if (typeof payment === "object") {
+            if (payment.type) {
+                return payment.provider ? `${payment.type} (${payment.provider})` : payment.type;
+            }
+            return JSON.stringify(payment);
+        }
+        return String(payment);
+    };
+
     return (
         <div className="max-w-3xl mx-auto p-8 bg-white shadow-md print:shadow-none">
             {/* Header */}
             <div className="text-center border-b border-gray-300 pb-4 mb-4">
-                <h1 className="text-2xl text-black font-bold capitalize">{sale.organizationId?.name || "PHARMACIANO"}</h1>
-                <p className="text-sm text-gray-600 capitalize">{sale.organizationId?.address}</p>
-                <p className="text-sm text-black">Invoice: {invoiceDisplay}</p>
+                <h1 className="text-2xl text-black font-bold capitalize pb-1">{sale.organizationId?.name || "PHARMACIANO"}</h1>
+                <p className="text-sm text-gray-600 capitalize pb-1">{sale.organizationId?.address}</p>
+                <p className="text-sm text-black pb-1">Invoice: {invoiceDisplay}</p>
             </div>
 
             {/* Organization & Branch */}
             <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
                 <div className="capitalize text-gray-800">
-                    <p className="font-semibold text-black">Branch:</p>
-                    <p>{sale.branchId?.name || "N/A"}</p>
-                    <p>{sale.branchId?.address}</p>
+                    <p className="font-semibold text-black pb-1">Branch:</p>
+                    <p className=" pb-1">{sale.branchId?.name || "N/A"}</p>
+                    <p className=" pb-1">{sale.branchId?.address}</p>
                 </div>
             </div>
 
             {/* Sale Info */}
             <div className="grid grid-cols-2 gap-4 mb-4 text-sm text-gray-800">
                 <div>
-                    <p className="capitalize"><span className="font-semibold text-black">Cashier:</span> {sale.cashierId?.name}</p>
+                    <p className="capitalize pb-1"><span className="font-semibold text-black">Cashier:</span> {sale.cashierId?.name}</p>
                     <p><span className="font-semibold">Date:</span> {format(new Date(sale.createdAt), "PPP p")}</p>
                 </div>
                 <div>
-                    <p className="capitalize"><span className="font-semibold text-black">Customer:</span> {sale.customerName || "Walk-in"}</p>
+                    <p className="capitalize pb-1"><span className="font-semibold text-black">Customer:</span> {sale.customerName || "Walk-in"}</p>
                     {sale.customerPhone && <p><span className="font-semibold">Phone:</span> {sale.customerPhone}</p>}
                 </div>
             </div>
@@ -85,14 +98,14 @@ export default function SalesInvoicePrint({ sale }: Props) {
                     </div>
                     <div className="flex justify-between text-sm border-t border-gray-300 text-black">
                         <span>Payment Method:</span>
-                        <span className="capitalize">{sale.paymentMethod}</span>
+                        <span className="capitalize">{renderPaymentMethod(sale.paymentMethod)}</span>
                     </div>
                 </div>
             </div>
 
             {/* Footer */}
             <div className="mt-8 text-center text-xs text-gray-500 border-t border-gray-300 pt-4">
-                <p>Thank you for your purchase!</p>
+                <p className=" pb-1">Thank you for your purchase!</p>
                 <p>Printed on {format(new Date(), "PPP p")}</p>
             </div>
         </div>
