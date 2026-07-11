@@ -1,9 +1,9 @@
-// lib/dashboardHelpers.ts
-
 import { SaleItem } from "@/types/sale";
 import { MedicineItem } from "@/types/medicine";
 import { InventoryBatchItem } from "@/types/inventoryBatch";
-import { format, subDays, startOfMonth, endOfMonth, eachDayOfInterval, isWithinInterval } from "date-fns";
+import { format } from "date-fns/format";
+import { subDays } from "date-fns/subDays";
+import { eachDayOfInterval } from "date-fns/eachDayOfInterval";
 
 export interface DailySales {
     date: string;
