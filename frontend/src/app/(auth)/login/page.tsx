@@ -28,6 +28,9 @@ export default function LoginPage() {
                         <p className="text-sm text-muted-foreground">
                             © 2026 Pharmacino ERP. All rights reserved.
                         </p>
+                        <p className="mt-1 text-[11px] text-muted-foreground/80">
+                            Developed by Engineering Boys
+                        </p>
                     </div>
                 </div>
             </div>

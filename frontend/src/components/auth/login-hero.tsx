@@ -23,7 +23,7 @@ export function LoginHero() {
                         Powerful Pharmacy ERP Platform:
                     </h2>
 
-                    <p className="text-base text-primary-foreground/80 mb-6 leading-relaxed">
+                    <p className="text-base text-primary-foreground/80 mb-6 leading-snug">
                         Enterprise-grade ERP with advanced RBAC + PBAC security,
                         AI-driven reporting, demand forecasting, and complete
                         pharmacy lifecycle management.
@@ -51,9 +51,9 @@ export function LoginHero() {
 
                     <div className="flex flex-wrap justify-center items-center gap-4">
 
-                        <h3 className="text-lg font-semibold ">Team:</h3>
+                        {/* <h3 className="text-lg font-semibold ">Team:</h3> */}
                         {/* Frontend */}
-                        <a
+                        {/* <a
                             href="https://github.com/ShowravKormokar/Pharmaciano"
                             target="_blank"
                             title='Frontend Dev.'
@@ -64,10 +64,10 @@ export function LoginHero() {
                             <span>Showrav</span>
                             <span className="text-xs opacity-60">FE</span>
                             <Github className="h-3 w-3 opacity-70" />
-                        </a>
+                        </a> */}
 
                         {/* Backend */}
-                        <a
+                        {/* <a
                             href="https://github.com/sohelrana2002/Pharmaciano"
                             target="_blank"
                             title='Backend Dev.'
@@ -78,10 +78,10 @@ export function LoginHero() {
                             <span>Sohel</span>
                             <span className="text-xs opacity-60">BE</span>
                             <Github className="h-3 w-3 opacity-70" />
-                        </a>
+                        </a> */}
 
                         {/* Mobile */}
-                        <a
+                        {/* <a
                             href="https://github.com/rafiz001"
                             target="_blank"
                             title='App Dev.'
@@ -92,14 +92,21 @@ export function LoginHero() {
                             <span>Rafiz</span>
                             <span className="text-xs opacity-60">Mobile</span>
                             <Github className="h-3 w-3 opacity-70" />
-                        </a>
+                        </a> */}
 
                     </div>
                 </div>
-                <p className="text-center text-sm text-primary-foreground/70 mt-4">
+                {/* <p className="text-center text-sm text-primary-foreground/70 mt-4">
                     Supervised by — <a href='https://vu.edu.bd/profile/02443/mohammad-faisal-al-naser' rel="noopener noreferrer" target="_blank" className='underline'>Mohammad Faisal Al Naser</a> [Lecturer]<br />
                     Developed as a final year project at <a href='https://vu.edu.bd/' target="_blank" rel="noopener noreferrer" className='underline'>Varendra University</a>.
-                </p>
+                </p> */}
+                <div className="bg-primary-foreground/5 rounded-lg p-2 mt-6 text-center">
+                    <p className="text-[0.6rem] text-primary-foreground/70">
+                        <span>Version 1.0.0</span>
+                        <span> • </span>
+                        <span>Academic Edition</span>
+                    </p>
+                </div>
             </div>
         </div>
     )
