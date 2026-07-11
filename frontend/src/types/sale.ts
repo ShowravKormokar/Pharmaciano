@@ -38,7 +38,7 @@ export interface CreateSalePayload {
     customerPhone?: string;
     discount: number;
     tax: number;
-    paymentMethod: string;
+    paymentMethod: { type: string; provider?: string };
     organizationName?: string;
     branchName?: string;
     items: Array<{
@@ -55,7 +55,7 @@ export interface UpdateSalePayload {
     customerPhone?: string;
     discount?: number;
     tax?: number;
-    paymentMethod?: string;
+    paymentMethod?: { type: string; provider?: string };
     organizationName?: string;
     branchName?: string;
     items?: Array<{
