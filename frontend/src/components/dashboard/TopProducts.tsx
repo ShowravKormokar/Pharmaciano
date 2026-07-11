@@ -10,7 +10,7 @@ import { BarChart3 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useSaleStore } from "@/store/sale.store";
 import { getTopProducts, filterSalesByDateRange } from "@/lib/dashboardHelpers";
-import { subDays, startOfDay, endOfDay } from "date-fns";
+import dayjs from "dayjs";
 
 export default function TopProducts() {
     const { sales, fetchSales, loading } = useSaleStore();
@@ -28,10 +28,9 @@ export default function TopProducts() {
 
     useEffect(() => {
         if (!loading && sales.length > 0) {
-            // Filter sales for the last 7 days
-            const now = new Date();
-            const start = startOfDay(subDays(now, 7));
-            const end = endOfDay(now);
+            const now = dayjs();
+            const start = now.subtract(7, 'day').startOf('day').toDate();
+            const end = now.endOf('day').toDate();
             const weeklySales = filterSalesByDateRange(sales, start, end);
             const products = getTopProducts(weeklySales, 5);
             setTopProducts(products);
@@ -112,12 +111,6 @@ export default function TopProducts() {
                     ))}
                 </div>
                 <Separator className="my-4" />
-                {/* <Button variant="outline" className="w-full" asChild>
-                    <Link href="/dashboard/sales">
-                        <BarChart3 className="h-4 w-4 mr-2" />
-                        View Analytics
-                    </Link>
-                </Button> */}
             </CardContent>
         </Card>
     );

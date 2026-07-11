@@ -10,7 +10,10 @@ import { useInventoryBatchStore } from "@/store/inventoryBatch.store";
 import { useMedicineStore } from "@/store/medicine.store";
 import { getRecentSales, getRecentBatches, getRecentMedicines } from "@/lib/dashboardHelpers";
 import { ShoppingCart, Package, Pill, ArrowUpRight } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+
+dayjs.extend(relativeTime);
 
 export default function RecentActivity() {
     const { sales, fetchSales, loading: salesLoading } = useSaleStore();
@@ -40,7 +43,7 @@ export default function RecentActivity() {
                     type: "sale",
                     title: `Sale ${s.invoiceNo}`,
                     description: `Customer: ${s.customerName || "Walk-in"} | Amount: TK. ${s.totalAmount.toFixed(2)}/-`,
-                    time: formatDistanceToNow(new Date(s.createdAt), { addSuffix: true }),
+                    time: dayjs(s.createdAt).fromNow(),
                     icon: ShoppingCart,
                     iconColor: "text-green-600",
                     bgColor: "bg-green-100",
@@ -54,7 +57,7 @@ export default function RecentActivity() {
                         type: "batch",
                         title: `Batch ${b.batchNo}`,
                         description: `Medicine: ${medicineName} | Qty: ${b.quantity}`,
-                        time: formatDistanceToNow(new Date(b.createdAt || Date.now()), { addSuffix: true }),
+                        time: dayjs(b.createdAt).fromNow(),
                         icon: Package,
                         iconColor: "text-blue-600",
                         bgColor: "bg-blue-100",
@@ -65,7 +68,7 @@ export default function RecentActivity() {
                     type: "medicine",
                     title: `Medicine: ${m.name}`,
                     description: `Generic: ${m.genericName || "N/A"} | Category: ${m.categoryName || "N/A"}`,
-                    time: formatDistanceToNow(new Date(m.createdAt || Date.now()), { addSuffix: true }),
+                    time: dayjs(m.createdAt).fromNow(),
                     icon: Pill,
                     iconColor: "text-purple-600",
                     bgColor: "bg-purple-100",
