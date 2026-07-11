@@ -10,7 +10,7 @@ import { useInventoryBatchStore } from "@/store/inventoryBatch.store";
 import { useMedicineStore } from "@/store/medicine.store";
 import { getRecentSales, getRecentBatches, getRecentMedicines } from "@/lib/dashboardHelpers";
 import { ShoppingCart, Package, Pill, ArrowUpRight } from "lucide-react";
-import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
+import { formatDistanceToNow } from "date-fns";
 
 export default function RecentActivity() {
     const { sales, fetchSales, loading: salesLoading } = useSaleStore();

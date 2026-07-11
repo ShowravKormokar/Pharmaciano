@@ -10,9 +10,7 @@ import { BarChart3 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useSaleStore } from "@/store/sale.store";
 import { getTopProducts, filterSalesByDateRange } from "@/lib/dashboardHelpers";
-import { subDays } from "date-fns/subDays";
-import { startOfDay } from "date-fns/startOfDay";
-import { endOfDay } from "date-fns/endOfDay";
+import { subDays, startOfDay, endOfDay } from "date-fns";
 
 export default function TopProducts() {
     const { sales, fetchSales, loading } = useSaleStore();

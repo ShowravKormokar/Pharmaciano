@@ -1,9 +1,11 @@
 import { SaleItem } from "@/types/sale";
 import { MedicineItem } from "@/types/medicine";
 import { InventoryBatchItem } from "@/types/inventoryBatch";
-import { format } from "date-fns/format";
-import { subDays } from "date-fns/subDays";
-import { eachDayOfInterval } from "date-fns/eachDayOfInterval";
+import {
+    format,
+    subDays,
+    eachDayOfInterval,
+} from "date-fns";
 
 export interface DailySales {
     date: string;
