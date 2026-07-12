@@ -60,9 +60,9 @@ export default function SupplierListPage() {
                     </Button>
                 </div>
             </div>
-
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                <div className="relative w-full sm:w-64">
+ 
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-end w-full">
+                <div className="relative w-full sm:w-full">
                     <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Input
                         placeholder="Search suppliers..."
