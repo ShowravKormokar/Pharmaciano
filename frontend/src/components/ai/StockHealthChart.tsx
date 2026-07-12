@@ -24,7 +24,7 @@ export default function StockHealthChart({ data }: { data: ChartDatum[] }) {
             No data for the current filters
           </div>
         ) : (
-          <ResponsiveContainer width="100%" height={240}>
+          <ResponsiveContainer width="100%" height={280}>
             <PieChart>
               <Pie
                 data={data}

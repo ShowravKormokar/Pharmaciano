@@ -22,14 +22,14 @@ export default function DemandStatusChart({ data }: { data: ChartDatum[] }) {
             No data for the current filters
           </div>
         ) : (
-          <ResponsiveContainer width="100%" height={240}>
+          <ResponsiveContainer width="100%" height={280}>
             <PieChart>
               <Pie
                 data={data}
                 cx="50%"
                 cy="50%"
                 innerRadius={55}
-                outerRadius={85}
+                outerRadius={75}
                 paddingAngle={2}
                 dataKey="value"
                 label={({ name, percent }: any) => `${((percent ?? 0) * 100).toFixed(0)}%`}

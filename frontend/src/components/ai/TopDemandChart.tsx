@@ -16,7 +16,7 @@ export default function TopDemandChart({ data }: { data: TopDemandDatum[] }) {
             No data for the current filters
           </div>
         ) : (
-          <ResponsiveContainer width="100%" height={240}>
+          <ResponsiveContainer width="100%" height={280}>
             <BarChart data={data} layout="vertical" margin={{ left: 8, right: 16 }}>
               <CartesianGrid strokeDasharray="3 3" horizontal={false} />
               <XAxis type="number" fontSize={12} />
