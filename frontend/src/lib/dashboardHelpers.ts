@@ -31,6 +31,21 @@ export interface TopProduct {
     revenue: number;
 }
 
+export interface ExpiryAlert {
+    medicineName: string;
+    batchNo: string;
+    expiryDate: string;
+    quantity: number;
+    status: 'expired' | 'expiring_soon' | 'ok';
+}
+
+export interface CustomerSummary {
+    name: string;
+    phone: string;
+    totalOrders: number;
+    totalSpent: number;
+}
+
 export const getTodaySales = (sales: SaleItem[]): number => {
     const today = dayjs().startOf('day');
     return sales
@@ -158,4 +173,71 @@ export const filterSalesByDateRange = (sales: SaleItem[], startDate: Date, endDa
         const saleDate = dayjs(sale.createdAt);
         return saleDate.isBetween(start, end, null, '[]');
     });
+};
+
+export const getExpiryAlerts = (
+    batches: InventoryBatchItem[],
+    thresholdDays: number = 30
+): { expired: ExpiryAlert[]; expiringSoon: ExpiryAlert[] } => {
+    const now = dayjs();
+    const expired: ExpiryAlert[] = [];
+    const expiringSoon: ExpiryAlert[] = [];
+
+    batches.forEach(batch => {
+        if (!batch.expiryDate) return;
+        const expiry = dayjs(batch.expiryDate);
+        const daysUntilExpiry = expiry.diff(now, 'day');
+
+        // Get medicine name safely
+        let medicineName = "Unknown";
+        if (batch.medicineId && typeof batch.medicineId === 'object' && batch.medicineId.name) {
+            medicineName = batch.medicineId.name;
+        } else if (batch.medicineId?.name) {
+            medicineName = batch.medicineId?.name;
+        }
+
+        const alert: ExpiryAlert = {
+            medicineName,
+            batchNo: batch.batchNo,
+            expiryDate: batch.expiryDate,
+            quantity: batch.quantity,
+            status: 'ok',
+        };
+
+        if (daysUntilExpiry < 0) {
+            alert.status = 'expired';
+            expired.push(alert);
+        } else if (daysUntilExpiry <= thresholdDays) {
+            alert.status = 'expiring_soon';
+            expiringSoon.push(alert);
+        }
+    });
+
+    // Sort: most urgent first (shortest days left for expiringSoon, oldest expired first)
+    expired.sort((a, b) => dayjs(a.expiryDate).valueOf() - dayjs(b.expiryDate).valueOf());
+    expiringSoon.sort((a, b) => dayjs(a.expiryDate).valueOf() - dayjs(b.expiryDate).valueOf());
+
+    return { expired, expiringSoon };
+};
+
+export const aggregateCustomers = (sales: SaleItem[]): CustomerSummary[] => {
+    const customerMap = new Map<string, CustomerSummary>();
+
+    sales.forEach(sale => {
+        // Use phone as primary key, fallback to name
+        const key = sale.customerPhone || sale.customerName || 'unknown';
+        if (!customerMap.has(key)) {
+            customerMap.set(key, {
+                name: sale.customerName || 'Unknown',
+                phone: sale.customerPhone || '',
+                totalOrders: 0,
+                totalSpent: 0,
+            });
+        }
+        const customer = customerMap.get(key)!;
+        customer.totalOrders += 1;
+        customer.totalSpent += sale.totalAmount;
+    });
+
+    return Array.from(customerMap.values());
 };
