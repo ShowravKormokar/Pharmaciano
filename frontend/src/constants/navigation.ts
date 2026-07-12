@@ -10,7 +10,10 @@ import {
     CheckCircle, Brain, TrendingUp, Activity,
     User,
     Landmark,
-    BrainCog
+    BrainCog,
+    BarChart3,
+    Package,
+    DollarSign
 } from "lucide-react";
 
 export type NavChild = {
@@ -61,7 +64,7 @@ export const navigation: NavItem[] = [
             { label: "Overview", icon: Terminal, href: "/dashboard/sales", permission: "sales:read" },
             { label: "POS", icon: PlusCircle, href: "/dashboard/sales/pos", permission: "sales:process" },
             { label: "Sales List", icon: List, href: "/dashboard/sales/sales-list", permission: "sales:read" },
-            { label: "Sales Return", icon: RotateCcw, href: "/dashboard/sales/sales-return", permission: "sales:return" },
+            // { label: "Sales Return", icon: RotateCcw, href: "/dashboard/sales/sales-return", permission: "sales:return" },
         ],
     },
 
@@ -74,7 +77,7 @@ export const navigation: NavItem[] = [
             { label: "Overview", icon: Terminal, href: "/dashboard/purchase", permission: "purchase:view" },
             { label: "New Purchase", icon: PlusCircle, href: "/dashboard/purchase/new-purchase", permission: "purchase:create" },
             { label: "Purchase List", icon: ListOrdered, href: "/dashboard/purchase/purchase-list", permission: "purchase:read" },
-            { label: "Purchase Return", icon: RotateCcw, href: "/dashboard/purchase/purchase-return-list", permission: "purchase:return" },
+            // { label: "Purchase Return", icon: RotateCcw, href: "/dashboard/purchase/purchase-return-list", permission: "purchase:return" },
             { label: "Approvals", icon: CheckCircle, href: "/dashboard/purchase/approvals", permission: "purchase:approve" },
         ],
     },
@@ -89,9 +92,9 @@ export const navigation: NavItem[] = [
             { label: "Categories", icon: Tags, href: "/dashboard/inventory/categories", permission: "inventory:manage" },
             { label: "Brands", icon: PackageSearch, href: "/dashboard/inventory/brands", permission: "inventory:manage" },
             { label: "Variants / Batches", icon: Layers, href: "/dashboard/inventory/inventory-batch", permission: "inventory:manage" },
-            { label: "Stock Adjustment", icon: Activity, href: "/dashboard/inventory/adjustment", permission: "inventory:adjust" },
+            // { label: "Stock Adjustment", icon: Activity, href: "/dashboard/inventory/adjustment", permission: "inventory:adjust" },
             { label: "Expiry Alerts", icon: AlertTriangle, href: "/dashboard/inventory/expiry-alerts", permission: "inventory:read" },
-            { label: "Import Items", icon: FileInput, href: "/dashboard/inventory/import-items", permission: "inventory:import" },
+            // { label: "Import Items", icon: FileInput, href: "/dashboard/inventory/import-items", permission: "inventory:import" },
         ],
     },
 
@@ -103,7 +106,7 @@ export const navigation: NavItem[] = [
         children: [
             { label: "Customers", icon: UserCheck, href: "/dashboard/contacts/customer-list", permission: "contacts:read" },
             { label: "Suppliers", icon: Truck, href: "/dashboard/contacts/suppliers", permission: "contacts:read" },
-            { label: "Import Contacts", icon: FileInput, href: "/dashboard/contacts/import", permission: "contacts:import" },
+            // { label: "Import Contacts", icon: FileInput, href: "/dashboard/contacts/import", permission: "contacts:import" },
         ],
     },
 
@@ -140,11 +143,12 @@ export const navigation: NavItem[] = [
         icon: FileText,
         id: "reports",
         children: [
-            { label: "Sales Report", href: "/dashboard/reports/sales", permission: "reports:view" },
-            { label: "Purchase Report", href: "/dashboard/reports/purchase", permission: "reports:view" },
-            { label: "Inventory Valuation", href: "/dashboard/reports/inventory", permission: "reports:view" },
-            { label: "Profit & Loss", href: "/dashboard/reports/profit-loss", permission: "reports:view" },
-            { label: "Tax Report", href: "/dashboard/reports/tax", permission: "reports:view" },
+            { label: "Overview", icon: Terminal, href: "/dashboard/reports", permission: "reports:read" },
+            { label: "Sales Report", icon: BarChart3, href: "/dashboard/reports/sales", permission: "reports:view" },
+            { label: "Purchase Report", icon: ShoppingCart, href: "/dashboard/reports/purchase", permission: "reports:view" },
+            { label: "Inventory Valuation", icon: Package, href: "/dashboard/reports/inventory", permission: "reports:view" },
+            { label: "Profit & Loss", icon: DollarSign, href: "/dashboard/reports/profit-loss", permission: "reports:view" },
+            // { label: "Tax Report", href: "/dashboard/reports/tax", permission: "reports:view" },
         ],
     },
 
@@ -215,54 +219,54 @@ export const navigation: NavItem[] = [
         icon: Settings,
         id: "settings",
         children: [
-            {
-                label: "Roles & Permissions",
-                icon: ShieldCheck,
-                href: "/dashboard/settings/permissions",
-                permission: "settings:manage",
-            },
-            {
-                label: "User Management",
-                icon: UserCog,
-                href: "/dashboard/settings/users",
-                permission: "settings:manage",
-            },
-            {
-                label: "Theme & Appearance",
-                icon: Palette,
-                href: "/dashboard/settings/theme",
-                permission: "settings:read",
-            },
-            {
-                label: "Localization",
-                icon: Globe,
-                href: "/dashboard/settings/localization",
-                permission: "settings:read",
-            },
-            {
-                label: "Notifications",
-                icon: Bell,
-                href: "/dashboard/settings/notifications",
-                permission: "settings:read",
-            },
+            // {
+            //     label: "Roles & Permissions",
+            //     icon: ShieldCheck,
+            //     href: "/dashboard/settings/permissions",
+            //     permission: "settings:manage",
+            // },
+            // {
+            //     label: "User Management",
+            //     icon: UserCog,
+            //     href: "/dashboard/settings/users",
+            //     permission: "settings:manage",
+            // },
+            // {
+            //     label: "Theme & Appearance",
+            //     icon: Palette,
+            //     href: "/dashboard/settings/theme",
+            //     permission: "settings:read",
+            // },
+            // {
+            //     label: "Localization",
+            //     icon: Globe,
+            //     href: "/dashboard/settings/localization",
+            //     permission: "settings:read",
+            // },
+            // {
+            //     label: "Notifications",
+            //     icon: Bell,
+            //     href: "/dashboard/settings/notifications",
+            //     permission: "settings:read",
+            // },
             {
                 label: "Database Backup",
                 icon: Database,
                 href: "/dashboard/settings/database",
                 permission: "settings:backup",
             },
-            {
-                label: "Import / Export",
-                icon: CloudUpload,
-                href: "/dashboard/settings/import-export",
-                permission: "settings:import-export",
-            },
-            {
-                label: "Audit Logs",
-                icon: Scroll,
-                href: "/dashboard/settings/audit-logs",
-                permission: "settings:audit",
-            },
+            // {
+            //     label: "Import / Export",
+            //     icon: CloudUpload,
+            //     href: "/dashboard/settings/import-export",
+            //     permission: "settings:import-export",
+            // },
+            // {
+            //     label: "Audit Logs",
+            //     icon: Scroll,
+            //     href: "/dashboard/settings/audit-logs",
+            //     permission: "settings:audit",
+            // },
         ],
     }
 ];
