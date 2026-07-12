@@ -45,7 +45,7 @@ export default function JournalListPage() {
             </div>
 
             <Card>
-                <CardContent className="p-6">
+                <CardContent className="px-6">
                     <JournalFilter onFilterChange={setFilters} />
                 </CardContent>
             </Card>

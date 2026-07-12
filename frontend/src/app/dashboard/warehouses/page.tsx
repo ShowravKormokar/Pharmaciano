@@ -86,7 +86,7 @@ export default function WarehouseOverviewPage() {
 
             {/* Quick Actions */}
             <div className="flex flex-wrap gap-3">
-                <Link href="/dashboard/warehouse/list">
+                <Link href="/dashboard/warehouses/warehouse-list">
                     <Button variant="outline">
                         <Eye className="h-4 w-4 mr-2" />
                         View Warehouse List

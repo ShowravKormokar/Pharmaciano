@@ -63,7 +63,7 @@ export default function BrandListPage() {
             </div>
 
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                <div className="relative w-full sm:w-64">
+                <div className="relative w-full sm:w-1/2">
                     <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Input
                         placeholder="Search brands..."

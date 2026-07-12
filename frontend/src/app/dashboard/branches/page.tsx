@@ -80,7 +80,7 @@ export default function BranchOverviewPage() {
             </div>
 
             <div className="flex flex-wrap gap-3">
-                <Link href="/dashboard/branches/list">
+                <Link href="/dashboard/branches/branch-list">
                     <Button variant="outline">
                         <Eye className="h-4 w-4 mr-2" />
                         View Branch List

@@ -125,7 +125,7 @@ export default function PurchaseOverviewPage() {
                                     <div className="space-y-1">
                                         <p className="font-medium">{purchase.purchaseNo}</p>
                                         <p className="text-sm text-muted-foreground">
-                                            Supplier: {purchase.supplierId.name} | Total: TK. {purchase.totalAmount.toFixed(2)}/-
+                                            Supplier: <span className="capitalize">{purchase.supplierId.name}</span> | Total: TK. {purchase.totalAmount.toFixed(2)}/-
                                         </p>
                                     </div>
                                     <div className="flex items-center gap-3">

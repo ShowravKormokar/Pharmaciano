@@ -62,7 +62,7 @@ export default function WarehouseListPage() {
                     </p>
                 </div>
                 <div className="flex items-center gap-2">
-                    <Link href="/dashboard/warehouse/add">
+                    <Link href="/dashboard/warehouses/add">
                         <Button variant="outline" size="sm">
                             <Warehouse className="h-4 w-4 mr-2" />
                             Create Warehouse
@@ -76,7 +76,7 @@ export default function WarehouseListPage() {
             </div>
 
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                <div className="relative w-full sm:w-64">
+                <div className="relative w-full">
                     <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Input
                         placeholder="Search warehouses..."

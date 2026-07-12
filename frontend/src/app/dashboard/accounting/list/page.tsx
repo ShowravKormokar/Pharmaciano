@@ -41,8 +41,8 @@ export default function AccountListPage() {
             </div>
 
             <Card>
-                <CardContent className="p-6 space-y-4">
-                    <div className="relative">
+                <CardContent className="grid grid-cols-1 sm:grid-cols-2 items-center justify-center gap-4 w-full">
+                    <div className="relative w-auto">
                         <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                         <Input
                             placeholder="Search by account name..."

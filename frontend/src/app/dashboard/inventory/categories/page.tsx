@@ -106,7 +106,7 @@ export default function CategoryOverviewPage() {
                                 >
                                     <div className="space-y-1">
                                         <p className="font-medium capitalize">{category.name}</p>
-                                        <p className="text-sm text-muted-foreground">
+                                        <p className="text-sm text-muted-foreground capitalize">
                                             {category.description
                                                 ? category.description.length > 40
                                                     ? category.description.substring(0, 40) + "..."
