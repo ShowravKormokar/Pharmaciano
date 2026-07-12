@@ -19,38 +19,37 @@ function formatDate(value: string) {
 export default function ForecastMetaBar({ meta, lastUpdated, truncated }: Props) {
   return (
     <Card>
-      <CardContent className="flex flex-wrap items-center gap-x-6 gap-y-2 py-4 text-sm">
-        <span className="flex items-center gap-1.5">
+      <CardContent className="grid grid-cols-1 sm:grid-cols-3 items-center gap-2 text-sm w-full">
+        <span className="flex items-center gap-1.5 w-full">
           <CalendarRange className="h-4 w-4 text-muted-foreground" />
           <span className="font-medium">Analyzed:</span> {formatDate(meta.analyzedFrom)} – {formatDate(meta.analyzedTo)}
         </span>
 
         {meta.organizationId && (
-          <span className="flex items-center gap-1.5">
+          <span className="flex items-center gap-1.5 w-full">
             <Building2 className="h-4 w-4 text-muted-foreground" />
             <span className="font-medium">Organization:</span> {meta.organizationId}
           </span>
         )}
 
         {meta.branchId && (
-          <span className="flex items-center gap-1.5">
+          <span className="flex items-center gap-1.5 w-full">
             <MapPin className="h-4 w-4 text-muted-foreground" />
             <span className="font-medium">Branch:</span> {meta.branchId}
           </span>
         )}
 
-        <span className="flex items-center gap-1.5">
+        <span className="flex items-center gap-1.5 w-full">
           <Filter className="h-4 w-4 text-muted-foreground" />
           <span className="font-medium">Filter:</span> {meta.filterApplied}
         </span>
 
         {lastUpdated && (
-          <span className="ml-auto flex items-center gap-1.5 text-muted-foreground" title="Forecasts are cached for up to 1 hour — Refresh may return the same result within that window.">
+          <span className="flex items-center mr-3 gap-1.5 w-full text-sm text-muted-foreground" title="Forecasts are cached for up to 1 hour — Refresh may return the same result within that window.">
             <Info className="h-3.5 w-3.5" />
             Updated {lastUpdated.toLocaleTimeString()}
           </span>
         )}
-
         {truncated && (
           <span className="w-full text-xs text-amber-700">
             Showing the first 500 matching records for charts and summary — narrow your filters for full precision on very large result sets.

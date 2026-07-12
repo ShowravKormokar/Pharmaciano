@@ -47,7 +47,7 @@ export default function WarehouseFilter({ warehouses, onFilterChange }: Props) {
     const hasFilters = branch !== "all" || location !== "all" || status !== "all";
 
     return (
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 w-full">
             {/* Branch Filter */}
             {/* <Select value={branch} onValueChange={setBranch}>
                 <SelectTrigger className="w-[180px]">

@@ -88,7 +88,7 @@ export default function MedicineForm({ medicineId, onSuccess }: Props) {
                                 value={form.categoryName}
                                 onValueChange={(val) => setForm({ categoryName: val })}
                             >
-                                <SelectTrigger id="category">
+                                <SelectTrigger id="category" className="w-full">
                                     <SelectValue placeholder="Select category" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -107,7 +107,7 @@ export default function MedicineForm({ medicineId, onSuccess }: Props) {
                                 value={form.brandName}
                                 onValueChange={(val) => setForm({ brandName: val })}
                             >
-                                <SelectTrigger id="brand">
+                                <SelectTrigger id="brand" className="w-full">
                                     <SelectValue placeholder="Select brand" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -122,7 +122,7 @@ export default function MedicineForm({ medicineId, onSuccess }: Props) {
                     </div>
 
                     {/* Dosage */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div className="space-y-2">
                             <Label htmlFor="dosageForm">Dosage Form<span className="text-red-500">*</span></Label>
                             <Input
@@ -133,25 +133,25 @@ export default function MedicineForm({ medicineId, onSuccess }: Props) {
                             />
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="strength">Strength<span className="text-red-500">*</span></Label>
-                                <Input
-                                    id="strength"
-                                    placeholder="e.g., 500"
-                                    value={form.strength}
-                                    onChange={(e) => setForm({ strength: e.target.value })}
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="unit">Unit<span className="text-red-500">*</span></Label>
-                                <Input
-                                    id="unit"
-                                    placeholder="mg / ml"
-                                    value={form.unit}
-                                    onChange={(e) => setForm({ unit: e.target.value })}
-                                />
-                            </div>
+                        {/* <div className="grid grid-cols-2 gap-4"> */}
+                        <div className="space-y-2">
+                            <Label htmlFor="strength">Strength<span className="text-red-500">*</span></Label>
+                            <Input
+                                id="strength"
+                                placeholder="e.g., 500"
+                                value={form.strength}
+                                onChange={(e) => setForm({ strength: e.target.value })}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="unit">Unit<span className="text-red-500">*</span></Label>
+                            <Input
+                                id="unit"
+                                placeholder="mg / ml"
+                                value={form.unit}
+                                onChange={(e) => setForm({ unit: e.target.value })}
+                            />
+                            {/* </div> */}
                         </div>
                     </div>
 

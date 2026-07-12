@@ -76,9 +76,6 @@ export default function WarehouseView({ warehouse }: Props) {
                             <p className="text-muted-foreground">Created By</p>
                             <p>
                                 {warehouse.createdBy?.name || "System"}
-                                {warehouse.createdBy?.email && (
-                                    <span className="text-xs ml-2">({warehouse.createdBy.email})</span>
-                                )}
                             </p>
                         </div>
                         <div>

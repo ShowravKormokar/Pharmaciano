@@ -37,9 +37,9 @@ export default function AccountFilter({ onFilterChange }: Props) {
     const hasFilters = type !== "all" || isActive !== "all";
 
     return (
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-2 items-center gap-3 w-full">
             <Select value={type} onValueChange={setType}>
-                <SelectTrigger className="w-36">
+                <SelectTrigger className="w-full">
                     <SelectValue placeholder="Account Type" />
                 </SelectTrigger>
                 <SelectContent>
@@ -53,7 +53,7 @@ export default function AccountFilter({ onFilterChange }: Props) {
             </Select>
 
             <Select value={isActive} onValueChange={setIsActive}>
-                <SelectTrigger className="w-32">
+                <SelectTrigger className="w-full">
                     <SelectValue placeholder="Status" />
                 </SelectTrigger>
                 <SelectContent>

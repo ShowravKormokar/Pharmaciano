@@ -136,11 +136,10 @@ export default function PurchaseForm({ purchaseId, onSuccess }: Props) {
 
                 <CardContent className="space-y-6">
 
-                    {/* ORG + BRANCH */}
+                    {/* ORG + BRANCH (2 cols on sm+) */}
                     {isSuper && (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-                            <div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="w-full">
                                 <Label className="text-primary pl-1 pb-1">
                                     Organization <span className="text-red-500">*</span>
                                 </Label>
@@ -154,7 +153,7 @@ export default function PurchaseForm({ purchaseId, onSuccess }: Props) {
                                         })
                                     }
                                 >
-                                    <SelectTrigger>
+                                    <SelectTrigger className="w-full">
                                         <SelectValue placeholder="Select organization" />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -177,7 +176,7 @@ export default function PurchaseForm({ purchaseId, onSuccess }: Props) {
                                         setForm({ branchName: val, warehouseName: "" })
                                     }
                                 >
-                                    <SelectTrigger>
+                                    <SelectTrigger className="w-full">
                                         <SelectValue placeholder="Select branch" />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -192,8 +191,8 @@ export default function PurchaseForm({ purchaseId, onSuccess }: Props) {
                         </div>
                     )}
 
-                    {/* SUPPLIER + WAREHOUSE */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* SUPPLIER + WAREHOUSE (2 cols on sm+) */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
                         {/* Supplier Combobox */}
                         <div>
@@ -241,7 +240,7 @@ export default function PurchaseForm({ purchaseId, onSuccess }: Props) {
                                     setForm({ warehouseName: val })
                                 }
                             >
-                                <SelectTrigger>
+                                <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Select warehouse" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -255,7 +254,7 @@ export default function PurchaseForm({ purchaseId, onSuccess }: Props) {
                         </div>
                     </div>
 
-                    {/* ITEMS */}
+                    {/* ITEMS – full width row (no grid) */}
                     <div className="space-y-3">
                         <Label className="text-primary pl-1 pb-1">
                             Items <span className="text-red-500">*</span>
@@ -353,7 +352,7 @@ export default function PurchaseForm({ purchaseId, onSuccess }: Props) {
                         </Button>
                     </div>
 
-                    {/* Payment Section */}
+                    {/* PAYMENT SECTION – 2 columns on all screens (already grid-cols-2) */}
                     <div className="grid grid-cols-2 gap-4">
                         <div>
                             <Label className="text-primary pl-1 pb-1">
@@ -365,7 +364,7 @@ export default function PurchaseForm({ purchaseId, onSuccess }: Props) {
                                     setForm({ paymentStatus: val })
                                 }
                             >
-                                <SelectTrigger>
+                                <SelectTrigger className="w-full">
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>

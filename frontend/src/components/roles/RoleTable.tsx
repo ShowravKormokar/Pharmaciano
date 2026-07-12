@@ -8,6 +8,10 @@ interface Props {
 }
 
 export default function RoleTable({ roles }: Props) {
+    function truncateText(text: string, maxLength: number) {
+        return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
+    }
+
     return (
         <div className="rounded-2xl border shadow-sm overflow-x-auto">
             <table className="w-full text-sm">
@@ -25,7 +29,9 @@ export default function RoleTable({ roles }: Props) {
                     {roles.map((role) => (
                         <tr key={role._id} className="border-b hover:bg-muted/10">
                             <td className="p-4 font-medium">{role.name}</td>
-                            <td className="p-4">{role.description}</td>
+                            <td className="p-4 capitalize">
+                                {truncateText(role.description || "", 50)}
+                            </td>
                             {/* <td className="p-4 flex flex-wrap gap-2">
                                 {role.permissions.map((p: string) => (
                                     <span

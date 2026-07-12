@@ -105,7 +105,7 @@ export default function SalesFilter({
 
     return (
         <div className="space-y-5 w-full">
-            {/*  Search */}
+            {/* Search */}
             <div className="relative md:max-w-full rounded-xl border">
                 <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                 <Input
@@ -116,98 +116,103 @@ export default function SalesFilter({
                 />
             </div>
 
-            {/* Filters */}
-            <div className="flex flex-wrap gap-4 items-end bg-muted/30 p-4 rounded-xl border">
-                <div className="space-y-1">
-                    <Label className="text-xs">Medicine</Label>
-                    <Input
-                        placeholder="e.g napa"
-                        value={medicine}
-                        onChange={(e) => setMedicine(e.target.value)}
-                        className="w-44"
-                    />
-                </div>
+            {/* Filters Grid – 3 columns on large screens */}
+            <div className="bg-muted/30 p-4 rounded-xl border">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-end">
+                    <div className="space-y-1">
+                        <Label className="text-xs">Medicine</Label>
+                        <Input
+                            placeholder="e.g napa"
+                            value={medicine}
+                            onChange={(e) => setMedicine(e.target.value)}
+                            className="w-full"
+                        />
+                    </div>
 
-                <div className="space-y-1">
-                    <Label className="text-xs">From</Label>
-                    <Input
-                        type="date"
-                        value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
-                        className="w-36"
-                    />
-                </div>
+                    <div className="space-y-1">
+                        <Label className="text-xs">From</Label>
+                        <Input
+                            type="date"
+                            value={startDate}
+                            onChange={(e) => setStartDate(e.target.value)}
+                            className="w-full"
+                        />
+                    </div>
 
-                <div className="space-y-1">
-                    <Label className="text-xs">To</Label>
-                    <Input
-                        type="date"
-                        value={endDate}
-                        onChange={(e) => setEndDate(e.target.value)}
-                        className="w-36"
-                    />
-                </div>
+                    <div className="space-y-1">
+                        <Label className="text-xs">To</Label>
+                        <Input
+                            type="date"
+                            value={endDate}
+                            onChange={(e) => setEndDate(e.target.value)}
+                            className="w-full"
+                        />
+                    </div>
 
-                <div className="space-y-1">
-                    <Label className="text-xs">Payment</Label>
-                    <Select value={paymentMethod} onValueChange={setPaymentMethod}>
-                        <SelectTrigger className="w-36">
-                            <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="all">All</SelectItem>
-                            <SelectItem value="cash">Cash</SelectItem>
-                            <SelectItem value="card">Card</SelectItem>
-                            <SelectItem value="mobile">Mobile</SelectItem>
-                            <SelectItem value="bank_transfer">Bank</SelectItem>
-                        </SelectContent>
-                    </Select>
-                </div>
+                    <div className="space-y-1">
+                        <Label className="text-xs">Payment</Label>
+                        <Select value={paymentMethod} onValueChange={setPaymentMethod}>
+                            <SelectTrigger className="w-full">
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">All</SelectItem>
+                                <SelectItem value="cash">Cash</SelectItem>
+                                <SelectItem value="card">Card</SelectItem>
+                                <SelectItem value="mobile">Mobile</SelectItem>
+                                <SelectItem value="bank_transfer">Bank</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
 
-                {isSuper && (
-                    <>
-                        <div className="space-y-1">
-                            <Label className="text-xs">Organization</Label>
-                            <Select value={organization} onValueChange={setOrganization}>
-                                <SelectTrigger className="w-48">
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="all">All</SelectItem>
-                                    {organizationOptions.map((org) => (
-                                        <SelectItem key={getKey(org)} value={getName(org)}>
-                                            {getName(org)}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                    {isSuper && (
+                        <>
+                            <div className="space-y-1">
+                                <Label className="text-xs">Organization</Label>
+                                <Select value={organization} onValueChange={setOrganization}>
+                                    <SelectTrigger className="w-full">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">All</SelectItem>
+                                        {organizationOptions.map((org) => (
+                                            <SelectItem key={getKey(org)} value={getName(org)}>
+                                                {getName(org)}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+                            <div className="space-y-1">
+                                <Label className="text-xs">Branch</Label>
+                                <Select value={branch} onValueChange={setBranch}>
+                                    <SelectTrigger className="w-full">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">All</SelectItem>
+                                        {branchOptions.map((br) => (
+                                            <SelectItem key={getKey(br)} value={getName(br)}>
+                                                {getName(br)}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        </>
+                    )}
+
+                    {/* Clear button – takes full width on small screens, aligns right on larger ones */}
+                    {hasFilters && (
+                        <div className="col-span-1 sm:col-span-2 lg:col-span-3 flex justify-end">
+                            <Button variant="outline" size="sm" onClick={clearFilters}>
+                                <FilterX className="h-4 w-4 mr-1" />
+                                Clear
+                            </Button>
                         </div>
-
-                        <div className="space-y-1">
-                            <Label className="text-xs">Branch</Label>
-                            <Select value={branch} onValueChange={setBranch}>
-                                <SelectTrigger className="w-48">
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="all">All</SelectItem>
-                                    {branchOptions.map((br) => (
-                                        <SelectItem key={getKey(br)} value={getName(br)}>
-                                            {getName(br)}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-                    </>
-                )}
-
-                {hasFilters && (
-                    <Button variant="outline" size="sm" onClick={clearFilters}>
-                        <FilterX className="h-4 w-4 mr-1" />
-                        Clear
-                    </Button>
-                )}
+                    )}
+                </div>
             </div>
         </div>
     );

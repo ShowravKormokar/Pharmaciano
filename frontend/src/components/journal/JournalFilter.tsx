@@ -43,9 +43,9 @@ export default function JournalFilter({ onFilterChange }: Props) {
     const hasFilters = referenceType !== "all" || isReversed !== "all" || fromDate || toDate;
 
     return (
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
             <Select value={referenceType} onValueChange={setReferenceType}>
-                <SelectTrigger className="w-40">
+                <SelectTrigger className="w-full">
                     <SelectValue placeholder="Reference Type" />
                 </SelectTrigger>
                 <SelectContent>
@@ -60,7 +60,7 @@ export default function JournalFilter({ onFilterChange }: Props) {
             </Select>
 
             <Select value={isReversed} onValueChange={setIsReversed}>
-                <SelectTrigger className="w-32">
+                <SelectTrigger className="w-full">
                     <SelectValue placeholder="Status" />
                 </SelectTrigger>
                 <SelectContent>
@@ -74,13 +74,13 @@ export default function JournalFilter({ onFilterChange }: Props) {
                 type="date"
                 value={fromDate}
                 onChange={(e) => setFromDate(e.target.value)}
-                className="w-36"
+                className="w-full"
             />
             <Input
                 type="date"
                 value={toDate}
                 onChange={(e) => setToDate(e.target.value)}
-                className="w-36"
+                className="w-full"
             />
 
             {hasFilters && (

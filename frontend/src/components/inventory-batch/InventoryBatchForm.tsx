@@ -119,7 +119,7 @@ export default function InventoryBatchForm({ batchId, onSuccess }: Props) {
     return (
         <div className="space-y-6">
             <Card>
-                <CardContent className="space-y-6">
+                <CardContent className="space-y-6 w-full">
 
                     {/* Organization Info */}
                     {isSuper && (
@@ -129,12 +129,12 @@ export default function InventoryBatchForm({ batchId, onSuccess }: Props) {
                             </div>
                         ) : (
                             <>
-                                <div className="space-y-4">
+                                <div className="space-y-4 w-full">
                                     <h3 className="text-sm font-semibold text-primary">
                                         Organization Details
                                     </h3>
 
-                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
                                         {/* Organization Select */}
                                         <div>
                                             <Label className="pb-1 pl-1">
@@ -148,7 +148,7 @@ export default function InventoryBatchForm({ batchId, onSuccess }: Props) {
                                                 value={form.orgName}
                                                 onValueChange={handleOrgChange}
                                             >
-                                                <SelectTrigger>
+                                                    <SelectTrigger className="w-full">
                                                     <SelectValue placeholder="Select organization" />
                                                 </SelectTrigger>
                                                 <SelectContent className="capitalize">
@@ -182,7 +182,7 @@ export default function InventoryBatchForm({ batchId, onSuccess }: Props) {
                                                 </SelectContent>
                                             </Select> */}
                                             <Select value={form.branchName} onValueChange={handleBranchChange}>
-                                                <SelectTrigger>
+                                                    <SelectTrigger className="w-full">
                                                     <SelectValue placeholder="Select branch" />
                                                 </SelectTrigger>
                                                 <SelectContent className="capitalize">
@@ -285,7 +285,7 @@ export default function InventoryBatchForm({ batchId, onSuccess }: Props) {
                                     value={form.warehouseName}
                                     onValueChange={(val) => setForm({ warehouseName: val })}
                                 >
-                                    <SelectTrigger>
+                                    <SelectTrigger className="w-full">
                                         <SelectValue placeholder="Select warehouse" />
                                     </SelectTrigger>
                                     <SelectContent className="capitalize">

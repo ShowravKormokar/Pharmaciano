@@ -62,7 +62,7 @@ export default function AccountView({ account }: Props) {
                         </div>
                         <div>
                             <p className="text-sm text-muted-foreground">Organization</p>
-                            <p>{account.organizationId?.name || "N/A"}</p>
+                            <p className="capitalize">{account.organizationId?.name || "N/A"}</p>
                         </div>
                         <div>
                             <p className="text-sm text-muted-foreground">Status</p>

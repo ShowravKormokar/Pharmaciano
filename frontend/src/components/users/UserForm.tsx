@@ -55,32 +55,43 @@ export default function UserForm({ userId, onSuccess }: Props) {
                     <CardTitle>User Information</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    <Input
-                        placeholder="Full Name"
-                        value={form.name}
-                        onChange={(e) => setForm({ name: e.target.value })}
-                    />
-                    <Input
-                        type="email"
-                        placeholder="Email"
-                        value={form.email}
-                        onChange={(e) => setForm({ email: e.target.value })}
-                    />
-                    <Input
-                        type="password"
-                        placeholder={userId ? "Password (leave blank to keep current)" : "Password"}
-                        value={form.password}
-                        onChange={(e) => setForm({ password: e.target.value })}
-                    />
-                    <Input
-                        placeholder="Phone"
-                        value={form.phone}
-                        onChange={(e) => setForm({ phone: e.target.value })}
-                    />
-
+                    <div>
+                        <Label className="pb-1 pl-1">Name</Label>
+                        <Input
+                            placeholder="Full Name"
+                            value={form.name}
+                            onChange={(e) => setForm({ name: e.target.value })}
+                        />
+                    </div>
+                    <div >
+                        <Label className="pb-1 pl-1">Email</Label>
+                        <Input
+                            type="email"
+                            placeholder="Email"
+                            value={form.email}
+                            onChange={(e) => setForm({ email: e.target.value })}
+                        />
+                    </div>
+                    <div>
+                        <Label className="pb-1 pl-1">Password</Label>
+                        <Input
+                            type="password"
+                            placeholder={userId ? "Password (leave blank to keep current)" : "Password"}
+                            value={form.password}
+                            onChange={(e) => setForm({ password: e.target.value })}
+                        />
+                    </div>
+                    <div>
+                        <Label className="pb-1 pl-1">Phone</Label>
+                        <Input
+                            placeholder="Phone"
+                            value={form.phone}
+                            onChange={(e) => setForm({ phone: e.target.value })}
+                        />
+                    </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <Label>Role</Label>
+                            <Label className="pb-1 pl-1">Role</Label>
                             <Select
                                 value={form.role}
                                 onValueChange={(val) => setForm({ role: val })}
@@ -98,7 +109,7 @@ export default function UserForm({ userId, onSuccess }: Props) {
                             </Select>
                         </div>
                         <div>
-                            <Label>Organization</Label>
+                            <Label className="pb-1 pl-1">Organization</Label>
                             <Select
                                 value={form.orgName}
                                 onValueChange={(val) => setForm({ orgName: val })}
@@ -119,7 +130,7 @@ export default function UserForm({ userId, onSuccess }: Props) {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <Label>Branch</Label>
+                            <Label className="pb-1 pl-1">Branch</Label>
                             <Select
                                 value={form.branchName}
                                 onValueChange={(val) => setForm({ branchName: val })}
@@ -137,7 +148,7 @@ export default function UserForm({ userId, onSuccess }: Props) {
                             </Select>
                         </div>
                         <div>
-                            <Label>Warehouse (optional)</Label>
+                            <Label className="pb-1 pl-1">Warehouse (optional)</Label>
                             <Select
                                 value={form.warehouseName}
                                 onValueChange={(val) => setForm({ warehouseName: val })}
@@ -162,7 +173,7 @@ export default function UserForm({ userId, onSuccess }: Props) {
                             checked={form.isActive}
                             onCheckedChange={(checked) => setForm({ isActive: checked })}
                         />
-                        <Label htmlFor="isActive">Active</Label>
+                        <Label className="pb-1 pl-1" htmlFor="isActive">Active</Label>
                     </div>
                 </CardContent>
             </Card>

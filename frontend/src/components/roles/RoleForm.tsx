@@ -85,21 +85,27 @@ export default function RoleForm({ roleId, onSuccess }: Props) {
                     <CardTitle>Role Information</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    <Input
-                        placeholder="Role Name (UPPERCASE)"
-                        value={form.name}
-                        onChange={(e) =>
-                            setForm({ name: e.target.value.toUpperCase() })
-                        }
-                    />
+                    <div>
+                        <Label className="pb-1 pl-1">Role Name</Label>
+                        <Input
+                            placeholder="e.g. STAFF (UPPERCASE)"
+                            value={form.name}
+                            onChange={(e) =>
+                                setForm({ name: e.target.value.toUpperCase() })
+                            }
+                        />
+                    </div>
 
-                    <Textarea
-                        placeholder="Role Description"
-                        value={form.description}
-                        onChange={(e) =>
-                            setForm({ description: e.target.value })
-                        }
-                    />
+                    <div>
+                        <Label className="pb-1 pl-1">Description</Label>
+                        <Textarea
+                            placeholder="Role Description"
+                            value={form.description}
+                            onChange={(e) =>
+                                setForm({ description: e.target.value })
+                            }
+                        />
+                    </div>
                     <div className="flex items-center space-x-2">
                         <Switch
                             id="isActive"

@@ -29,9 +29,9 @@ export default function SupplierFilter({ onFilterChange }: Props) {
     const hasFilters = status !== "all";
 
     return (
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="w-full">
             <Select value={status} onValueChange={setStatus}>
-                <SelectTrigger className="w-[130px]">
+                <SelectTrigger className="w-full">
                     <SelectValue placeholder="All Status" />
                 </SelectTrigger>
                 <SelectContent>

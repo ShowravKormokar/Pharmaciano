@@ -49,9 +49,9 @@ export default function InventoryBatchFilter({ onFilterChange, initialFilters = 
     const hasFilters = status !== "all" || medicineName || batchNo;
 
     return (
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-end">
             <Select value={status} onValueChange={setStatus}>
-                <SelectTrigger className="w-[130px]">
+                <SelectTrigger className="w-full">
                     <SelectValue placeholder="All Status" />
                 </SelectTrigger>
                 <SelectContent>
@@ -66,13 +66,13 @@ export default function InventoryBatchFilter({ onFilterChange, initialFilters = 
                 placeholder="Medicine name"
                 value={medicineName}
                 onChange={(e) => setMedicineName(e.target.value)}
-                className="w-48"
+                className="w-full"
             />
             <Input
                 placeholder="Batch No."
                 value={batchNo}
                 onChange={(e) => setBatchNo(e.target.value)}
-                className="w-40"
+                className="w-full"
             />
 
             {hasFilters && (

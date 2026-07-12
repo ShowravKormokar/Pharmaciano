@@ -37,9 +37,9 @@ export default function PurchaseFilter({ onFilterChange }: Props) {
     const hasFilters = status !== "all" || paymentStatus !== "all" || fromDate || toDate;
 
     return (
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
             <Select value={status} onValueChange={setStatus}>
-                <SelectTrigger className="w-32"><SelectValue placeholder="Status" /></SelectTrigger>
+                <SelectTrigger className="w-full"><SelectValue placeholder="Status" /></SelectTrigger>
                 <SelectContent>
                     <SelectItem value="all">All</SelectItem>
                     <SelectItem value="pending">Pending</SelectItem>
@@ -48,7 +48,7 @@ export default function PurchaseFilter({ onFilterChange }: Props) {
                 </SelectContent>
             </Select>
             <Select value={paymentStatus} onValueChange={setPaymentStatus}>
-                <SelectTrigger className="w-32"><SelectValue placeholder="Payment" /></SelectTrigger>
+                <SelectTrigger className="w-full"><SelectValue placeholder="Payment" /></SelectTrigger>
                 <SelectContent>
                     <SelectItem value="all">All</SelectItem>
                     <SelectItem value="unpaid">Unpaid</SelectItem>
@@ -60,13 +60,13 @@ export default function PurchaseFilter({ onFilterChange }: Props) {
                 type="date"
                 value={fromDate}
                 onChange={(e) => setFromDate(e.target.value)}
-                className="w-36"
+                className="w-full"
             />
             <Input
                 type="date"
                 value={toDate}
                 onChange={(e) => setToDate(e.target.value)}
-                className="w-36"
+                className="w-full"
             />
             {
                 hasFilters &&

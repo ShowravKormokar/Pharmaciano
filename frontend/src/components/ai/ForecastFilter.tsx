@@ -130,10 +130,10 @@ export default function ForecastFilter() {
 
         {isSuper && (
           <>
-            <div>
+            <div className="w-full">
               <Label className="text-xs">Organization</Label>
               <Select value={orgId} onValueChange={handleOrgChange}>
-                <SelectTrigger>
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder="All" />
                 </SelectTrigger>
                 <SelectContent>
@@ -149,7 +149,7 @@ export default function ForecastFilter() {
             <div>
               <Label className="text-xs">Branch</Label>
               <Select value={branchId} onValueChange={setBranchId}>
-                <SelectTrigger>
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder="All" />
                 </SelectTrigger>
                 <SelectContent>
@@ -168,10 +168,6 @@ export default function ForecastFilter() {
         )}
       </div>
 
-      {dateRangeInvalid && (
-        <p className="text-sm text-red-600">"From Date" must be on or before "To Date".</p>
-      )}
-
       <div className="flex flex-wrap gap-2">
         <Button onClick={applyFilters} disabled={loading || dateRangeInvalid}>
           {loading ? (
@@ -188,6 +184,10 @@ export default function ForecastFilter() {
           </Button>
         )}
       </div>
+
+      {dateRangeInvalid && (
+        <p className="text-sm text-red-600">"From Date" must be on or before "To Date".</p>
+      )}
     </div>
   );
 }

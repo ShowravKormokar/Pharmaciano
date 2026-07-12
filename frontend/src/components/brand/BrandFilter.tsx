@@ -42,9 +42,9 @@ export default function BrandFilter({ brands, onFilterChange }: Props) {
     const hasFilters = manufacturer !== "all" || country !== "all" || status !== "all";
 
     return (
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-end">
             <Select value={manufacturer} onValueChange={setManufacturer}>
-                <SelectTrigger className="w-[180px]">
+                <SelectTrigger className="w-full">
                     <SelectValue placeholder="All Manufacturers" />
                 </SelectTrigger>
                 <SelectContent>
@@ -56,7 +56,7 @@ export default function BrandFilter({ brands, onFilterChange }: Props) {
             </Select>
 
             <Select value={country} onValueChange={setCountry}>
-                <SelectTrigger className="w-[150px]">
+                <SelectTrigger className="w-full">
                     <SelectValue placeholder="All Countries" />
                 </SelectTrigger>
                 <SelectContent>
@@ -68,7 +68,7 @@ export default function BrandFilter({ brands, onFilterChange }: Props) {
             </Select>
 
             <Select value={status} onValueChange={setStatus}>
-                <SelectTrigger className="w-[130px]">
+                <SelectTrigger className="w-full">
                     <SelectValue placeholder="All Status" />
                 </SelectTrigger>
                 <SelectContent>
