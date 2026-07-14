@@ -9,6 +9,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ShoppingCart, Eye, PlusCircle, TrendingUp } from "lucide-react";
 
+// Helper to safely render payment method (string or object)
+const getPaymentMethod = (payment: any): string => {
+    if (!payment) return "N/A";
+    if (typeof payment === "string") return payment;
+    if (typeof payment === "object" && payment.type) return payment.type;
+    return String(payment);
+};
+
 export default function SalesOverviewPage() {
     const router = useRouter();
     const { sales, fetchSales, loading } = useSaleStore();
@@ -103,7 +111,7 @@ export default function SalesOverviewPage() {
                                     <div className="space-y-1">
                                         <p className="font-medium">{sale.invoiceNo}</p>
                                         <p className="text-sm text-muted-foreground capitalize">
-                                            {sale.customerName || "Walk-in"} | {sale.paymentMethod}
+                                            {sale.customerName || "Walk-in"} | {getPaymentMethod(sale.paymentMethod)}
                                         </p>
                                     </div>
                                     <div className="flex items-center gap-3">

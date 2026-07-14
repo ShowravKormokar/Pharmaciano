@@ -22,7 +22,7 @@ export default function LoginPage() {
             <div className="flex-1 flex items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
                 <div className="w-full max-w-md space-y-6">
                     <LoginForm formData={formData} setFormData={setFormData} />
-                    {/* <DemoCredentials onFillCredentials={handleFillCredentials} /> */}
+                    <DemoCredentials onFillCredentials={handleFillCredentials} />
                     {/* Footer */}
                     <div className="text-center">
                         <p className="text-sm text-muted-foreground">
