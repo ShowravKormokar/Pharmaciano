@@ -28,8 +28,11 @@ export default function LoginPage() {
                         <p className="text-sm text-muted-foreground">
                             © 2026 Pharmacino ERP. All rights reserved.
                         </p>
-                        <p className="mt-1 text-[11px] text-muted-foreground/80">
+                        {/* <p className="mt-1 text-[11px] text-muted-foreground/80">
                             Developed by Engineering Boys
+                        </p> */}
+                        <p className="mt-2 text-[8px] font-medium uppercase tracking-[0.15em] bg-muted text-muted-foreground px-2 py-1 rounded-lg inline-block">
+                            Version 1.0.0 · Academic Edition
                         </p>
                     </div>
                 </div>
