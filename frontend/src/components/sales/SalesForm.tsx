@@ -268,20 +268,20 @@ export default function SalesForm({ saleId, onSuccess }: Props) {
                                     onChange={(e) => setTax(parseFloat(e.target.value) || 0)}
                                 />
                             </div>
-                        </div>
-                        <div>
-                            <Label className="pb-2">Payment Method</Label>
-                            <Select value={paymentMethod} onValueChange={setPaymentMethod}>
-                                <SelectTrigger>
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="cash">Cash</SelectItem>
-                                    <SelectItem value="card">Card</SelectItem>
-                                    <SelectItem value="mobile">Mobile Banking</SelectItem>
-                                    <SelectItem value="bank_transfer">Bank Transfer</SelectItem>
-                                </SelectContent>
-                            </Select>
+                            <div>
+                                <Label className="pb-2">Payment Method</Label>
+                                <Select value={paymentMethod} onValueChange={setPaymentMethod}>
+                                    <SelectTrigger>
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="cash">Cash</SelectItem>
+                                        <SelectItem value="card">Card</SelectItem>
+                                        <SelectItem value="mobile">Mobile Banking</SelectItem>
+                                        <SelectItem value="bank_transfer">Bank Transfer</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
                         </div>
 
                         {isSuper && (
@@ -446,7 +446,7 @@ export default function SalesForm({ saleId, onSuccess }: Props) {
                             <span>Total:</span>
                             <span>Tk {calculateTotal().toFixed(2)}/-</span>
                         </div>
-                        {/* ================= BUTTONS ================= */}
+                        {/*BUTTONS*/}
                         <div className="flex flex-col gap-3">
                             <div className="flex gap-3">
                                 {!saleId && (
