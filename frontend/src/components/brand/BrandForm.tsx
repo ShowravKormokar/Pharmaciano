@@ -124,17 +124,20 @@ export default function BrandForm({ brandId, onSuccess }: Props) {
                                     onValueChange={(val) =>
                                         setForm({ ...form, organizationName: val })
                                     }
-
                                 >
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select organization" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        {organizationNames.map((name) => (
-                                            <SelectItem key={name} value={name}>
-                                                {name}
-                                            </SelectItem>
-                                        ))}
+                                        {Array.isArray(organizationNames) && organizationNames.map((item: any) => {
+                                            const name = typeof item === 'string' ? item : item.name;
+                                            const id = typeof item === 'string' ? item : item._id;
+                                            return (
+                                                <SelectItem key={id} value={name}>
+                                                    {name}
+                                                </SelectItem>
+                                            );
+                                        })}
                                     </SelectContent>
                                 </Select>
                             )}
