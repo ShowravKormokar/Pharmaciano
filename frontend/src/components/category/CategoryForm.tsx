@@ -51,7 +51,7 @@ export default function CategoryForm({ categoryId, onSuccess }: Props) {
 
                     {/* Description */}
                     <div>
-                        <Label className="pb-1 pl-1">Description</Label>
+                        <Label className="pb-1 pl-1">Description<span className="text-red-500">*</span></Label>
                         <Textarea
                             placeholder="Write short description..."
                             value={form.description}
