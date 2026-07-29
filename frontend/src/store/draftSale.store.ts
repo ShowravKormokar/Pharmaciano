@@ -8,7 +8,7 @@ interface DraftSaleState {
     activeDraftId: string | null;
     createDraft: () => void;
     loadDraft: (id: string) => void;
-    updateCurrentDraft: () => void;   // saves current form state to active draft
+    updateCurrentDraft: () => void;
     deleteDraft: (id: string) => void;
     completeCurrentDraft: () => Promise<void>;
 }
@@ -29,13 +29,13 @@ export const useDraftSaleStore = create<DraftSaleState>()(
                     discount: 0,
                     tax: 0,
                     paymentMethod: "cash",
+                    paymentProvider: "",
                     cart: [],
                 };
                 set({
                     drafts: [...get().drafts, newDraft],
                     activeDraftId: newId,
                 });
-                // Reset the current sale form
                 const { resetForm, clearCart } = useSaleStore.getState();
                 resetForm();
                 clearCart();
@@ -45,22 +45,13 @@ export const useDraftSaleStore = create<DraftSaleState>()(
                 const draft = get().drafts.find(d => d.id === id);
                 if (draft) {
                     set({ activeDraftId: id });
-                    // Sync to main sale store
-                    // const { setForm, setCart } = useSaleStore.getState();
-                    // setForm({
-                    //     customerName: draft.customerName,
-                    //     customerPhone: draft.customerPhone,
-                    //     discount: draft.discount,
-                    //     tax: draft.tax,
-                    //     paymentMethod: draft.paymentMethod,
-                    // });
-                    // setCart(draft.cart);
                     const saleState = useSaleStore.getState();
                     saleState.customerName = draft.customerName;
                     saleState.customerPhone = draft.customerPhone;
                     saleState.discount = draft.discount;
                     saleState.tax = draft.tax;
                     saleState.paymentMethod = draft.paymentMethod;
+                    saleState.paymentProvider = draft.paymentProvider || "";
                     saleState.setCart(draft.cart);
                 }
             },
@@ -77,6 +68,7 @@ export const useDraftSaleStore = create<DraftSaleState>()(
                     discount: current.discount,
                     tax: current.tax,
                     paymentMethod: current.paymentMethod,
+                    paymentProvider: current.paymentProvider,
                     cart: current.cart,
                 };
                 set({
@@ -89,7 +81,6 @@ export const useDraftSaleStore = create<DraftSaleState>()(
                     drafts: state.drafts.filter(d => d.id !== id),
                     activeDraftId: state.activeDraftId === id ? null : state.activeDraftId,
                 }));
-                // If no active draft left, reset the current sale form
                 if (get().activeDraftId === null) {
                     const { resetForm, clearCart } = useSaleStore.getState();
                     resetForm();

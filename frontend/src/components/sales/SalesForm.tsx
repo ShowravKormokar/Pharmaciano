@@ -7,7 +7,7 @@ import { useSaleStore } from "@/store/sale.store";
 import { useMedicineStore } from "@/store/medicine.store";
 import { useInventoryBatchStore } from "@/store/inventoryBatch.store";
 import { useDraftSaleStore } from "@/store/draftSale.store";
-import { useDebouncedCallback } from "use-debounce"; // I need install: npm i use - debounce
+import { useDebouncedCallback } from "use-debounce";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -45,6 +45,7 @@ export default function SalesForm({ saleId, onSuccess }: Props) {
         discount,
         tax,
         paymentMethod,
+        paymentProvider,
         organizationName,
         branchName,
         addToCart,
@@ -55,6 +56,7 @@ export default function SalesForm({ saleId, onSuccess }: Props) {
         setDiscount,
         setTax,
         setPaymentMethod,
+        setPaymentProvider,
         createSale,
         updateSale,
         setOrganizationName,
@@ -84,14 +86,11 @@ export default function SalesForm({ saleId, onSuccess }: Props) {
     useEffect(() => {
         const loadData = async () => {
             setIsLoading(true);
-
             try {
                 const promises = [fetchMedicines(), fetchBatches()];
-
                 if (isSuper) {
                     promises.push(fetchOrganizations(), fetchBranches());
                 }
-
                 await Promise.all(promises);
             } catch (err) {
                 console.error("Loading failed:", err);
@@ -99,19 +98,17 @@ export default function SalesForm({ saleId, onSuccess }: Props) {
                 setIsLoading(false);
             }
         };
-
         loadData();
     }, [fetchMedicines, fetchBatches, fetchOrganizations, fetchBranches, isSuper]);
 
     const debouncedUpdate = useDebouncedCallback(() => {
         updateCurrentDraft();
-    }, 500); // save after 500ms of inactivity
+    }, 500);
 
     useEffect(() => {
         debouncedUpdate();
-    }, [cart, customerName, customerPhone, discount, tax, paymentMethod, debouncedUpdate]);
+    }, [cart, customerName, customerPhone, discount, tax, paymentMethod, paymentProvider, debouncedUpdate]);
 
-    // Filter medicines based on search
     const filteredMedicines = medicines.filter((med) =>
         med.name.toLowerCase().includes(searchMedicine.toLowerCase()) ||
         med.barcode?.includes(searchMedicine) ||
@@ -127,7 +124,6 @@ export default function SalesForm({ saleId, onSuccess }: Props) {
             toast.error("Quantity must be positive");
             return;
         }
-        // Optional: check stock quantity from batch (selectedBatch.quantity)
         if (selectedBatch.quantity < quantity) {
             toast.error(`Only ${selectedBatch.quantity} units available in this batch`);
             return;
@@ -141,7 +137,6 @@ export default function SalesForm({ saleId, onSuccess }: Props) {
             },
             quantity
         );
-        // Reset selection
         setSelectedMedicine(null);
         setSelectedBatch(null);
         setQuantity(1);
@@ -249,6 +244,7 @@ export default function SalesForm({ saleId, onSuccess }: Props) {
                                 onChange={(e) => setCustomer({ customerPhone: e.target.value })}
                             />
                         </div>
+
                         <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <Label className="pb-1 pl-1">Discount (%)</Label>
@@ -268,11 +264,15 @@ export default function SalesForm({ saleId, onSuccess }: Props) {
                                     onChange={(e) => setTax(parseFloat(e.target.value) || 0)}
                                 />
                             </div>
+                        </div>
+
+                        {/* Payment Type + Provider */}
+                        <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <Label className="pb-2">Payment Method</Label>
+                                <Label className="pb-2">Payment Type</Label>
                                 <Select value={paymentMethod} onValueChange={setPaymentMethod}>
                                     <SelectTrigger>
-                                        <SelectValue />
+                                        <SelectValue placeholder="Select type" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="cash">Cash</SelectItem>
@@ -282,6 +282,29 @@ export default function SalesForm({ saleId, onSuccess }: Props) {
                                     </SelectContent>
                                 </Select>
                             </div>
+                            {(paymentMethod === 'mobile' || paymentMethod === 'bank_transfer') && (
+                                <div>
+                                    <Label className="pb-2">Provider</Label>
+                                    <Select value={paymentProvider} onValueChange={setPaymentProvider}>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select provider" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="bkash">bKash</SelectItem>
+                                            <SelectItem value="nagad">Nagad</SelectItem>
+                                            <SelectItem value="rocket">Rocket</SelectItem>
+                                            <SelectItem value="upay">Upay</SelectItem>
+                                            {paymentMethod === 'bank_transfer' && (
+                                                <>
+                                                    <SelectItem value="dbbl">DBBL</SelectItem>
+                                                    <SelectItem value="city">City Bank</SelectItem>
+                                                    <SelectItem value="brac">BRAC Bank</SelectItem>
+                                                </>
+                                            )}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            )}
                         </div>
 
                         {isSuper && (
@@ -295,7 +318,7 @@ export default function SalesForm({ saleId, onSuccess }: Props) {
                                             value={organizationName}
                                             onValueChange={(val) => {
                                                 setOrganizationName(val);
-                                                setBranchName(""); // reset branch when org changes
+                                                setBranchName("");
                                             }}
                                         >
                                             <SelectTrigger>
@@ -369,7 +392,7 @@ export default function SalesForm({ saleId, onSuccess }: Props) {
                                         }}
                                         className="w-full text-left px-2 py-1 hover:bg-muted rounded capitalize"
                                     >
-                                        {med.name} - {med.strength} {med.unit}
+                                        {med.name} - {med.strength}
                                     </button>
                                 ))}
                             </div>
@@ -446,12 +469,11 @@ export default function SalesForm({ saleId, onSuccess }: Props) {
                             <span>Total:</span>
                             <span>Tk {calculateTotal().toFixed(2)}/-</span>
                         </div>
-                        {/*BUTTONS*/}
                         <div className="flex flex-col gap-3">
                             <div className="flex gap-3">
                                 {!saleId && (
                                     <Button
-                                        className="flex-1 text-yellow-200"
+                                        className="flex-1"
                                         type="button"
                                         variant="outline"
                                         onClick={() => {
@@ -463,7 +485,6 @@ export default function SalesForm({ saleId, onSuccess }: Props) {
                                         Set As Draft
                                     </Button>
                                 )}
-
                                 {!saleId && (
                                     <Button
                                         className="flex-1"
@@ -500,4 +521,4 @@ export default function SalesForm({ saleId, onSuccess }: Props) {
             </div>
         </div>
     );
-};
+}

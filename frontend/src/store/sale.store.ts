@@ -26,8 +26,9 @@ interface SaleState {
     };
     organizationName: string;
     branchName: string;
+    paymentProvider: string; // NEW
 
-    // POS cart (unchanged)
+    // POS cart
     cart: Array<{
         medicineId?: string;
         medicineName: string;
@@ -45,6 +46,7 @@ interface SaleState {
     fetchSaleById: (id: string) => Promise<SaleItem | null>;
     setOrganizationName: (name: string) => void;
     setBranchName: (name: string) => void;
+    setPaymentProvider: (provider: string) => void; // NEW
     createSale: () => Promise<{ success: boolean; id?: string; invoiceNo?: string }>;
     updateSale: (id: string) => Promise<{ success: boolean }>;
     deleteSale: (id: string) => Promise<boolean>;
@@ -52,7 +54,7 @@ interface SaleState {
     resetForm: () => void;
     loadSaleIntoForm: (sale: SaleItem) => void;
 
-    // Cart actions (unchanged)
+    // Cart actions
     setCart: (cart: CartItem[]) => void;
     addToCart: (item: Omit<SaleState['cart'][0], 'quantity'>, quantity: number) => void;
     removeFromCart: (batchNo: string) => void;
@@ -76,6 +78,8 @@ export const useSaleStore = create<SaleState>()((set, get) => ({
     },
     organizationName: "",
     branchName: "",
+    paymentProvider: "", // NEW
+
     cart: [],
     customerName: "",
     customerPhone: "",
@@ -122,6 +126,7 @@ export const useSaleStore = create<SaleState>()((set, get) => ({
 
     setOrganizationName: (name) => set({ organizationName: name }),
     setBranchName: (name) => set({ branchName: name }),
+    setPaymentProvider: (provider) => set({ paymentProvider: provider }), // NEW
 
     resetForm: () => set({
         cart: [],
@@ -130,25 +135,32 @@ export const useSaleStore = create<SaleState>()((set, get) => ({
         discount: 0,
         tax: 0,
         paymentMethod: "cash",
+        paymentProvider: "",
         organizationName: "",
         branchName: "",
     }),
 
-    loadSaleIntoForm: (sale) => set({
-        cart: sale.items.map(item => ({
-            medicineName: item.medicineName,
-            batchNo: item.batchNo,
-            quantity: item.quantity,
-            sellingPrice: item.sellingPrice,
-        })),
-        customerName: sale.customerName || "",
-        customerPhone: sale.customerPhone || "",
-        discount: sale.discount,
-        tax: sale.tax,
-        paymentMethod: sale.paymentMethod,
-        organizationName: sale.organizationId?.name || "",
-        branchName: sale.branchId?.name || "",
-    }),
+    loadSaleIntoForm: (sale) => {
+        const payment = typeof sale.paymentMethod === 'object'
+            ? sale.paymentMethod
+            : { type: sale.paymentMethod || "cash" };
+        set({
+            cart: sale.items.map(item => ({
+                medicineName: item.medicineName,
+                batchNo: item.batchNo,
+                quantity: item.quantity,
+                sellingPrice: item.sellingPrice,
+            })),
+            customerName: sale.customerName || "",
+            customerPhone: sale.customerPhone || "",
+            discount: sale.discount,
+            tax: sale.tax,
+            paymentMethod: payment.type || "cash",
+            paymentProvider: (payment as any).provider || "",
+            organizationName: sale.organizationId?.name || "",
+            branchName: sale.branchId?.name || "",
+        });
+    },
 
     createSale: async () => {
         set({ loading: true, error: null });
@@ -160,6 +172,7 @@ export const useSaleStore = create<SaleState>()((set, get) => ({
                 discount,
                 tax,
                 paymentMethod,
+                paymentProvider,
                 organizationName,
                 branchName,
             } = get();
@@ -169,13 +182,12 @@ export const useSaleStore = create<SaleState>()((set, get) => ({
 
             if (cart.length === 0) throw new Error("Cart is empty");
 
-            // In createSale:
             const payload: CreateSalePayload = {
                 customerName: customerName || undefined,
                 customerPhone: customerPhone || undefined,
                 discount,
                 tax,
-                paymentMethod: { type: paymentMethod },  // send as object
+                paymentMethod: { type: paymentMethod, provider: paymentProvider || undefined },
                 items: cart.map((item) => ({
                     medicineId: item.medicineId,
                     medicineName: item.medicineName,
@@ -220,6 +232,7 @@ export const useSaleStore = create<SaleState>()((set, get) => ({
                 discount,
                 tax,
                 paymentMethod,
+                paymentProvider,
                 organizationName,
                 branchName,
             } = get();
@@ -232,7 +245,7 @@ export const useSaleStore = create<SaleState>()((set, get) => ({
                 customerPhone: customerPhone || undefined,
                 discount,
                 tax,
-                paymentMethod: { type: paymentMethod },
+                paymentMethod: { type: paymentMethod, provider: paymentProvider || undefined },
                 items: cart.map((item) => ({
                     medicineId: item.medicineId,
                     medicineName: item.medicineName,
@@ -283,55 +296,36 @@ export const useSaleStore = create<SaleState>()((set, get) => ({
     generateInvoicePdf: async (id: string) => {
         try {
             const blob = await generateInvoicePdfService(id);
-
-            if (!(blob instanceof Blob)) {
-                throw new Error("Invalid file received");
-            }
-
+            if (!(blob instanceof Blob)) throw new Error("Invalid file received");
             downloadBlob(blob, `invoice_${id}.pdf`);
-
             toast.success("Invoice downloaded successfully");
         } catch (err: any) {
-            const msg =
-                err?.response?.data?.message ||
-                err?.message ||
-                "Failed to generate invoice";
-
+            const msg = err?.response?.data?.message || err?.message || "Failed to generate invoice";
             toast.error(msg);
         }
     },
 
     // Cart actions
     setCart: (cart) => set({ cart }),
-
     addToCart: (item, quantity) => {
         set((state) => {
             const existing = state.cart.find((i) => i.batchNo === item.batchNo);
             if (existing) {
                 return {
                     cart: state.cart.map((i) =>
-                        i.batchNo === item.batchNo
-                            ? { ...i, quantity: i.quantity + quantity }
-                            : i
+                        i.batchNo === item.batchNo ? { ...i, quantity: i.quantity + quantity } : i
                     ),
                 };
             }
-            return {
-                cart: [...state.cart, { ...item, quantity }],
-            };
+            return { cart: [...state.cart, { ...item, quantity }] };
         });
     },
-
     removeFromCart: (batchNo) => {
-        set((state) => ({
-            cart: state.cart.filter((i) => i.batchNo !== batchNo),
-        }));
+        set((state) => ({ cart: state.cart.filter((i) => i.batchNo !== batchNo) }));
     },
     updateCartQuantity: (batchNo, quantity) => {
         set((state) => ({
-            cart: state.cart.map((i) =>
-                i.batchNo === batchNo ? { ...i, quantity } : i
-            ),
+            cart: state.cart.map((i) => (i.batchNo === batchNo ? { ...i, quantity } : i)),
         }));
     },
     clearCart: () => set({ cart: [] }),
@@ -339,5 +333,4 @@ export const useSaleStore = create<SaleState>()((set, get) => ({
     setDiscount: (discount) => set({ discount }),
     setTax: (tax) => set({ tax }),
     setPaymentMethod: (method) => set({ paymentMethod: method }),
-})
-);
+}));

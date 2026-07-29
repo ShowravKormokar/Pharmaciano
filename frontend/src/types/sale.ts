@@ -100,6 +100,7 @@ export interface DraftSale {
     discount: number;
     tax: number;
     paymentMethod: string;
+    paymentProvider: string;
     cart: Array<{
         medicineName: string;
         batchNo: string;
