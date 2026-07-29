@@ -36,24 +36,24 @@ export default function ForecastSummaryCards({ summary }: Props) {
       icon: RotateCcw,
       tone: "text-red-700 bg-red-100",
     },
-    {
-      label: "Critical / Out of Stock",
-      value: (summary.criticalStockCount + summary.outOfStockCount).toLocaleString(),
-      caption: `${summary.outOfStockCount} fully out of stock`,
-      icon: PackageX,
-      tone: "text-red-700 bg-red-100",
-    },
-    {
-      label: "Expiring Soon",
-      value: summary.expiringSoonCount.toLocaleString(),
-      caption: "Within the next 90 days",
-      icon: Clock,
-      tone: "text-amber-700 bg-amber-100",
-    },
+    // {
+    //   label: "Critical / Out of Stock",
+    //   value: (summary.criticalStockCount + summary.outOfStockCount).toLocaleString(),
+    //   caption: `${summary.outOfStockCount} fully out of stock`,
+    //   icon: PackageX,
+    //   tone: "text-red-700 bg-red-100",
+    // },
+    // {
+    //   label: "Expiring Soon",
+    //   value: summary.expiringSoonCount.toLocaleString(),
+    //   caption: "Within the next 90 days",
+    //   icon: Clock,
+    //   tone: "text-amber-700 bg-amber-100",
+    // },
   ];
 
   return (
-    <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
+    <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
       {cards.map((card) => (
         <Card key={card.label}>
           <CardContent className="flex flex-col gap-3 p-4">

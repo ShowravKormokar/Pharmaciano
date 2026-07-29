@@ -11,8 +11,8 @@ import {
 
 export function KpiSkeleton() {
   return (
-    <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
-      {[...Array(5)].map((_, i) => (
+    <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
+      {[...Array(3)].map((_, i) => (
         <Card key={i}>
           <CardContent className="space-y-3 p-4">
             <Skeleton className="h-9 w-9 rounded-lg" />

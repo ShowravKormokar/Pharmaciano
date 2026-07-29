@@ -130,7 +130,7 @@ export default function ForecastFilter() {
 
         {isSuper && (
           <>
-            <div className="w-full">
+            <div className="w-full hidden">
               <Label className="text-xs">Organization</Label>
               <Select value={orgId} onValueChange={handleOrgChange}>
                 <SelectTrigger className="w-full">
