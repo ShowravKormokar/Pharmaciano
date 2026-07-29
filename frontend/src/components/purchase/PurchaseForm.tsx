@@ -6,8 +6,8 @@ import { useSupplierStore } from "@/store/supplier.store";
 import { useWarehouseStore } from "@/store/warehouse.store";
 import { useOrganizationStore } from "@/store/organization.store";
 import { useBranchStore } from "@/store/branch.store";
-// import { useUniqueNamesStore } from "@/store/uniqueNames.store"; // 🟡 COMMENTED OUT
-import { useMedicineStore } from "@/store/medicine.store"; // 🟢 NEW IMPORT
+// import { useUniqueNamesStore } from "@/store/uniqueNames.store"; // COMMENTED OUT
+import { useMedicineStore } from "@/store/medicine.store"; // NEW IMPORT
 import { useAuthStore } from "@/store/auth.store";
 import { isSuperAdmin } from "@/lib/isSuperAdmin";
 
@@ -49,8 +49,8 @@ export default function PurchaseForm({ purchaseId, onSuccess }: Props) {
     const { organizations, fetchOrganizations } = useOrganizationStore();
     const { branches, fetchBranches } = useBranchStore();
 
-    // 🟡 COMMENTED OUT: const { getMedicineNames, unqNameloading } = useUniqueNamesStore();
-    // 🟢 NEW: use medicine store for medicine list
+    // COMMENTED OUT: const { getMedicineNames, unqNameloading } = useUniqueNamesStore();
+
     const { medicines, fetchMedicines, loading: medicinesLoading } = useMedicineStore();
 
     const { user } = useAuthStore();
@@ -90,7 +90,7 @@ export default function PurchaseForm({ purchaseId, onSuccess }: Props) {
         return warehouses;
     }, [warehouses, form.branchName]);
 
-    // 🟢 NEW: Build medicine name list from medicine store
+    // NEW: Build medicine name list from medicine store
     const medicineNames = useMemo(() => {
         return medicines.map(m => m.name);
     }, [medicines]);
