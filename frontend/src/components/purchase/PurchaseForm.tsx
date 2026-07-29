@@ -6,7 +6,8 @@ import { useSupplierStore } from "@/store/supplier.store";
 import { useWarehouseStore } from "@/store/warehouse.store";
 import { useOrganizationStore } from "@/store/organization.store";
 import { useBranchStore } from "@/store/branch.store";
-import { useUniqueNamesStore } from "@/store/uniqueNames.store";
+// import { useUniqueNamesStore } from "@/store/uniqueNames.store"; // 🟡 COMMENTED OUT
+import { useMedicineStore } from "@/store/medicine.store"; // 🟢 NEW IMPORT
 import { useAuthStore } from "@/store/auth.store";
 import { isSuperAdmin } from "@/lib/isSuperAdmin";
 
@@ -32,6 +33,7 @@ import {
 } from "@/components/ui/combobox";
 
 import { Plus, Trash2 } from "lucide-react";
+import { toast } from "sonner";
 
 interface Props {
     purchaseId?: string;
@@ -47,7 +49,9 @@ export default function PurchaseForm({ purchaseId, onSuccess }: Props) {
     const { organizations, fetchOrganizations } = useOrganizationStore();
     const { branches, fetchBranches } = useBranchStore();
 
-    const { getMedicineNames, unqNameloading } = useUniqueNamesStore();
+    // 🟡 COMMENTED OUT: const { getMedicineNames, unqNameloading } = useUniqueNamesStore();
+    // 🟢 NEW: use medicine store for medicine list
+    const { medicines, fetchMedicines, loading: medicinesLoading } = useMedicineStore();
 
     const { user } = useAuthStore();
     const isSuper = isSuperAdmin(user?.email);
@@ -64,7 +68,8 @@ export default function PurchaseForm({ purchaseId, onSuccess }: Props) {
         fetchWarehouses();
         fetchOrganizations();
         fetchBranches();
-    }, [fetchSuppliers, fetchWarehouses, fetchOrganizations, fetchBranches]);
+        fetchMedicines(); // 🟢 NEW: fetch medicines
+    }, [fetchSuppliers, fetchWarehouses, fetchOrganizations, fetchBranches, fetchMedicines]);
 
     // FILTER
     const filteredBranches = useMemo(() => {
@@ -85,12 +90,15 @@ export default function PurchaseForm({ purchaseId, onSuccess }: Props) {
         return warehouses;
     }, [warehouses, form.branchName]);
 
-    const medicineNames = getMedicineNames();
+    // 🟢 NEW: Build medicine name list from medicine store
+    const medicineNames = useMemo(() => {
+        return medicines.map(m => m.name);
+    }, [medicines]);
 
     const getFilteredMedicines = (query: string) => {
         if (!query) return medicineNames;
-        return medicineNames.filter((m) =>
-            m.toLowerCase().includes(query.toLowerCase())
+        return medicineNames.filter((name) =>
+            name.toLowerCase().includes(query.toLowerCase())
         );
     };
 
@@ -121,6 +129,11 @@ export default function PurchaseForm({ purchaseId, onSuccess }: Props) {
 
     // SUBMIT
     const handleSubmit = async () => {
+        const hasInvalidItem = form.items.some(item => !item.medicineName || item.medicineName.trim() === "");
+        if (hasInvalidItem) {
+            toast.error("Please select a valid medicine for all items.");
+            return;
+        }
         setSubmitting(true);
         const success = purchaseId
             ? await updatePurchase(purchaseId)
@@ -269,15 +282,13 @@ export default function PurchaseForm({ purchaseId, onSuccess }: Props) {
 
                                     {/* Medicine Combobox */}
                                     <div className="flex-1">
-                                        {unqNameloading ? (
+                                        {medicinesLoading ? ( // 🟢 Use medicinesLoading from medicine store
                                             <div className="h-10 bg-muted animate-pulse rounded-md" />
                                         ) : (
                                             <Combobox
                                                 value={item.medicineName}
                                                 onValueChange={(val) => {
                                                     updateItem(idx, "medicineName", val || "");
-
-                                                    // 🔥 set selected value to input
                                                     setMedicineQueries((prev) => ({
                                                         ...prev,
                                                         [idx]: val || "",

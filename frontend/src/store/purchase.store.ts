@@ -126,7 +126,13 @@ export const usePurchaseStore = create<PurchaseState>()(
                     }
                     const { user } = useAuthStore.getState();
                     const isSuper = isSuperAdmin(user?.email);
-                    const payload: CreatePurchasePayload = { supplier, warehouseName, items, paymentStatus, paidAmount };
+                    const payload: CreatePurchasePayload = {
+                        supplier,
+                        warehouseName: warehouseName.toLowerCase(), // ensure lowercase
+                        items,
+                        paymentStatus,
+                        paidAmount
+                    };
                     if (isSuper) {
                         if (!organizationName || !branchName) throw new Error("Organization and branch are required for super admin");
                         payload.organizationName = organizationName;
@@ -138,21 +144,39 @@ export const usePurchaseStore = create<PurchaseState>()(
                     get().resetForm();
                     return true;
                 } catch (err: any) {
-                    const msg = err?.response?.data?.message || err.message || "Failed to create purchase";
-                    toast.error(msg, { duration: 3000 });
-                    set({ error: msg });
+                    // 🔥 Extract detailed error messages
+                    let errorMessage = err.message || "Failed to create purchase";
+                    if (err?.response?.data?.errors && Array.isArray(err.response.data.errors)) {
+                        // Join all field errors into a single string
+                        errorMessage = err.response.data.errors
+                            .map((e: any) => `${e.field}: ${e.message}`)
+                            .join("; ");
+                    } else if (err?.response?.data?.message) {
+                        errorMessage = err.response.data.message;
+                    }
+                    toast.error(errorMessage, { duration: 3000 });
+                    set({ error: errorMessage });
                     return false;
                 } finally {
                     set({ loading: false });
                 }
             },
+
             updatePurchase: async (id) => {
                 set({ loading: true, error: null });
                 try {
                     const { supplier, warehouseName, items, paymentStatus, paidAmount, discount, tax, organizationName, branchName } = get().form;
                     const { user } = useAuthStore.getState();
                     const isSuper = isSuperAdmin(user?.email);
-                    const payload: UpdatePurchasePayload = { supplier, warehouseName, items, paymentStatus, paidAmount, discount, tax };
+                    const payload: UpdatePurchasePayload = {
+                        supplier,
+                        warehouseName: warehouseName?.toLowerCase(),
+                        items,
+                        paymentStatus,
+                        paidAmount,
+                        discount,
+                        tax
+                    };
                     if (isSuper) {
                         payload.organizationName = organizationName;
                         payload.branchName = branchName;
@@ -163,9 +187,16 @@ export const usePurchaseStore = create<PurchaseState>()(
                     get().resetForm();
                     return true;
                 } catch (err: any) {
-                    const msg = err?.response?.data?.message || err.message || "Failed to update purchase";
-                    toast.error(msg, { duration: 3000 });
-                    set({ error: msg });
+                    let errorMessage = err.message || "Failed to update purchase";
+                    if (err?.response?.data?.errors && Array.isArray(err.response.data.errors)) {
+                        errorMessage = err.response.data.errors
+                            .map((e: any) => `${e.field}: ${e.message}`)
+                            .join("; ");
+                    } else if (err?.response?.data?.message) {
+                        errorMessage = err.response.data.message;
+                    }
+                    toast.error(errorMessage, { duration: 3000 });
+                    set({ error: errorMessage });
                     return false;
                 } finally {
                     set({ loading: false });
