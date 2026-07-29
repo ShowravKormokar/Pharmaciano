@@ -16,10 +16,77 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import {
+    Combobox,
+    ComboboxContent,
+    ComboboxEmpty,
+    ComboboxInput,
+    ComboboxItem,
+    ComboboxList,
+} from "@/components/ui/combobox";
 import { Info } from "lucide-react";
 import { useAuthStore } from "@/store/auth.store";
 import { isSuperAdmin } from "@/lib/isSuperAdmin";
 import { useUniqueNamesStore } from "@/store/uniqueNames.store";
+
+// Pre‑defined options for combobox fields
+const DOSAGE_FORM_OPTIONS = [
+    "Tablet",
+    "Capsule",
+    "Syrup",
+    "Suspension",
+    "Drops",
+    "Inhaler",
+    "Injection",
+    "Ointment",
+    "Cream",
+    "Gel",
+    "Patch",
+    "Suppository",
+    "Spray",
+    "Powder",
+    "Solution",
+];
+
+const STRENGTH_OPTIONS = [
+    "1",
+    "2",
+    "2.5",
+    "5",
+    "7.5",
+    "10",
+    "15",
+    "20",
+    "25",
+    "30",
+    "40",
+    "50",
+    "75",
+    "100",
+    "150",
+    "200",
+    "250",
+    "300",
+    "400",
+    "500",
+    "600",
+    "750",
+    "800",
+    "1000",
+    "1200",
+];
+
+const UNIT_OPTIONS = [
+    "mg",
+    "mcg",
+    "g",
+    "kg",
+    "ml",
+    "L",
+    "IU",
+    "%",
+    "mEq",
+];
 
 interface Props {
     medicineId?: string;
@@ -34,6 +101,9 @@ export default function MedicineForm({ medicineId, onSuccess }: Props) {
     const { user } = useAuthStore();
     const isSuper = isSuperAdmin(user?.email);
     const [submitting, setSubmitting] = useState(false);
+    const [dosageQuery, setDosageQuery] = useState(form.dosageForm || "");
+    const [strengthQuery, setStrengthQuery] = useState(form.strength || "");
+    const [unitQuery, setUnitQuery] = useState(form.unit || "");
 
     const organizationNames = getOrganizationNames() as Array<string | { _id: string; name: string }>;
 
@@ -53,6 +123,7 @@ export default function MedicineForm({ medicineId, onSuccess }: Props) {
         }
         setSubmitting(false);
     };
+
     return (
         <div className="space-y-6">
             <Card>
@@ -121,37 +192,120 @@ export default function MedicineForm({ medicineId, onSuccess }: Props) {
                         </div>
                     </div>
 
-                    {/* Dosage */}
+                    {/* Dosage – Combobox fields */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {/* Dosage Form */}
                         <div className="space-y-2">
                             <Label htmlFor="dosageForm">Dosage Form<span className="text-red-500">*</span></Label>
-                            <Input
-                                id="dosageForm"
-                                placeholder="e.g., Tablet, Syrup, Capsule"
+                            <Combobox
                                 value={form.dosageForm}
-                                onChange={(e) => setForm({ dosageForm: e.target.value })}
-                            />
+                                onValueChange={(val) => {
+                                    setForm({ dosageForm: val || "" });
+                                    setDosageQuery(val || "");
+                                }}
+                            >
+                                <ComboboxInput
+                                    id="dosageForm"
+                                    placeholder="Type or select..."
+                                    value={dosageQuery}
+                                    onChange={(e) => {
+                                        setDosageQuery(e.target.value);
+                                        setForm({ dosageForm: e.target.value });
+                                    }}
+                                />
+                                <ComboboxContent>
+                                    <ComboboxList>
+                                        {DOSAGE_FORM_OPTIONS.filter(opt =>
+                                            opt.toLowerCase().includes(dosageQuery.toLowerCase())
+                                        ).map((opt) => (
+                                            <ComboboxItem key={opt} value={opt}>
+                                                {opt}
+                                            </ComboboxItem>
+                                        ))}
+                                        {DOSAGE_FORM_OPTIONS.filter(opt =>
+                                            opt.toLowerCase().includes(dosageQuery.toLowerCase())
+                                        ).length === 0 && (
+                                                <ComboboxEmpty>No option found</ComboboxEmpty>
+                                            )}
+                                    </ComboboxList>
+                                </ComboboxContent>
+                            </Combobox>
                         </div>
 
-                        {/* <div className="grid grid-cols-2 gap-4"> */}
+                        {/* Strength */}
                         <div className="space-y-2">
                             <Label htmlFor="strength">Strength<span className="text-red-500">*</span></Label>
-                            <Input
-                                id="strength"
-                                placeholder="e.g., 500"
+                            <Combobox
                                 value={form.strength}
-                                onChange={(e) => setForm({ strength: e.target.value })}
-                            />
+                                onValueChange={(val) => {
+                                    setForm({ strength: val || "" });
+                                    setStrengthQuery(val || "");
+                                }}
+                            >
+                                <ComboboxInput
+                                    id="strength"
+                                    placeholder="Type or select..."
+                                    value={strengthQuery}
+                                    onChange={(e) => {
+                                        setStrengthQuery(e.target.value);
+                                        setForm({ strength: e.target.value });
+                                    }}
+                                />
+                                <ComboboxContent>
+                                    <ComboboxList>
+                                        {STRENGTH_OPTIONS.filter(opt =>
+                                            opt.toLowerCase().includes(strengthQuery.toLowerCase())
+                                        ).map((opt) => (
+                                            <ComboboxItem key={opt} value={opt}>
+                                                {opt}
+                                            </ComboboxItem>
+                                        ))}
+                                        {STRENGTH_OPTIONS.filter(opt =>
+                                            opt.toLowerCase().includes(strengthQuery.toLowerCase())
+                                        ).length === 0 && (
+                                                <ComboboxEmpty>No option found</ComboboxEmpty>
+                                            )}
+                                    </ComboboxList>
+                                </ComboboxContent>
+                            </Combobox>
                         </div>
+
+                        {/* Unit */}
                         <div className="space-y-2">
                             <Label htmlFor="unit">Unit<span className="text-red-500">*</span></Label>
-                            <Input
-                                id="unit"
-                                placeholder="mg / ml"
+                            <Combobox
                                 value={form.unit}
-                                onChange={(e) => setForm({ unit: e.target.value })}
-                            />
-                            {/* </div> */}
+                                onValueChange={(val) => {
+                                    setForm({ unit: val || "" });
+                                    setUnitQuery(val || "");
+                                }}
+                            >
+                                <ComboboxInput
+                                    id="unit"
+                                    placeholder="Type or select..."
+                                    value={unitQuery}
+                                    onChange={(e) => {
+                                        setUnitQuery(e.target.value);
+                                        setForm({ unit: e.target.value });
+                                    }}
+                                />
+                                <ComboboxContent>
+                                    <ComboboxList>
+                                        {UNIT_OPTIONS.filter(opt =>
+                                            opt.toLowerCase().includes(unitQuery.toLowerCase())
+                                        ).map((opt) => (
+                                            <ComboboxItem key={opt} value={opt}>
+                                                {opt}
+                                            </ComboboxItem>
+                                        ))}
+                                        {UNIT_OPTIONS.filter(opt =>
+                                            opt.toLowerCase().includes(unitQuery.toLowerCase())
+                                        ).length === 0 && (
+                                                <ComboboxEmpty>No option found</ComboboxEmpty>
+                                            )}
+                                    </ComboboxList>
+                                </ComboboxContent>
+                            </Combobox>
                         </div>
                     </div>
 
@@ -253,7 +407,6 @@ export default function MedicineForm({ medicineId, onSuccess }: Props) {
                                     </SelectTrigger>
                                     <SelectContent>
                                         {organizationNames.map((item) => {
-                                            // Handle both string and object cases
                                             const name = typeof item === 'string' ? item : item.name;
                                             const id = typeof item === 'string' ? item : item._id;
                                             return (
@@ -268,10 +421,6 @@ export default function MedicineForm({ medicineId, onSuccess }: Props) {
                         </div>
                     )}
 
-                    {/* Existing fields (name, generic name, category, brand, dosage etc.) */}
-                    {/* ... rest of your form fields ... */}
-
-                    {/* Note for normal users */}
                     {!isSuper && (
                         <div className="flex items-center gap-2 text-sm text-muted-foreground mt-2">
                             <Info className="h-4 w-4" />
